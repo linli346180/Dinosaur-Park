@@ -54,6 +54,7 @@ export class InitResSystem extends ecs.ComblockSystem implements ecs.IEntityEnte
                 await oops.res.loadBundle(oops.config.game.bundleServer, oops.config.game.bundleVersion);
             }
             else {
+                console.log("启用本地资源运行游戏"+oops.config.game.bundleName);
                 await oops.res.loadBundle(oops.config.game.bundleName);
             }
             next();

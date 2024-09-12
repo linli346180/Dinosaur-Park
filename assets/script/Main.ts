@@ -19,16 +19,16 @@ const { ccclass, property } = _decorator;
 @ccclass('Main')
 export class Main extends Root {
     start() {
-        if (DEBUG) profiler.showStats();
+        // if (DEBUG) profiler.showStats();
+    }
+
+    protected initGui() {
+        oops.gui.init(UIConfigData);
     }
 
     protected run() {
         smc.initialize = ecs.getEntity<Initialize>(Initialize);
         smc.account = ecs.getEntity<Account>(Account);
-    }
-
-    protected initGui() {
-        oops.gui.init(UIConfigData);
     }
 
     // protected initEcsSystem() {

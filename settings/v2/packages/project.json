@@ -3,9 +3,10 @@
     "designResolution": {
       "fitWidth": true,
       "fitHeight": false,
-      "height": 720,
-      "width": 1200
-    }
+      "height": 2376,
+      "width": 1080
+    },
+    "highQuality": false
   },
   "__version__": "1.0.6",
   "fbx": {
@@ -15,5 +16,12 @@
   },
   "script": {
     "preserveSymlinks": true
-  }
+  },
+  "custom_joint_texture_layouts": [],
+  "layer": [
+    {
+      "name": "UI_Game",
+      "value": 1
+    }
+  ]
 }

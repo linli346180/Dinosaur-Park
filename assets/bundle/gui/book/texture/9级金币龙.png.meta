@@ -1,0 +1,134 @@
+{
+  "ver": "1.0.27",
+  "importer": "image",
+  "imported": true,
+  "uuid": "f14af1f9-fa6f-4341-afda-228352c35489",
+  "files": [
+    ".json",
+    ".png"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "f14af1f9-fa6f-4341-afda-228352c35489@6c48a",
+      "displayName": "9级金币龙",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "clamp-to-edge",
+        "wrapModeT": "clamp-to-edge",
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0,
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "f14af1f9-fa6f-4341-afda-228352c35489",
+        "visible": false
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "f9941": {
+      "importer": "sprite-frame",
+      "uuid": "f14af1f9-fa6f-4341-afda-228352c35489@f9941",
+      "displayName": "9级金币龙",
+      "id": "f9941",
+      "name": "spriteFrame",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": -0.5,
+        "offsetY": -2.5,
+        "trimX": 8,
+        "trimY": 5,
+        "width": 183,
+        "height": 195,
+        "rawWidth": 200,
+        "rawHeight": 200,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [
+            -91.5,
+            -97.5,
+            0,
+            91.5,
+            -97.5,
+            0,
+            -91.5,
+            97.5,
+            0,
+            91.5,
+            97.5,
+            0
+          ],
+          "indexes": [
+            0,
+            1,
+            2,
+            2,
+            1,
+            3
+          ],
+          "uv": [
+            8,
+            195,
+            191,
+            195,
+            8,
+            0,
+            191,
+            0
+          ],
+          "nuv": [
+            0.04,
+            0,
+            0.955,
+            0,
+            0.04,
+            0.975,
+            0.955,
+            0.975
+          ],
+          "minPos": [
+            -91.5,
+            -97.5,
+            0
+          ],
+          "maxPos": [
+            91.5,
+            97.5,
+            0
+          ]
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "f14af1f9-fa6f-4341-afda-228352c35489@6c48a",
+        "atlasUuid": ""
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "hasAlpha": true,
+    "type": "sprite-frame",
+    "fixAlphaTransparencyArtifacts": false,
+    "redirect": "f14af1f9-fa6f-4341-afda-228352c35489@6c48a"
+  }
+}

@@ -77,8 +77,18 @@ export class LoadingViewComp extends CCVMParentComp {
     private async onCompleteCallback() {
         // 获取用户信息的多语言提示文本
         this.data.prompt = oops.language.getLangByID("loading_load_player");
-        await ModuleUtil.addViewUiAsync(smc.account, DemoViewComp, UIID.Demo);
-        ModuleUtil.removeViewUi(this.ent, LoadingViewComp, UIID.Loading);
+        // await ModuleUtil.addViewUiAsync(smc.account, DemoViewComp, UIID.Demo);
+        // oops.gui.open(UIID.Main);
+
+
+        // oops.gui.open(UIID.Map);
+        // oops.gui.open(UIID.Main);
+        
+        this.scheduleOnce(()=>{
+            ModuleUtil.removeViewUi(this.ent, LoadingViewComp, UIID.Loading);
+        }, 1);
+
+        
     }
 
     reset(): void { }

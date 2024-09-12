@@ -19,11 +19,3 @@ export class Initialize extends ecs.Entity {
         this.add(InitResComp);
     }
 }
-
-// export class EcsInitializeSystem extends ecs.System {
-//     constructor() {
-//         super();
-
-//         this.add(new InitResSystem());
-//     }
-// }

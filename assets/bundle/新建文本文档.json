@@ -1,0 +1,73 @@
+[{
+    "goodName": "中级至尊星兽拼图8",
+    "level": 1,
+    "rewardType": 3,
+    "standbyID": 2,
+    "rewardGoodsID": 18,
+    "rewardNum": 1
+  },
+  {
+    "goodName": "中级至尊星兽拼图7",
+    "level": 1,
+    "rewardType": 3,
+    "standbyID": 2,
+    "rewardGoodsID": 17,
+    "rewardNum": 1
+  },
+  {
+    "goodName": "中级至尊星兽拼图11",
+    "level": 2,
+    "rewardType": 3,
+    "standbyID": 2,
+    "rewardGoodsID": 21,
+    "rewardNum": 1
+  },
+  {
+    "goodName": "中级至尊星兽拼图5",
+    "level": 1,
+    "rewardType": 3,
+    "standbyID": 2,
+    "rewardGoodsID": 15,
+    "rewardNum": 1
+  },
+  {
+    "goodName": "中级至尊星兽拼图11",
+    "level": 2,
+    "rewardType": 3,
+    "standbyID": 2,
+    "rewardGoodsID": 21,
+    "rewardNum": 1
+  },
+  {
+    "goodName": "初级至尊星兽拼图8",
+    "level": 2,
+    "rewardType": 3,
+    "standbyID": 1,
+    "rewardGoodsID": 8,
+    "rewardNum": 1
+  },
+  {
+    "goodName": "中级至尊星兽拼图4",
+    "level": 1,
+    "rewardType": 3,
+    "standbyID": 2,
+    "rewardGoodsID": 14,
+    "rewardNum": 1
+  },
+  {
+    "goodName": "初级至尊星兽拼图7",
+    "level": 2,
+    "rewardType": 3,
+    "standbyID": 1,
+    "rewardGoodsID": 7,
+    "rewardNum": 1
+  },
+  {
+    "goodName": "中级至尊星兽拼图5",
+    "level": 1,
+    "rewardType": 3,
+    "standbyID": 2,
+    "rewardGoodsID": 15,
+    "rewardNum": 1
+  }
+]
