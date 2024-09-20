@@ -1,7 +1,9 @@
 import { Label } from 'cc';
 import { _decorator, Component, Node } from 'cc';
-import { CoinType, HatchPriceConfig } from './HatchDefine';
+import { CoinType, HatchPriceConfig, HserHatchEvent } from './HatchDefine';
 import { Button } from 'cc';
+import { HatchNetService } from './HatchNet';
+import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 const { ccclass, property } = _decorator;
 
 @ccclass('HatchPriceItem')
@@ -39,5 +41,12 @@ export class HatchPriceItem extends Component {
 
     buy() {
         console.log("buy")
+        HatchNetService.requestHatchNum(this._priceData.id).then((response) => {
+            if(response)
+            {   
+                console.log("剩余次数:" + response.remainNum)
+                oops.message.dispatchEvent(HserHatchEvent.RemainNumChange, response.remainNum)
+            }
+        });
     }
 }

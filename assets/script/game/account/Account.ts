@@ -56,7 +56,7 @@ export class Account extends ecs.Entity {
                 oops.storage.setUser(this.AccountModel.user.ID.toString());
                 oops.audio.load();
 
-                oops.gui.open(UIID.Map);
+                // oops.gui.open(UIID.Map);
                 oops.gui.open(UIID.Main);
 
                 this.add(STBConfigNetDataComp);

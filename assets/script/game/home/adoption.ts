@@ -7,6 +7,9 @@ import { math } from 'cc';
 import { SpriteFrame } from 'cc';
 import { resLoader } from '../../../../extensions/oops-plugin-framework/assets/core/common/loader/ResLoader';
 import { KnapsackControlle } from './KnapsackControlle';
+import { Texture2D } from 'cc';
+import { resources } from 'cc';
+import { Prefab } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('adoption')
@@ -38,7 +41,6 @@ export class adoption extends Component {
         resLoader.loadDir("bundle", path, SpriteFrame, (err: any, assets: any) => {
             this._spriteFrames = assets.sort((a: any, b: any) => a.name.localeCompare(b.name));
             this.beast.spriteFrame = this._spriteFrames[this._index];
-
             this.InitUI();
         });
     }

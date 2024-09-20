@@ -27,6 +27,7 @@ const HeaderName = 'Content-Type';
 const HeaderValueText = 'application/text';
 const HeaderValueJson = 'application/json';
 const HeaderValuePb = 'application/x-protobuf';
+const HeadCors = "cors";  // 允许跨域
 
 /** 当前请求地址集合 */
 var urls: Map<string, boolean> = new Map();
@@ -75,8 +76,14 @@ export class HttpManager {
     postJson(name: string, params: BodyInit | null = null): Promise<HttpReturn<any>> {
         var headers = new Headers();
         headers.append(HeaderName, HeaderValueJson);
+        // headers.append('Access-Control-Allow-Origin', '*');
         if(this.token != "") 
             headers.append('token', this.token);
+
+        headers.append('Access-Control-Allow-Origin', '*');
+        headers.append('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        headers.append('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
         return this.request(name, params, HttpMethod.POST, HttpResponseType.Json, headers);
     }
 
@@ -167,7 +174,7 @@ export class HttpManager {
                 /** 用于设置请求保持活动的布尔值 */
                 // keepalive: boolean,
                 /** 一个字符串，用于指示请求将使用CORS，还是将被限制为相同来源的URL。设置请求的模式 */
-                // mode: RequestMode,
+                // mode: 'cors',  // 强制 CORS 模式
                 /** 一个字符串，指示请求是否遵循重定向、在遇到重定向时导致错误或返回重定向（以不透明的方式）。设置请求的重定向 */
                 // redirect: RequestRedirect,
                 /** 一个字符串，其值为相同的原始URL“about:client”或空字符串，用于设置请求的引用者 */
@@ -177,6 +184,9 @@ export class HttpManager {
                 /** 只能为null。用于解除请求与任何窗口的关联 */
                 // window: null
             }
+
+            console.log("请求参数：", ri);
+
             fetch(url, ri).then((response: Response): any => {
                 clearTimeout(timeoutId);
                 if (response.ok) {

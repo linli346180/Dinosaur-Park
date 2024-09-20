@@ -46,7 +46,7 @@ export namespace HatchNetService {
         const response = await http.getJson("tgapp/api/hatch/reward/sett");
         if (response.isSucc && response.res.resultCode == "OK") {
             console.warn("获取孵蛋奖励预览:", response.res.reHatchProbRewardArr);
-            return response.res;
+            return response.res.reHatchProbRewardArr;
         } else {
             console.error("请求异常", response);
             return null;
@@ -87,6 +87,27 @@ export namespace HatchNetService {
             return response.res;
         } else {
             console.error("用户孵化请求异常", response.res);
+            return null;
+        }
+    }
+
+     /** 购买用户孵蛋次数 */
+     export async function requestHatchNum(hatchNumPriceID: number) {
+        const http = new HttpManager();
+        http.server = netConfig.Server;
+        http.token = netConfig.Token;
+        http.timeout = netConfig.Timeout;
+
+        const params = {
+            'hatchNumPriceID': hatchNumPriceID
+        };
+
+        const response = await http.postJson("tgapp/api/user/hatch/num/pur", JSON.stringify(params));
+        if (response.isSucc && response.res.resultCode == "OK") {
+            console.warn("购买用户孵蛋次数:", response.res.userHatch);
+            return response.res.userHatch;
+        } else {
+            console.error("购买用户孵蛋次数请求异常", response.res);
             return null;
         }
     }

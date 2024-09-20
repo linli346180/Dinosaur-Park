@@ -1,9 +1,6 @@
 import { _decorator, Component, Node, Button } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
-import { STBManager } from '../character/STBManager';
-import { TaskNetService } from '../task/TaskNet';
-import { HatchNetService } from '../hatch/HatchNet';
 const { ccclass, property } = _decorator;
 
 @ccclass('homeComp')
@@ -42,10 +39,6 @@ export class homeComp extends Component {
         this.btn_store?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.STBShop) }, this);
         this.btn_hatch?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Hatch) }, this);
         this.btn_invite?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Invite) }, this);
-
-        // STBManager.instance.init();
-        // TaskNetService.getTaskData(1)
-        // HatchNetService.requestUserHatch(1);
     }
 
 }

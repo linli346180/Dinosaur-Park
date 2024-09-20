@@ -20,8 +20,24 @@
   "custom_joint_texture_layouts": [],
   "layer": [
     {
-      "name": "UI_Game",
+      "name": "UI_Help",
       "value": 1
+    },
+    {
+      "name": "SpawnPoint",
+      "value": 2
     }
-  ]
+  ],
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "Actor"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 3,
+      "1": 1
+    }
+  }
 }

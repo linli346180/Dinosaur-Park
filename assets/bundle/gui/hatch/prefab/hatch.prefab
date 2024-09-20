@@ -708,7 +708,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -467.811,
-      "y": 303.933,
+      "y": 344.979,
       "z": 0
     },
     "_lrot": {
@@ -748,7 +748,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 291.26953125,
+      "width": 327.67822265625,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -787,8 +787,8 @@
     "_string": "Incubation times",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 40,
-    "_fontSize": 40,
+    "_actualFontSize": 45,
+    "_fontSize": 45,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
     "_overflow": 0,
@@ -866,8 +866,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -162.454,
-      "y": 303.933,
+      "x": -112.484,
+      "y": 344.979,
       "z": 0
     },
     "_lrot": {
@@ -907,7 +907,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 133.45703125,
+      "width": 150.13916015625,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -946,8 +946,8 @@
     "_string": "10/100 ",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 40,
-    "_fontSize": 40,
+    "_actualFontSize": 45,
+    "_fontSize": 45,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
     "_overflow": 0,
@@ -1004,7 +1004,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "tips-001",
+    "_name": "label_guaranteedNum",
     "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
@@ -1026,7 +1026,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -467.811,
-      "y": 250.418,
+      "y": 270.048,
       "z": 0
     },
     "_lrot": {
@@ -1066,7 +1066,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 596.0947265625,
+      "width": 632.2216796875,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1105,8 +1105,8 @@
     "_string": "Reward rare items for every 100 hatches",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 33,
-    "_fontSize": 33,
+    "_actualFontSize": 35,
+    "_fontSize": 35,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
     "_overflow": 0,
@@ -3491,6 +3491,7 @@
     "label_hatchNum": {
       "__id__": 35
     },
+    "label_guaranteedNum": null,
     "_id": ""
   },
   {

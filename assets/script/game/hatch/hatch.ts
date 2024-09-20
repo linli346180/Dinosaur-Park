@@ -5,6 +5,10 @@ import { UIID } from '../common/config/GameUIConfig';
 import { HatchNetService } from './HatchNet';
 import { UserHatchData } from './HatchData';
 import { Label } from 'cc';
+import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
+import { HatchShop } from './HatchShop';
+import { HatchReward } from './HatchReward';
+import { HserHatchEvent } from './HatchDefine';
 const { ccclass, property } = _decorator;
 
 /** 孵蛋 */
@@ -25,6 +29,8 @@ export class hatch extends Component {
     label_remainNum: Label = null!;
     @property(Label)
     label_hatchNum: Label = null!;
+    @property(Label)
+    label_guaranteedNum: Label = null!;
 
     private _userData: UserHatchData = new UserHatchData();
 
@@ -35,24 +41,28 @@ export class hatch extends Component {
         this.btn_ten?.node.on(Button.EventType.CLICK, this.onTen, this);
         this.btn_times?.node.on(Button.EventType.CLICK, this.onTimes, this);
 
+        oops.message.on(HserHatchEvent.RemainNumChange, this.onHandler, this);
         this.initUI()
+    }
+
+    private onHandler(event: string, args: any) {
+        switch (event) {
+            case HserHatchEvent.RemainNumChange:
+                this._userData.remainNum = args;
+                this.label_remainNum.string = this._userData.remainNum.toString(); 
+                break;
+        }
     }
 
     async initUI() {
         let hatchData = await HatchNetService.getHatchMinNum();
         this._userData.guaranteedNum = hatchData.guaranteedNum;
-
         hatchData = await HatchNetService.getUserHatchNum();
         this._userData.remainNum = hatchData.remainNum;
         this._userData.hatchNum = hatchData.hatchNum;
-
-        console.log("孵蛋数据", JSON.stringify(this._userData));
-
-        HatchNetService.getHatchReward();
-        HatchNetService.getHatchPrice();
-
-        this.label_hatchNum.string = `${this._userData.hatchNum}/${this._userData.guaranteedNum}`
+        this.label_hatchNum.string = `${this._userData.hatchNum} / ${this._userData.guaranteedNum}`
         this.label_remainNum.string = this._userData.remainNum.toString();
+        this.label_guaranteedNum.string = `Reward rare items for every ${this._userData.guaranteedNum} hatches`;
     }
 
     closeUI() {
@@ -61,12 +71,10 @@ export class hatch extends Component {
 
     onView() {
         oops.gui.open(UIID.RewardView);
-
-        HatchNetService.getHatchReward();
     }
 
     onOnce() {
-        this.userHatch(10)
+        this.userHatch(1)
     }
 
     onTen() {
@@ -80,8 +88,25 @@ export class hatch extends Component {
     async userHatch(num: number) {
         let hatchResult = await HatchNetService.requestUserHatch(num)
         if (hatchResult.resultCode == "OK") {
-            console.log("孵蛋结果", hatchResult.userHatch);
+            this._userData.remainNum -= num;
+            this._userData.hatchNum += num;
+            this.label_hatchNum.string = `${this._userData.hatchNum}/${this._userData.guaranteedNum}`
+            this.label_remainNum.string = this._userData.remainNum.toString();
+
+            // 弹出奖励界面
+            var uic: UICallbacks = {
+                onAdded: (node: Node, params: any) => {
+                    const hatchReward = node.getComponent(HatchReward);
+                    if (hatchReward) {
+                        hatchReward.InitUI(hatchResult.userHatch);
+                    }
+                }
+            };
+            let uiArgs: any;
+            oops.gui.open(UIID.HatchReward, uiArgs, uic);
+
         } else {
+            console.error("孵蛋失败:", hatchResult.resultMsg);
             oops.gui.toast(hatchResult.resultMsg, false);
         }
     }

@@ -11,8 +11,8 @@ export namespace AccountNetService {
         http.timeout = netConfig.Timeout;
         const response = await http.getJson("tgapp/api/user/coin");
         if (response.isSucc && response.res.resultCode == "OK") {
-            console.warn("请求成功", response.res);
-            return response.res;
+            console.warn("获取用户货币数据请求成功", response.res.userCoin);
+            return response.res.userCoin;
         } else {
             console.error("请求异常", response);
             return null;
@@ -155,4 +155,6 @@ export namespace AccountNetService {
             return null;
         }
     }
+
+
 }

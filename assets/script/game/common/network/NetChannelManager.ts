@@ -8,7 +8,9 @@ export class NetChannelManager {
 
     async test() {
         const http = new HttpManager();
-        http.server = "https://jsonplaceholder.typicode.com/posts";
+        // http.server = "https://jsonplaceholder.typicode.com/posts";
+        http.server = " http://54.151.192.122/api/test/login";
+       
         http.timeout = netConfig.Timeout;
 
         const response = await http.postJson("");
@@ -31,12 +33,19 @@ export class NetChannelManager {
             'password': netConfig.Password
         };
         const response = await http.postJson("tgapp/api/login", JSON.stringify(params));
-        if (response.isSucc && response.res.resultCode == "OK") {
-            netConfig.Token = response.res.token;
-            console.log("登录成功", response.res);
+        if (response.isSucc) {
+            if(response.res.resultCode == "OK")
+            {
+                netConfig.Token = response.res.token;
+                console.log("登录成功", response.res);
+            }
+            else
+            {
+                console.error("登录失败", response.res);
+            }
             return response.res;
         } else {
-            console.error("登录失败", response);
+            console.error("登录异常", response);
             return null;
         }
     }

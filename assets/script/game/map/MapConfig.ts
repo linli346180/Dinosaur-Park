@@ -18,6 +18,10 @@ export interface IMapConfig {
     center: number;
     /** 出生点 */
     spawnPoint: { x: number, y: number }[];
+    /** 宽度限制 */
+    widthLimit: Vec2;
+    /** 高度限制 */
+    heightLimit: Vec2;
 }
 
 
@@ -28,12 +32,13 @@ export var MapConfigData: { [key: number]: IMapConfig } = {
             { x: -350, y: 600 }, { x: -100, y: 600 }, { x: 150, y: 600 }, { x: 350, y: 600 },
             { x: -350, y: 400 }, { x: -100, y: 400 }, { x: 150, y: 400 }, { x: 350, y: 400 },
             { x: -350, y: 200 }, { x: -100, y: 200 }, { x: 150, y: 200 }, { x: 350, y: 200 },
-        ]
+        ], widthLimit: new Vec2(-400, 400), heightLimit: new Vec2(-600, 640)
     },
     [MapID.Map2]: {
         id: MapID.Map2, path: "Map2", width: 1080, center: -540, spawnPoint: [
             { x: 350, y: 600 }, { x: 100, y: 600 }, { x: -150, y: 600 },
             { x: 350, y: 300 }, { x: 100, y: 300 }, { x: -150, y: 300 },
-            { x: 350, y: 0 }, { x: 100, y: 0 }, { x: -150, y: 0 },]
+            { x: 350, y: 0 }, { x: 100, y: 0 }, { x: -150, y: 0 },],
+        widthLimit: new Vec2(-400, 400), heightLimit: new Vec2(-600, 640)
     },
 }

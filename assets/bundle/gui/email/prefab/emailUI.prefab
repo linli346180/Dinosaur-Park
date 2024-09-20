@@ -3490,6 +3490,16 @@
     "__prefab": {
       "__id__": 169
     },
+    "content": {
+      "__id__": 67
+    },
+    "itemPrefab": {
+      "__uuid__": "fd35fb58-8519-4ed3-9547-0f9b751cc4bb",
+      "__expectedType__": "cc.Prefab"
+    },
+    "btn_onekey": {
+      "__id__": 161
+    },
     "_id": ""
   },
   {

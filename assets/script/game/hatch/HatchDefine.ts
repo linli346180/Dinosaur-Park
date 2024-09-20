@@ -11,7 +11,6 @@ interface UserHatchData {
     hatchNum: number;           // 已经孵蛋次数
 }
 
-
 // 孵蛋价格配置
 export interface HatchPriceConfig {
     id: number;                 // ID
@@ -30,4 +29,34 @@ export enum CoinType {
     Gems,           // 宝石
     StarBeast,      // 星兽币
     USDT            // USDT
+}
+
+// 奖励配置结构体
+export interface RewardConfig {
+    goodName: string;       // 奖励名称
+    level: RewardLevel;     // 奖励级别(1.普通,2.中级,3.高级,4.稀有)
+    rewardType: RewardType; // 奖励类型(1.货币,2.星兽,3.星兽碎片)
+    rewardGoodsID: number;  // 奖励物品ID
+    rewardNum: number;      // 奖励数量
+    standbyID: number;      // 星兽配置表ID
+}
+
+// 奖励级别枚举
+export enum RewardLevel {
+    Normal = 1,    // 普通
+    Intermediate,  // 中级
+    Advanced,      // 高级
+    Rare           // 稀有
+}
+
+// 奖励类型枚举
+export enum RewardType {
+    Currency = 1,  // 货币
+    StarBeast,     // 星兽
+    StarBeastFragment // 星兽碎片
+}
+
+
+export enum HserHatchEvent {
+    RemainNumChange = "RemainNumChange",
 }

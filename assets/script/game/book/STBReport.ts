@@ -5,7 +5,7 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { UIID } from '../common/config/GameUIConfig';
 import { smc } from '../common/SingletonModuleComp';
 import { Label } from 'cc';
-import { ReviveNetService } from './ReportNet';
+import { ReportNetService } from './ReportNet';
 const { ccclass, property } = _decorator;
 
 /** 图鉴 */
@@ -29,7 +29,7 @@ export class stbReport extends Component {
     }
 
     protected onEnable(): void {
-        ReviveNetService.getStartBeastStatData().then((res) => {
+        ReportNetService.getStartBeastStatData().then((res) => {
             console.log("更新图鉴");
             this.InitUI();
         });

@@ -7,6 +7,10 @@ import { HatchPriceConfig } from './HatchDefine';
 import { Prefab } from 'cc';
 import { instantiate } from 'cc';
 import { HatchPriceItem } from './HatchPriceItem';
+import { Label } from 'cc';
+import { AccountNetService } from '../account/AccountNet';
+import { moneyUtil } from '../common/utils/moneyUtil';
+import { IUserCoinData } from '../account/AccountDefine';
 const { ccclass, property } = _decorator;
 
 /** 孵化商店:
@@ -14,12 +18,18 @@ const { ccclass, property } = _decorator;
 @ccclass('HatchShop')
 export class HatchShop extends Component {
     @property(Prefab)
-    hatchPriceItem:Prefab = null!;
+    hatchPriceItem: Prefab = null!;
     @property(Button)
     btn_close: Button = null!;
     @property(Node)
     content: Node = null!;
-   
+    @property(Label)
+    gemNum: Label = null!;
+
+    protected onLoad(): void {
+        this.content.removeAllChildren();
+    }
+
     start() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.initUI();
@@ -29,9 +39,16 @@ export class HatchShop extends Component {
         this.content.removeAllChildren();
         const priceDataList = await HatchNetService.getHatchPrice();
         if (priceDataList) {
+            priceDataList.sort((a: HatchPriceConfig, b: HatchPriceConfig) => a.id - b.id);
             priceDataList.forEach((priceData: HatchPriceConfig) => {
                 this.createItem(priceData);
             });
+        }
+
+        const userCoinData = await AccountNetService.getUserCoinData()
+        if (userCoinData) {
+            console.log("用户货币数据", userCoinData.gemsCoin);  
+            this.gemNum.string = moneyUtil.formatMoney(userCoinData.gemsCoin);
         }
     }
 
@@ -45,5 +62,3 @@ export class HatchShop extends Component {
         item.getComponent<HatchPriceItem>(HatchPriceItem)?.initItem(priceData);
     }
 }
-
-

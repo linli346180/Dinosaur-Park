@@ -12,6 +12,11 @@ import { ModuleUtil } from "../../../../../extensions/oops-plugin-framework/asse
 import { DemoViewComp } from "../../account/view/DemoViewComp";
 import { smc } from "../../common/SingletonModuleComp";
 import { UIID } from "../../common/config/GameUIConfig";
+import { JsonUtil } from "../../../../../extensions/oops-plugin-framework/assets/core/utils/JsonUtil";
+import { TableItemConfig } from "../../common/table/TableItemConfig";
+import { TablePrimaryDebrisConfig } from "../../common/table/TablePrimaryDebrisConfig";
+import { TableMiddleDebrisConfig } from "../../common/table/TableMiddleDebrisConfig";
+import { TableSTBConfig } from "../../common/table/TableSTBConfig";
 
 const { ccclass, property } = _decorator;
 
@@ -52,6 +57,13 @@ export class LoadingViewComp extends CCVMParentComp {
     private loadCustom() {
         // 加载游戏本地JSON数据的多语言提示文本
         this.data.prompt = oops.language.getLangByID("loading_load_json");
+        return new Promise(async (resolve, reject) => {
+            await JsonUtil.loadAsync(TableItemConfig.TableName);
+            await JsonUtil.loadAsync(TablePrimaryDebrisConfig.TableName);
+            await JsonUtil.loadAsync(TableMiddleDebrisConfig.TableName);
+            await JsonUtil.loadAsync(TableSTBConfig.TableName);
+            resolve(null);
+        });
     }
 
     /** 加载初始游戏内容资源 */

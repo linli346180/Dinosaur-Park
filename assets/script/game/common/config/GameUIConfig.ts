@@ -31,10 +31,14 @@ export enum UIID {
     EmailDetail,    // 邮件详情
     STBShop,    // 星兽商店
     GemShop,    // 宝石商店
-    Revive,
+    Revive,   // 复活
+    DebrisResult,    // 碎片拼图结果
+
     Hatch,  // 孵化
     RewardView,    // 奖励界面
     HatchShop,    // 孵化次数商店
+    HatchReward,    // 孵化奖励
+
     RankUI,    // 排行榜
 }
 
@@ -62,10 +66,13 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.RankUI]: { layer: LayerType.UI, prefab: "gui/rank/prefab/ranklUI", mask: true },
     [UIID.Book]: { layer: LayerType.UI, prefab: "gui/book/prefab/stbReportUI", mask: true },
 
-    [UIID.Revive]: { layer: LayerType.UI, prefab: "gui/revive/prefab/revive", mask: true },
-    [UIID.Hatch]: { layer: LayerType.UI, prefab: "gui/hatch/prefab/hatch", mask: true },
+    [UIID.Revive]: { layer: LayerType.UI, prefab: "gui/debris/prefab/debris", mask: true },
+    [UIID.DebrisResult]: { layer: LayerType.Dialog, prefab: "gui/debris/prefab/debrisResult", mask: true },
     [UIID.STBShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/stbShop", mask: true },
     [UIID.GemShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/gemShop", mask: true },
+
+    [UIID.Hatch]: { layer: LayerType.UI, prefab: "gui/hatch/prefab/hatch", mask: true },
     [UIID.RewardView]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/rewardPrview", mask: true },
     [UIID.HatchShop]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/hatchShop", mask: true },
+    [UIID.HatchReward]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/hatchReward", mask: true },
 }

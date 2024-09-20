@@ -21,10 +21,17 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
     }
 
     async entityEnter(entity: Account): Promise<void> {
-        const loginResponse = await netChannelManager.LoginAccount();
-        entity.AccountModel.fillData(loginResponse);
-
-        oops.message.dispatchEvent(AccountEvent.LoginSuccess);
+        const response = await netChannelManager.LoginAccount();
+        if(response)
+        {   
+            if(response.resultCode == "OK"){
+                entity.AccountModel.fillData(response);
+                oops.message.dispatchEvent(AccountEvent.LoginSuccess);
+            }
+            else{
+                oops.gui.toast(response.res.resultMsg);
+            }
+        }
         entity.remove(AccountNetDataComp);
     }
 }
