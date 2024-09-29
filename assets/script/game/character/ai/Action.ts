@@ -6,17 +6,20 @@ import { Vec3 } from 'cc';
 import { StateDefine } from '../state/StateDefine';
 import { v3 } from 'cc';
 import { ActorController } from '../state/ActorController';
+import { ExecuteResult, markFail, markRunning, markSuccess } from './ExecuteResult';
 const { ccclass, property } = _decorator;
 
+/** 移动到指定的位置 */
 export class MoveToDest extends bt.Action {
-    execute(dt: number, result: bt.ExecuteResult) {
+    execute(dt: number, result: ExecuteResult) {
         let actor = result.blackboard.get(BlackboardKey.Actor) as Actor;
         let moveDest = result.blackboard.get(BlackboardKey.MoveDest) as Vec3;
         if (!actor || !moveDest) {
-            bt.markFail(result);
+            markFail(result);
             return;
         }
 
+        let isDrag = result.blackboard.get(BlackboardKey.Drag) as boolean;
         let dur = result.blackboard.get(BlackboardKey.MoveDestDuration) - dt;
         result.blackboard.set(BlackboardKey.MoveDestDuration, dur);
 
@@ -28,35 +31,61 @@ export class MoveToDest extends bt.Action {
         // 添加距离阈值检查
         const distanceThreshold = 5.0; // 你可以根据需要调整这个阈值
         let movedDistance = dir.length();
-        if (distance < distanceThreshold || dur < 0) {
-            bt.markSuccess(result);
+        if (isDrag|| distance < distanceThreshold || dur < 0) {
+            markSuccess(result);
             result.blackboard.delete(BlackboardKey.MoveDest);
             actor.stateMgr.transit(StateDefine.Idle);
             return;
         }
         actor.input.set(dir.x, dir.y)
-        bt.markRunning(result);
+        markRunning(result);
         actor.stateMgr.transit(StateDefine.Run);
     }
 }
 
+/** 设置移动坐标 */
 export class SetMoveDest extends bt.Action {
-    execute(dt: number, result: bt.ExecuteResult) {
-        bt.markSuccess(result);
+    execute(dt: number, result: ExecuteResult) {
+        markSuccess(result);
         let actor = result.blackboard.get(BlackboardKey.Actor) as Actor;
         let ec = actor.node.getComponent(ActorController);
-        if(ec)
+        if (ec)
             ec.randomNextMoveDest();
     }
 }
 
-/**
- * Stay Idle
- */
+
+/** 停留在idle动画 */
 export class StayIdle extends bt.Action {
-    execute(dt: number, result: bt.ExecuteResult) {
-        bt.markSuccess(result);
+    execute(dt: number, result: ExecuteResult) {
+        markSuccess(result);
         let actor: Actor = result.blackboard.get(BlackboardKey.Actor);
         actor.stateMgr.transit(StateDefine.Idle);
+    }
+}
+
+/** 等待一定时间 */
+export class Wait extends bt.Action {
+    elapsed: number = 0;
+    interval: number = 1;
+    start: boolean = false;
+
+    execute(dt: number, result: ExecuteResult) {
+        markFail(result);
+
+        if (!this.start) {
+            this.start = true;
+            this.elapsed = 0;
+        }
+
+        this.elapsed += dt;
+        if (this.elapsed < this.interval) {
+            markRunning(result);
+            return;
+        }
+
+        this.elapsed = 0;
+        this.start = false;
+        markSuccess(result);
     }
 }

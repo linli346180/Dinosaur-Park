@@ -5,110 +5,98 @@ import { ecs } from "../../../../../extensions/oops-plugin-framework/assets/libs
  */
 @ecs.register('AccountModel')
 export class AccountModelComp extends ecs.Comp {
-
-    user: UserData = new UserData()
-    userCoin: UserCoinData = new UserCoinData() //用户收益星兽列表
-    userInstbData: IUserInstbData = { UserInstb: [], UserNinstb: [] };  //用户无收益星兽列表
-    codexData: CodexData[] = [];    //星兽图鉴数据
+    user: UserData = new UserData(); // 用户数据
+    userInstbData: IUserInstbData = {
+        UserInstb: [],      //用户收益星兽列表
+        UserNinstb: []  //用户无收益星兽列表
+    };
 
     fillData(data: any) {
         Object.assign(this.user, data.user);
-        Object.assign(this.userCoin, data.userCoin);
-        Object.assign(this.userInstbData, data.userInstbData);
+        // Object.assign(this.userInstbData, data.userInstbData);
     }
 
     reset() {
     }
 
-    /** 删除星兽(背包) */
-    delUserNinSTB(stbId: number): boolean {
-        const index = this.userInstbData.UserNinstb.findIndex((element) => element.id === stbId);
-        if (index !== -1) {
-            this.userInstbData.UserNinstb.splice(index, 1);
-        }
-        else {
-            console.error("删除失败:", stbId);
-            return false;
-        }
-        return true;
-    }
-
     /** 添加无收益星兽 */
-    addUserNinSTB(STBData: any): boolean {
+    addUserUnInComeSTB(STBData: IStartBeastData): boolean {
         let stbId = STBData.id;
         const index = this.userInstbData.UserNinstb.findIndex((element) => element.id === stbId);
         if (index == -1) {
-            this.userInstbData.UserNinstb.push({ 
-                id: stbId, 
-                createdAt: STBData.createdAt, 
-                updatedAt: STBData.updatedAt, 
-                userID: STBData.userID, 
-                stbConfigID: STBData.stbConfigID, 
-                stbPosition: STBData.stbPosition, 
-                LastIncomeTime: STBData.LastIncomeTime 
-            });
-        } else {
-            console.error("添加失败:", stbId);
-            return false;
+            this.userInstbData.UserNinstb.push(STBData);
+            return true
         }
-        return true
+        console.error("添加无收益星兽失败:", stbId);
+        return false;
     }
 
     /** 添加有收益星兽 */
-    addUserSTB(STBData: any): boolean {
+    addInComeSTBData(STBData: IStartBeastData): boolean {
         let stbId = STBData.id;
         const index = this.userInstbData.UserInstb.findIndex((element) => element.id === stbId);
         if (index == -1) {
-            this.userInstbData.UserInstb.push({ 
-                id: stbId, 
-                createdAt: STBData.createdAt, 
-                updatedAt: STBData.updatedAt, 
-                userID: STBData.userID, 
-                stbConfigID: STBData.stbConfigID, 
-                stbPosition: STBData.stbPosition, 
-                LastIncomeTime: STBData.LastIncomeTime 
-            });
-        } else {
-            console.error("添加失败:", stbId);
-            return false;
+            this.userInstbData.UserInstb.push(STBData);
+            return true
         }
-        return true
+        console.error("添加有收益星兽失败:", stbId);
+        return false;
+    }
+
+    /** 删除收益星兽(地图上) */
+    delUserInComeSTB(stbId: number): boolean {
+        const index = this.userInstbData.UserInstb.findIndex((element) => element.id === stbId);
+        if (index !== -1) {
+            this.userInstbData.UserInstb.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
+
+    /** 删除星兽(背包) */
+    delUserUnIncomeSTB(stbId: number): boolean {
+        const index = this.userInstbData.UserNinstb.findIndex((element) => element.id === stbId);
+        if (index !== -1) {
+            this.userInstbData.UserNinstb.splice(index, 1);
+            return true;
+        }
+        return false;
     }
 
     /* 获取用户收益星兽数据 */
-    getUserSTBData(stbId: number) : IStartBeastData | null{
+    getUserSTBData(stbId: number): IStartBeastData | null {
         const foundElement = this.userInstbData.UserInstb.find((element) => element.id === stbId);
         return foundElement || null;
     }
 
-    /** 升级星兽 */
-    upgradeUserNinSTB(stbId: number): boolean {
-        const index = this.userInstbData.UserNinstb.findIndex((element) => element.id === stbId);
+    /** 更新星兽数据 */
+    updateUnIncomeSTBData(STBData: IStartBeastData): boolean {
+        const index = this.userInstbData.UserNinstb.findIndex((element) => element.id === STBData.id);
         if (index !== -1) {
-            this.userInstbData.UserNinstb[index].stbConfigID += 1;
+            this.userInstbData.UserNinstb[index] = STBData;
+            return true;
         }
-        else {
-            console.error("升级失败:", stbId);
-            return false;
-        }
-        return true;
+        console.error("升级无收益星兽失败:", STBData.id);
+        return false;
     }
 }
 
 export class UserData {
-    ID: number = 0
-    Name: string = ''
-    Email: string = ''
-    Mobile: string = ''
-    Account: string = ''
-    AvatarPath: string = ''
-}
-
-export class UserCoinData {
-    goldCoin: number = 0    //金币(金币星兽产出)
-    gemsCoin: number = 0      //宝石(宝石星兽产出)
-    usdt: number = 0          //USDT(钻石星兽产出)
-    starBeastCoin: number = 0 //星兽币(sbpc,至尊星兽产出)
+    id: number = 0; // 用户ID
+    createdAt: string = ''; // 创建时间
+    updatedAt: string = ''; // 更新时间
+    deletedAt: string = ''; // 删除时间
+    name: string = ''; // 名称
+    email: string = ''; // 邮箱
+    mobile: string = ''; // 手机号
+    account: string = ''; // 账号
+    registerType: number = 0; // 注册类型
+    externalAccountType: number = 0; // 外部账号类型
+    externalAccountUid: string = ''; // 用户外部ID
+    avatarPath: string = ''; // 头像路径
+    state: number = 0; // 用户状态
+    prohibitionState: number = 0; // 用户封禁状态
+    releaseAt: string | null = null; // 解禁时间
 }
 
 export interface IUserInstbData {
@@ -118,38 +106,12 @@ export interface IUserInstbData {
 
 /** 星兽数据 */
 export interface IStartBeastData {
-    id: number;
-    createdAt: string;
-    updatedAt: string;
-    userID: number;
-    stbConfigID: number;
-    stbPosition: number;
-    LastIncomeTime: string;
+    id: number;             //星兽ID
+    createdAt: string;      //创建时间
+    updatedAt: string;      //更新时间
+    userID: number;         //用户ID
+    stbConfigID: number;    //星兽配置ID
+    stbPosition: number;    //星兽位置
+    lastIncomeTime: string; //最后收益时间
     // stbConfig: IStbConfig;
-}
-
-/** 星兽配置 */
-export interface IStbConfig {
-    id: number;
-    createdAt: string;
-    updatedAt: string;
-    stbKinds: number;
-    stbName: string;
-    stbGrade: number;
-    isIncome: number;
-    stbSurvival: number;
-    incomeType: number;
-    incomeCycle: number;
-    incomeNumMin: number;
-    incomeNumMax: number;
-    incomeGetOpport: number;
-    incomeGetMethod: number;
-    isPur: number;
-    purConCoin: number;
-    purConCoinNum: number;
-    desc: string;
-}
-
-interface CodexData {
-    [key: string]: number;
 }

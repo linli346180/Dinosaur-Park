@@ -1,4 +1,4 @@
-import { HttpManager } from "../common/network/HttpManager";
+import { HttpManager, ResultCode } from "../common/network/HttpManager";
 import { netConfig } from "../common/network/NetConfig";
 import { TaskType } from "./TaskDefine";
 
@@ -11,11 +11,9 @@ export namespace TaskNetService {
         http.server = netConfig.Server;
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
-        // const params = { 
-        //     'taskType': taskType
-        // };
-        const response = await http.getJson(`tgapp/api/user/task/list?taskType=${taskType}`);
-        if (response.isSucc && response.res.resultCode == "OK") {
+
+        const response = await http.getUrl(`tgapp/api/user/task/list?taskType=${taskType}&token=${netConfig.Token}`);  
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
             console.warn("获取任务列表:", response.res);
             return response.res;
         } else {
@@ -31,11 +29,12 @@ export namespace TaskNetService {
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
         const params = {
-            'taskCompileConditionId': taskCompileConditionId,
-            'taskProgressId': taskProgressId
+            'taskCompileConditionId': taskCompileConditionId.toString(),
+            'taskProgressId': taskProgressId.toString()
         };
-        const response = await http.postJson("tgapp/api/user/task/receive", JSON.stringify(params));
-        if (response.isSucc && response.res.resultCode == "OK") {
+        const newParams = new URLSearchParams(params).toString();
+        const response = await http.getUrl("tgapp/api/user/task/receive?token="+netConfig.Token, newParams);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
             console.warn("领取任务奖励成功:", response.res);
             return response.res;
         } else {

@@ -1,9 +1,10 @@
-import { Label } from 'cc';
-import { _decorator, Component, Node } from 'cc';
-import { CoinType, HatchPriceConfig, HserHatchEvent } from './HatchDefine';
-import { Button } from 'cc';
+import { _decorator, Component, Node, Label, Button } from 'cc';
+import { CoinType, HatchPriceConfig, UserHatchEvent } from './HatchDefine';
 import { HatchNetService } from './HatchNet';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
+import { ResultCode } from '../common/network/HttpManager';
+import { Account } from '../account/Account';
+import { AccountEvent } from '../account/AccountEvent';
 const { ccclass, property } = _decorator;
 
 @ccclass('HatchPriceItem')
@@ -26,7 +27,7 @@ export class HatchPriceItem extends Component {
     private _priceData: HatchPriceConfig = null!;
 
     start() {
-        this.btn_buy.node.on(Button.EventType.CLICK, this.buy, this);
+        this.btn_buy.node.on(Button.EventType.CLICK, this.buyHatchNum, this);
     }
 
     initItem(priceData: HatchPriceConfig) {
@@ -39,14 +40,14 @@ export class HatchPriceItem extends Component {
         this.coin_4.active = priceData.conCoinType === CoinType.USDT;
     }
 
-    buy() {
-        console.log("buy")
-        HatchNetService.requestHatchNum(this._priceData.id).then((response) => {
-            if(response)
-            {   
-                console.log("剩余次数:" + response.remainNum)
-                oops.message.dispatchEvent(HserHatchEvent.RemainNumChange, response.remainNum)
-            }
-        });
+    async buyHatchNum() {
+        const res = await HatchNetService.requestHatchNum(this._priceData.id);
+        if (res && res.resultCode == ResultCode.OK) {
+            oops.message.dispatchEvent(AccountEvent.CoinDataChange);
+            oops.message.dispatchEvent(UserHatchEvent.HatchNumChange);
+            oops.gui.toast("购买成功");
+            return;
+        }
+        oops.gui.toast("购买失败:" + res.resultMsg);
     }
 }

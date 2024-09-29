@@ -1,20 +1,20 @@
-import { HttpManager } from '../common/network/HttpManager';
+import { HttpManager, ResultCode } from '../common/network/HttpManager';
 import { netConfig } from '../common/network/NetConfig';
 
 export namespace EmailNetService {
-
     /** 获取邮件列表 */
     export async function getEmailList() {
         const http = new HttpManager();
         http.server = netConfig.Server;
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
-        const response = await http.getJson("tgapp/api/user/mail/list");
-        if (response.isSucc && response.res.resultCode == "OK") {
+
+        const response = await http.getUrl("tgapp/api/user/mail/list?token=" + netConfig.Token);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
             console.warn("获取邮件列表:", response.res);
             return response.res;
         } else {
-            console.error("获取邮件列表请求异常", response);
+            console.error("邮件列表请求异常", response);
             return null;
         }
     }
@@ -27,11 +27,11 @@ export namespace EmailNetService {
         http.timeout = netConfig.Timeout;
 
         const params = {
-            'mailRecordId': mailRecordId
+            'mailRecordId': mailRecordId.toString()
         };
-
-        const response = await http.postJson("tgapp/api/user/mail/read", JSON.stringify(params));
-        if (response.isSucc && response.res.resultCode == "OK") {
+        const newParams = new URLSearchParams(params).toString();
+        const response = await http.postUrl("tgapp/api/user/mail/read?token=" + netConfig.Token, newParams);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
             console.warn("读取邮件:", response.res);
             return response.res;
         } else {
@@ -48,12 +48,12 @@ export namespace EmailNetService {
         http.timeout = netConfig.Timeout;
 
         const params = {
-            'mailRecordId': mailRecordId,
-            'mailConfigId': mailConfigId
+            'mailRecordId': mailRecordId.toString(),
+            'mailConfigId': mailConfigId.toString()
         };
-
-        const response = await http.postJson("tgapp/api/user/mail/receive", JSON.stringify(params));
-        if (response.isSucc && response.res.resultCode == "OK") {
+        const newParams = new URLSearchParams(params).toString();
+        const response = await http.postUrl("tgapp/api/user/mail/receive?token=" + netConfig.Token, newParams);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
             console.warn("领取邮件奖励:", response.res);
             return response.res;
         } else {

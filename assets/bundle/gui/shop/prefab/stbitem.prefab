@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "stbitem",
+    "_name": "stbItem",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "stbitem",
+    "_name": "stbItem",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -29,10 +29,13 @@
     "_components": [
       {
         "__id__": 28
+      },
+      {
+        "__id__": 30
       }
     ],
     "_prefab": {
-      "__id__": 30
+      "__id__": 32
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -65,7 +68,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sprite",
+    "_name": "icon",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -323,7 +326,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
+      "width": 158.3,
       "height": 40
     },
     "_anchorPoint": {
@@ -359,7 +362,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "1000",
+    "_string": "99999K",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 40,
@@ -441,7 +444,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -71.82,
+      "x": -86.145,
       "y": 0,
       "z": 0
     },
@@ -641,7 +644,7 @@
     },
     "clickEvents": [],
     "_interactable": true,
-    "_transition": 2,
+    "_transition": 3,
     "_normalColor": {
       "__type__": "cc.Color",
       "r": 214,
@@ -739,6 +742,33 @@
     "fileId": "bdIVJwsOFHs68cX8ejLviF"
   },
   {
+    "__type__": "c7fefpjYf1AyrBvzWDBnMSQ",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 31
+    },
+    "icon": {
+      "__id__": 5
+    },
+    "btn_buy": {
+      "__id__": 25
+    },
+    "num": {
+      "__id__": 12
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "b9aIESHi1NgahJa7Z3Wrvu"
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": {
       "__id__": 1
@@ -747,6 +777,7 @@
       "__id__": 0
     },
     "fileId": "59bWBEx7dL+qeXBwtOBjkK",
+    "instance": null,
     "targetOverrides": null
   }
 ]

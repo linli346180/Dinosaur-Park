@@ -1,33 +1,40 @@
-
-import { Button } from 'cc';
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Node, Prefab, Button, instantiate } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { EmailNetService } from './EmailNet';
 import { EmailEvent, EmailListData, MailRecord } from './EmailDefine';
-import { Prefab } from 'cc';
-import { instantiate } from 'cc';
 import { EmailItem } from './EmailItem';
 const { ccclass, property } = _decorator;
 
-@ccclass('Email')
-export class Email extends Component {
-    @property(Node)
-    content: Node = null!;
+@ccclass('EmailView')
+export class EmailView extends Component {
     @property(Prefab)
     itemPrefab: Prefab = null!;
+
+    @property(Button)
+    btn_close: Button = null!;
+
     @property(Button)
     btn_onekey: Button = null!;
 
-    private btn_close: Button = null!;
+    @property(Node)
+    content: Node = null!;
+
+    @property(Node)
+    noMail: Node = null!;
+   
+
     private emailsData: EmailListData = new EmailListData();
 
     start() {
-        this.btn_close = this.node.getChildByName("btn_close")?.getComponent(Button)!;
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_onekey?.node.on(Button.EventType.CLICK, this.onOneKey, this);
         oops.message.on(EmailEvent.EmailUpdate, this.onHandler, this);
         this.initUI();
+    }
+
+    protected onDestroy(): void {
+        oops.message.off(EmailEvent.EmailUpdate, this.onHandler, this);
     }
 
     private onHandler(event: string, args: any) {
@@ -44,9 +51,11 @@ export class Email extends Component {
 
     initUI() {
         this.content.removeAllChildren();
-        EmailNetService.getEmailList().then((emailList) => {
-            if (emailList) {
-                this.emailsData = emailList;
+        EmailNetService.getEmailList().then((res) => {
+            if (res) {
+                this.noMail.active = res.mailList.length == 0;
+                this.emailsData.mailList = res.mailList;
+                console.warn("邮件列表:", this.emailsData.mailList.length);
                 for (let i = 0; i < this.emailsData.mailList.length; i++) {
                     this.createEmailItem(this.emailsData.mailList[i]);
                 }
@@ -64,7 +73,7 @@ export class Email extends Component {
             }
         }
     }
-    
+
     onOneKey() {
         this.emailsData.mailList.forEach(async (mailRecord) => {
             await EmailNetService.readEmail(mailRecord.mailRecordId);

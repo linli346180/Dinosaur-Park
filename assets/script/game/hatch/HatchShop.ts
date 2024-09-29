@@ -10,7 +10,7 @@ import { HatchPriceItem } from './HatchPriceItem';
 import { Label } from 'cc';
 import { AccountNetService } from '../account/AccountNet';
 import { moneyUtil } from '../common/utils/moneyUtil';
-import { IUserCoinData } from '../account/AccountDefine';
+import { AccountEvent } from '../account/AccountEvent';
 const { ccclass, property } = _decorator;
 
 /** 孵化商店:
@@ -26,16 +26,7 @@ export class HatchShop extends Component {
     @property(Label)
     gemNum: Label = null!;
 
-    protected onLoad(): void {
-        this.content.removeAllChildren();
-    }
-
-    start() {
-        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.initUI();
-    }
-
-    async initUI() {
+    async onLoad() {
         this.content.removeAllChildren();
         const priceDataList = await HatchNetService.getHatchPrice();
         if (priceDataList) {
@@ -44,7 +35,28 @@ export class HatchShop extends Component {
                 this.createItem(priceData);
             });
         }
+        this.initCoinData();
+    }
 
+    start() {
+        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
+        oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
+    }
+
+    onDestroy() {
+        oops.message.off(AccountEvent.CoinDataChange, this.onHandler, this);
+    }
+    
+
+    private onHandler(event: string, args: any) {
+        switch (event) {
+            case AccountEvent.CoinDataChange:
+                this.initCoinData();
+                break
+        }
+    }
+
+    async initCoinData() {
         const userCoinData = await AccountNetService.getUserCoinData()
         if (userCoinData) {
             console.log("用户货币数据", userCoinData.gemsCoin);  
@@ -58,7 +70,11 @@ export class HatchShop extends Component {
 
     createItem(priceData: HatchPriceConfig) {
         const item = instantiate(this.hatchPriceItem);
-        item.parent = this.content;
-        item.getComponent<HatchPriceItem>(HatchPriceItem)?.initItem(priceData);
+        if(item)
+        {
+            item.parent = this.content;
+            item.getComponent<HatchPriceItem>(HatchPriceItem)?.initItem(priceData);
+        }
+
     }
 }

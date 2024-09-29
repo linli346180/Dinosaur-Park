@@ -58,10 +58,6 @@ export class LoadingViewComp extends CCVMParentComp {
         // 加载游戏本地JSON数据的多语言提示文本
         this.data.prompt = oops.language.getLangByID("loading_load_json");
         return new Promise(async (resolve, reject) => {
-            await JsonUtil.loadAsync(TableItemConfig.TableName);
-            await JsonUtil.loadAsync(TablePrimaryDebrisConfig.TableName);
-            await JsonUtil.loadAsync(TableMiddleDebrisConfig.TableName);
-            await JsonUtil.loadAsync(TableSTBConfig.TableName);
             resolve(null);
         });
     }
@@ -91,14 +87,12 @@ export class LoadingViewComp extends CCVMParentComp {
         this.data.prompt = oops.language.getLangByID("loading_load_player");
         // await ModuleUtil.addViewUiAsync(smc.account, DemoViewComp, UIID.Demo);
         // oops.gui.open(UIID.Main);
-
-
         // oops.gui.open(UIID.Map);
         // oops.gui.open(UIID.Main);
         
         this.scheduleOnce(()=>{
             ModuleUtil.removeViewUi(this.ent, LoadingViewComp, UIID.Loading);
-        }, 1);
+        }, 2);
 
         
     }

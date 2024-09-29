@@ -1,20 +1,24 @@
-import { HttpManager } from '../common/network/HttpManager';
+import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
+import { HttpManager, ResultCode } from '../common/network/HttpManager';
 import { netConfig } from '../common/network/NetConfig';
+import { AccountEvent } from './AccountEvent';
 
 export namespace AccountNetService {
 
-    /** 获取用户货币数据 */
-    export async function getUserCoinData() {
+    /** 获取星兽配置 */
+    export async function getStartBeastConfig() {
         const http = new HttpManager();
         http.server = netConfig.Server;
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
-        const response = await http.getJson("tgapp/api/user/coin");
-        if (response.isSucc && response.res.resultCode == "OK") {
-            console.warn("获取用户货币数据请求成功", response.res.userCoin);
-            return response.res.userCoin;
+
+        const response = await http.getUrl("tgapp/api/stb/cfg/list?token=" + netConfig.Token);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+            console.warn("获取星兽配置请求成功", response.res);
+            return response.res;
+
         } else {
-            console.error("请求异常", response);
+            console.error("获取星兽配置请求异常", response);
             return null;
         }
     }
@@ -26,12 +30,28 @@ export namespace AccountNetService {
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
 
-        const response = await http.getJson("tgapp/api/user/stb/data");
-        if (response.isSucc && response.res.resultCode == "OK") {
-            console.log("请求成功", response.res);
+        const response = await http.getUrl("tgapp/api/user/stb/data?token=" + netConfig.Token);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+            console.log("星兽数据请求成功", response.res.userInstbData);
             return response.res;
         } else {
-            console.error("请求异常", response);
+            console.error("星兽数据请求异常", response);
+            return null;
+        }
+    }
+
+    /** 获取用户货币数据 */
+    export async function getUserCoinData() {
+        const http = new HttpManager();
+        http.server = netConfig.Server;
+        http.token = netConfig.Token;
+        http.timeout = netConfig.Timeout;
+        const response = await http.getUrl("tgapp/api/user/coin?token=" + netConfig.Token);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+            console.warn("货币数据请求成功", response.res.userCoin);
+            return response.res.userCoin;
+        } else {
+            console.error("货币数据请求异常", response);
             return null;
         }
     }
@@ -42,16 +62,18 @@ export namespace AccountNetService {
         http.server = netConfig.Server;
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
+
         const params = {
-            'adopStbID': adopStbID
+            'adopStbID': adopStbID.toString()
         };
-        const response = await http.postJson("tgapp/api/user/stb/adop", JSON.stringify(params));
-        if (response.isSucc && response.res.resultCode == "OK") {
-            console.warn("领养星兽", response.res);
+        const paramString = new URLSearchParams(params).toString();
+        const response = await http.postUrl("tgapp/api/user/stb/adop?token=" + netConfig.Token, paramString);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+            console.warn("领养星兽请求成功", response.res);
             return response.res;
         } else {
-            console.error("请求异常", response);
-            return null;
+            console.error("领养星兽请求异常", response.res);
+            return response.res;
         }
     }
 
@@ -62,15 +84,16 @@ export namespace AccountNetService {
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
         const params = {
-            'userFirstStbID': userFirstStbID,
-            'userTwoStbID': UserTwoStbID
+            'userFirstStbID': userFirstStbID.toString(),
+            'userTwoStbID': UserTwoStbID.toString()
         };
-        const response = await http.postJson("tgapp/api/user/ninstb/synth", JSON.stringify(params));
-        if (response.isSucc && response.res.resultCode == "OK") {
+        const paramString = new URLSearchParams(params).toString();
+        const response = await http.postUrl("tgapp/api/user/ninstb/synth?token=" + netConfig.Token, paramString);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
             console.warn("无收益星兽合成", response.res);
             return response.res;
         } else {
-            console.error("请求异常", response);
+            console.error("无收益星兽合成请求异常", response);
             return null;
         }
     }
@@ -82,79 +105,59 @@ export namespace AccountNetService {
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
         const params = {
-            'userFirstStbID': firstStbID,
-            'userTwoStbID': twoStbID,
-            'isUpProb': isUpProb
+            'userFirstStbID': firstStbID.toString(),
+            'userTwoStbID': twoStbID.toString(),
+            'isUpProb': isUpProb.toString()
         };
-        const response = await http.postJson("tgapp/api/user/stb/synth", JSON.stringify(params));
-        if (response.isSucc && response.res.resultCode == "OK") {
+        const paramString = new URLSearchParams(params).toString();
+        const response = await http.postUrl("tgapp/api/user/stb/synth?token=" + netConfig.Token, paramString);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
             console.warn("收益星兽合成", response.res);
             return response.res;
         } else {
             console.error("合并失败", response);
-            return null;
-        }
-    }
-
-    /** 设置星兽配置 */
-    export async function getStartBeastConfig() {
-        const http = new HttpManager();
-        http.server = netConfig.Server;
-        http.token = netConfig.Token;
-        http.timeout = netConfig.Timeout;
-        const response = await http.getJson("tgapp/api/stb/cfg/list");
-        if (response.isSucc && response.res.resultCode == "OK") {
-            console.warn("请求成功", response.res);
             return response.res;
-
-        } else {
-            console.error("请求异常", response.res);
-            return null;
         }
     }
 
     /** 无收益星兽位置交换 */
-    /** 无收益星兽位置交换 */
-    export async function swapPosition(stbID: number, slotId: number): Promise<boolean> {
-        try {
-            const http = new HttpManager();
-            http.server = netConfig.Server;
-            http.token = netConfig.Token;
-            http.timeout = netConfig.Timeout;
-
-            const params = {
-                "swapUserStbID": stbID,
-                "position": slotId
-            };
-            const response = await http.postJson("tgapp/api/user/ninstb/swap", JSON.stringify(params));
-            if (response.isSucc && response.res.resultCode === "OK") {
-                console.warn("位置交换成功", response.res);
-                return true;
-            } else {
-                console.error("位置交换失败", response);
-                return false;
-            }
-        } catch (error) {
-            console.error("请求异常", error);
-            return false;
-        }
-    }
-
-    /** 获取星兽图鉴数据 */
-    export async function getStartBeastStatData() {
+    export async function swapPosition(stbID: number, slotId: number) {
         const http = new HttpManager();
         http.server = netConfig.Server;
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
-        const response = await http.getJson("tgapp/api/user/stb/codex");
-        if (response.isSucc && response.res.resultCode == "OK") {
-            // console.log("星兽图鉴数据:", response.res);
+
+        const params = {
+            "swapUserStbID": stbID.toString(),
+            "position": slotId.toString()
+        };
+        const paramString = new URLSearchParams(params).toString();
+        const response = await http.postUrl("tgapp/api/user/ninstb/swap?token=" + netConfig.Token, paramString);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+            console.warn("位置交换成功", response.res);
+            return response.res;
+        } else {
+            console.error("位置交换请求异常", response.res);
+            return null;
+        }
+    }
+
+    /** 领取用户收益 */
+    export async function UserCoinReceive() {
+        const http = new HttpManager();
+        http.server = netConfig.Server;
+        http.token = netConfig.Token;
+        http.timeout = netConfig.Timeout;
+
+        const response = await http.postUrl("tgapp/api/user/coin/receive?token=" + netConfig.Token);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+            console.warn("领取用户收益:", response.res);
+            oops.message.dispatchEvent(AccountEvent.CoinDataChange);
             return response.res;
         } else {
             console.error("请求异常", response);
             return null;
         }
     }
-
 
 }

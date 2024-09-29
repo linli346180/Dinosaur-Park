@@ -1,19 +1,23 @@
 import { _decorator, Component, Node, EventTouch, UITransform, Vec3 } from 'cc';
 import { KnapsackControlle } from './KnapsackControlle';
+import { KnapsackSlot } from './KnapsackSlot';
 const { ccclass, property } = _decorator;
 
-@ccclass('DragComponent')
-export class DragComponent extends Component {
+type dragCallBack = (data: number) => void;
+
+@ccclass('ActorDragComponent')
+export class ActorDragComponent extends Component {
     /** 是否正在拖动 */
     static IsDragging: boolean = false;
-    /** 拖动到的槽位ID */
-    static DragSlotId: number = -1;
 
     @property(Node)
     public dragNode: Node = null!;
-    public slotId: number = 0;
+    public slotId: number = 0;  // 插槽ID
     private _orgParent: Node | null = null;
     private _orgPosition: Vec3 = new Vec3();
+
+    public beginDragCallBack: dragCallBack | null = null;
+    public endDragCallBack: dragCallBack | null = null;;
 
     start() {
         this._orgParent = this.node.parent;
@@ -32,8 +36,8 @@ export class DragComponent extends Component {
     }
 
     onTouchStart(event: EventTouch) {
-        DragComponent.IsDragging = true;
-        DragComponent.DragSlotId = this.slotId;
+        ActorDragComponent.IsDragging = true;
+        this.beginDragCallBack?.(this.slotId);
         const uiTransform = this.node.getComponent(UITransform);
         if (uiTransform) {
             // 将节点添加到新的父节点
@@ -44,8 +48,9 @@ export class DragComponent extends Component {
     }
 
     onTouchMove(event: EventTouch) {
-        if (!DragComponent.IsDragging)
+        if (!ActorDragComponent.IsDragging)
             return;
+
         const uiTransform = this.node.getComponent(UITransform);
         if (uiTransform) {
             const touchPos = event.getUILocation();
@@ -55,15 +60,32 @@ export class DragComponent extends Component {
     }
 
     onTouchEnd(event: EventTouch) {
-        DragComponent.IsDragging = false;
+        ActorDragComponent.IsDragging = false;
         this._orgParent?.addChild(this.node);
         this.node.setPosition(this._orgPosition)
+        this.endDragCallBack?.(this.slotId);
 
-        if(DragComponent.DragSlotId > 0 && DragComponent.DragSlotId != this.slotId)
-        {
-            console.log(`拖动从${this.slotId}到${DragComponent.DragSlotId}`);
-            KnapsackControlle.instance?.swapSlot(this.slotId, DragComponent.DragSlotId);
+        let dragSlotId = 0;
+        if (KnapsackControlle.instance) {
+            for (const slot of KnapsackControlle.instance?.SlotNodes) {
+                if (this.isNodeInSlot(event, slot)) {
+                    console.log('进入插槽区域' + slot.getComponent(KnapsackSlot)?.slotId);
+                    dragSlotId = slot.getComponent(KnapsackSlot)?.slotId || 0;
+                    break;
+                }
+            }
         }
+
+        if(dragSlotId > 0 && dragSlotId != this.slotId){
+            console.log(`拖动从${this.slotId}到${dragSlotId}`);
+            KnapsackControlle.instance?.swapSlot(this.slotId, dragSlotId);
+        }
+    }
+
+    isNodeInSlot(event: EventTouch, slot: Node): boolean {
+        const touchPos = event.getUILocation();
+        const slotBox = slot.getComponent(UITransform)!.getBoundingBoxToWorld();
+        return slotBox.contains(touchPos)
     }
 }
 

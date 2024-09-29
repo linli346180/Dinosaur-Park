@@ -7,6 +7,7 @@ import { Tween } from 'cc';
 import { math } from 'cc';
 import { Vec3 } from 'cc';
 import { tween } from 'cc';
+import { Button } from 'cc';
 const { ccclass, property } = _decorator;
 
 enum SwipeDirection {
@@ -21,6 +22,10 @@ enum SwipeDirection {
 export class MapDrag extends Component {
     @property({ type: Enum(MapID), displayName: "默认地图" })
     currentMapID: MapID = MapID.Map1;
+    @property(Button)
+    btn_right: Button = null!;
+    @property(Button)
+    btn_left: Button = null!;
 
     private moveSpeed: number = 1.5;
     private slowSpeed: number = 0.05;
@@ -37,6 +42,16 @@ export class MapDrag extends Component {
         this.node.on(Node.EventType.TOUCH_MOVE, this.onNodeTouchMove, this);
         this.node.on(Node.EventType.TOUCH_END, this.onNodeTouchEnd, this);
         this.node.on(Node.EventType.TOUCH_CANCEL, this.onNodeTouchEnd, this);
+        this.btn_right?.node.on(Button.EventType.CLICK, this.onRightClick, this);
+        this.btn_left?.node.on(Button.EventType.CLICK, this.onLeftClick, this);
+    }
+
+    private onRightClick() {
+        this.switchMap(this.currentMapID + 1);
+    }
+
+    private onLeftClick() {
+        this.switchMap(this.currentMapID - 1);
     }
 
     private onNodeTouchStart(event: EventTouch) {
@@ -45,7 +60,7 @@ export class MapDrag extends Component {
         this._isFastSwipe = SwipeDirection.None;
         Tween.stopAllByTarget(this.node);
     }
-    
+
     private onNodeTouchMove(event: EventTouch) {
         const curPos = event.getUILocation();
         const curTime = Date.now(); // 使用 Date.now() 获取当前时间戳
@@ -135,5 +150,3 @@ export class MapDrag extends Component {
         return closestMapID;
     }
 }
-
-

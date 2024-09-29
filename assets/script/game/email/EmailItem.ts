@@ -63,7 +63,7 @@ export class EmailItem extends Component {
 
         this.num.string = 'X' + this.mailRecord.rewards.length.toString();
         this.mailTitle.string = this.mailRecord.mailTitle;
-        // this.mailRecord.mailContent = '这是测试邮件这是测试邮件这是测试邮件这是测试邮件这是测试邮件这是测试邮件这是测试邮件'
+
         this.mailContent.string = this.checkLabelMaxLength(this.mailRecord.mailContent, 19);
         const date = new Date(this.mailRecord.mailTime * 1000);
         this.mailTime.string = date.toLocaleString();

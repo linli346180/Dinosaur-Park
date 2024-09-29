@@ -19,10 +19,6 @@ export class RewardGroup extends Component {
         this.container.removeAllChildren();
     }
 
-    start() {
-
-    }
-
     initItem(level: RewardLevel, rewardList: RewardConfig[]) {
         this.container.removeAllChildren();
         rewardList.forEach(reward => {

@@ -5,8 +5,6 @@ const { ccclass, property } = _decorator;
 
 @ccclass('homeComp')
 export class homeComp extends Component {
-    @property(Button)
-    btn_gemShop: Button = null!;
 
     @property(Button) 
     btn_user: Button = null!;
@@ -27,9 +25,9 @@ export class homeComp extends Component {
     btn_hatch: Button = null!;
     @property(Button)
     btn_invite: Button = null!;
+
     start() {
         oops.audio.playMusicLoop("audios/nocturne");
-        this.btn_gemShop?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.GemShop) }, this);
         this.btn_user?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.User) }, this);
         this.btn_email?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Email) }, this);
         this.btn_task?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Task) }, this);

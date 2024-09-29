@@ -1,66 +1,23 @@
 import { math } from "cc";
+import { ExecuteResult, ExecuteState, markFail, markRunning, markSuccess } from "./ExecuteResult";
+
 
 /**
  * 行为树
  */
 export namespace bt {
 
-    /**
-     * 执行结果
-     */
-    export enum ExecuteState {
-        Fail = 'fail',
-        Success = 'success',
-        Running = 'running',
-    }
-
-    /**
-   * AI 的黑板     
-   */
-    export interface Blackboard {
-        has(name: string): boolean;
-        set(name: string, val: any): void;
-        get(name: string): any;
-        delete(name: string): void;
-    }
-
-    export function markFail(result: ExecuteResult) {
-        result.executeState = ExecuteState.Fail;
-    }
-
-    export function markRunning(result: ExecuteResult) {
-        result.executeState = ExecuteState.Running;
-    }
-
-    export function markSuccess(result: ExecuteResult) {
-        result.executeState = ExecuteState.Success;
-    }
-
-    /**
-     * 执行结果
-     */
-    export class ExecuteResult {
-        executeState: ExecuteState = ExecuteState.Fail;
-        blackboard: Blackboard = new Map();
-    }
-
-    /**
-     * 基础节点
-     */
+    /** 基础节点 */
     export interface BtNode {
         execute(dt: number, result: ExecuteResult): void;
     }
 
-    /**
-     * 动作节点
-     */
+    /** 动作节点 */
     export abstract class Action implements BtNode {
         abstract execute(dt: number, result: ExecuteResult): void;
     }
 
-    /**
-     * 条件节点
-     */
+    /** 条件节点 */
     export abstract class Condition implements BtNode {
         abstract isSatisfy(result: ExecuteResult): boolean;
         execute(dt: number, result: ExecuteResult) {
@@ -68,9 +25,17 @@ export namespace bt {
         }
     }
 
-    /**
-     * 控制节点
-     */
+    /** 装饰器节点 */
+    export abstract class Decorator implements BtNode {
+        child: BtNode | null = null;
+        execute(dt: number, result: ExecuteResult) {
+            this.child?.execute(dt, result);
+            this.decroateResult(result);
+        }
+        abstract decroateResult(result: ExecuteResult): void;
+    }
+
+    /** 控制节点 */
     export abstract class ControlNode implements BtNode {
         children: Array<BtNode> = [];
         abstract execute(dt: number, result: ExecuteResult): void;
@@ -79,10 +44,8 @@ export namespace bt {
         }
     }
 
-    /**
-     * Sequence
-     * 所有执行完毕
-     */
+
+    /**Sequence (顺序节点-所有执行完毕) */
     export class Sequence extends ControlNode {
         execute(dt: number, result: ExecuteResult) {
             markFail(result);
@@ -95,12 +58,7 @@ export namespace bt {
         }
     }
 
-
-
-    /**
-     * Fallback 
-     * 任意一个子节点执行成功或者所有子节点都执行失败
-     */
+    /** Fallback (任意一个子节点执行成功或者所有子节点都执行失败) */
     export class Fallback extends ControlNode {
         execute(dt: number, result: ExecuteResult) {
             markFail(result);
@@ -113,10 +71,7 @@ export namespace bt {
         }
     }
 
-    /**
-     * Parallel
-     * 返回一定数量[0, children.length]成功的则成功
-     */
+    /** Parallel (返回一定数量[0, children.length]成功的则成功) */
     export class Parallel extends ControlNode {
         mustSuccessCount: number = 1;
         execute(dt: number, result: ExecuteResult) {
@@ -135,21 +90,7 @@ export namespace bt {
         }
     }
 
-    /**
-     * 装饰器
-     */
-    export abstract class Decorator implements BtNode {
-        child: BtNode | null = null;
-        execute(dt: number, result: ExecuteResult) {
-            this.child?.execute(dt, result);
-            this.decroateResult(result);
-        }
-        abstract decroateResult(result: ExecuteResult): void;
-    }
-
-    /**
-     * 随机选择器
-     */
+    /** 随机选择器 */
     export class RandomSelector extends ControlNode {
         execute(dt: number, result: ExecuteResult) {
             markFail(result);
@@ -158,9 +99,9 @@ export namespace bt {
         }
     }
 
-    /**
-     * 翻转节点的结果
-     */
+
+
+    /** 翻转节点的结果 */
     export class InvertResultDecorator extends Decorator {
         decroateResult(result: ExecuteResult) {
             if (result.executeState == ExecuteState.Fail) {
@@ -168,35 +109,6 @@ export namespace bt {
             } else if (result.executeState == ExecuteState.Success) {
                 result.executeState = ExecuteState.Fail;
             }
-        }
-    }
-
-    /**
-     * 等待一定时间
-     */
-    export class Wait extends Action {
-
-        elapsed: number = 0;
-        interval: number = 3;
-        start: boolean = false;
-
-        execute(dt: number, result: ExecuteResult) {
-            markFail(result);
-
-            if (!this.start) {
-                this.start = true;
-                this.elapsed = 0;
-            }
-
-            this.elapsed += dt;
-            if (this.elapsed < this.interval) {
-                markRunning(result);
-                return;
-            }
-
-            this.elapsed = 0;
-            this.start = false;
-            markSuccess(result);
         }
     }
 

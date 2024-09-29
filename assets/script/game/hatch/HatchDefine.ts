@@ -57,6 +57,6 @@ export enum RewardType {
 }
 
 
-export enum HserHatchEvent {
-    RemainNumChange = "RemainNumChange",
+export enum UserHatchEvent {
+    HatchNumChange = "HatchNumChange", // 孵蛋次数变化
 }

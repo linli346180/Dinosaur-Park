@@ -57,9 +57,9 @@ export class usercenter extends Component {
 
     initUI() {
         const userData = smc.account.AccountModel.user;
-        this.label_id.string = userData.ID.toString();
-        this.label_name.string = userData.Name;
-        this.label_email.string = userData.Email;
+        this.label_id.string = userData.id.toString();
+        this.label_name.string = userData.name;
+        this.label_email.string = userData.email;
 
         this.toggle_music.isChecked = oops.audio.switchMusic;
         this.toggle_sound.isChecked = oops.audio.switchEffect;

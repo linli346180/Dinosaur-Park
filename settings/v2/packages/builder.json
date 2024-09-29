@@ -154,5 +154,13 @@
         }
       }
     }
+  },
+  "splash-setting": {
+    "logo": {
+      "type": "default"
+    },
+    "background": {
+      "type": "default"
+    }
   }
 }

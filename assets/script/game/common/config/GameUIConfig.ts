@@ -30,6 +30,7 @@ export enum UIID {
     Email,  // 邮件
     EmailDetail,    // 邮件详情
     STBShop,    // 星兽商店
+    STBMerge,    // 星兽合并商店
     GemShop,    // 宝石商店
     Revive,   // 复活
     DebrisResult,    // 碎片拼图结果
@@ -70,6 +71,7 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.DebrisResult]: { layer: LayerType.Dialog, prefab: "gui/debris/prefab/debrisResult", mask: true },
     [UIID.STBShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/stbShop", mask: true },
     [UIID.GemShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/gemShop", mask: true },
+    [UIID.STBMerge]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/stbMerge", mask: true },
 
     [UIID.Hatch]: { layer: LayerType.UI, prefab: "gui/hatch/prefab/hatch", mask: true },
     [UIID.RewardView]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/rewardPrview", mask: true },

@@ -1,4 +1,4 @@
-import { HttpManager } from '../common/network/HttpManager';
+import { HttpManager, ResultCode } from '../common/network/HttpManager';
 import { netConfig } from '../common/network/NetConfig';
 
 export namespace ReviveNetService {
@@ -9,12 +9,13 @@ export namespace ReviveNetService {
         http.server = netConfig.Server;
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
-        const response = await http.getJson("tgapp/api/debris");
-        if (response.isSucc && response.res.resultCode == "OK") {
-            console.warn("获取拼图配置:", response.res.debrisArr);
+
+        const response = await http.getUrl("tgapp/api/debris?token=" + netConfig.Token);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+            console.warn("获取拼图配置请求成功:", response.res);
             return response.res.debrisArr;
         } else {
-            console.error("请求异常", response);
+            console.error("获取拼图配置请求异常", response);
             return null;
         }
     }
@@ -25,12 +26,13 @@ export namespace ReviveNetService {
         http.server = netConfig.Server;
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
-        const response = await http.getJson("tgapp/api/user/debris");
-        if (response.isSucc && response.res.resultCode == "OK") {
-            console.warn("获取用户拼图碎片数据:", response.res.userDebrisArr);
+
+        const response = await http.getUrl("tgapp/api/user/debris?token=" + netConfig.Token);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+            console.warn("获取用户拼图碎片数据:", response.res);
             return response.res.userDebrisArr;
         } else {
-            console.error("请求异常", response);
+            console.error("获取用户拼图碎片数据请求异常", response);
             return null;
         }
     }
@@ -43,15 +45,16 @@ export namespace ReviveNetService {
         http.timeout = netConfig.Timeout;
 
         const params = {
-            'debrisID': debrisID
+            'debrisID': debrisID.toString()
         };
-        const response = await http.postJson("tgapp/api/user/debris/synth", JSON.stringify(params));
-        if (response.isSucc) {
-            console.warn("用户拼图碎片合成:", response.res);
+        const newParams = new URLSearchParams(params).toString();
+        const response = await http.postUrl("tgapp/api/user/debris/synth?token=" + netConfig.Token, newParams);
+        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+            console.warn("拼图碎片合成:", response.res);
             return response.res;
         } else {
-            console.error("请求异常", response);
-            return null;
+            console.error("拼图碎片合成", response);
+            return response.res;
         }
     }
 

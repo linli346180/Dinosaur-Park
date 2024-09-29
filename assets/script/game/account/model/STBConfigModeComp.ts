@@ -5,30 +5,14 @@ const { ccclass, property } = _decorator;
 
 @ecs.register('STBConfigMode')
 export class STBConfigModeComp extends ecs.Comp {
-    userInstbData: UserInstbConfigData[] = [];
-
-    fillData(data: any) {
-        if (data) {
-            this.userInstbData = data.userInstbData;
-            console.log("星兽配置数量: " + this.userInstbData.length)
-        } else {
-            console.error("星兽配置数据格式不正确", data);
-        }
-    }
+    instbConfigData: UserInstbConfigData[] = [];
 
     reset(): void {
-        this.userInstbData = [];
+        this.instbConfigData = [];
     }
 
-    /** 获取星兽配置(使用金币购买) */
-    getSTBConfig_PurGold(): UserInstbConfigData[] {
-        let data: UserInstbConfigData[] = [];
-        this.userInstbData.forEach(element => {
-            if (element.isPur === IsPur.Yes && element.purConCoin === PurConCoin.gold) {
-                data.push(element);
-            }
-        });
-        return data;
+    GetSTBConfigData(configId: number): UserInstbConfigData | undefined {
+        return this.instbConfigData.find((element) => element.id === configId);
     }
 }
 
@@ -62,8 +46,8 @@ export enum StbKinds {
 }
 
 export enum IsIncome {
-    是 = 1,
-    否
+    Yes = 1,
+    No = 2
 }
 
 export enum IsPur {

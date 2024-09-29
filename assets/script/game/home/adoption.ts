@@ -2,7 +2,7 @@ import { _decorator, Component, Node, Label, Sprite, Button } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { AccountEvent } from '../account/AccountEvent';
 import { smc } from '../common/SingletonModuleComp';
-import { UserInstbConfigData } from '../account/model/STBConfigModeComp';
+import { IsPur, PurConCoin, UserInstbConfigData } from '../account/model/STBConfigModeComp';
 import { math } from 'cc';
 import { SpriteFrame } from 'cc';
 import { resLoader } from '../../../../extensions/oops-plugin-framework/assets/core/common/loader/ResLoader';
@@ -10,6 +10,7 @@ import { KnapsackControlle } from './KnapsackControlle';
 import { Texture2D } from 'cc';
 import { resources } from 'cc';
 import { Prefab } from 'cc';
+import { AccountNetService } from '../account/AccountNet';
 const { ccclass, property } = _decorator;
 
 @ccclass('adoption')
@@ -29,31 +30,29 @@ export class adoption extends Component {
     private _configDataList: UserInstbConfigData[] = [];
     private _spriteFrames: SpriteFrame[] = [];
 
+    async onLoad() {
+        let response = await AccountNetService.getStartBeastConfig();
+        if (response) {
+            this.getSTBConfig_PurGold(response.userInstbData);
+            this._configDataList.sort((a, b) => a.id - b.id);
+
+            this._index = oops.storage.getNumber("STBConfigIndex", 0);
+            const path = "gui/game/texture/adoption/";
+            resLoader.loadDir("bundle", path, SpriteFrame, (err: any, assets: any) => {
+                this._spriteFrames = assets.sort((a: any, b: any) => a.name.localeCompare(b.name));
+                this.beast.spriteFrame = this._spriteFrames[this._index];
+                this.InitUI();
+            });
+        }
+    }
+
     start() {
         this.btn_adopt_one.node.on(Button.EventType.CLICK, this.onAdoptOne, this);
         this.btn_left.node.on(Button.EventType.CLICK, this.onLeft, this);
         this.btn_right.node.on(Button.EventType.CLICK, this.onRight, this);
-
-        oops.message.on(AccountEvent.STBConfigSuccess, this.onHandler, this);
-
-        this._index = oops.storage.getNumber("STBConfigIndex", 0);
-        const path = "gui/game/texture/adoption/";
-        resLoader.loadDir("bundle", path, SpriteFrame, (err: any, assets: any) => {
-            this._spriteFrames = assets.sort((a: any, b: any) => a.name.localeCompare(b.name));
-            this.beast.spriteFrame = this._spriteFrames[this._index];
-            this.InitUI();
-        });
-    }
-
-    private onHandler(event: string, args: any) {
-        switch (event) {
-            case AccountEvent.STBConfigSuccess: this.InitUI(); break;
-        }
     }
 
     InitUI() {
-        this._configDataList = smc.account.STBConfigMode.getSTBConfig_PurGold();
-        this._configDataList.sort((a, b) => a.id - b.id);
         this.changeSTBConfig();
     }
 
@@ -79,6 +78,13 @@ export class adoption extends Component {
             this.beast.spriteFrame = this._spriteFrames[this._index];
         }
     }
+
+    getSTBConfig_PurGold(userInstbConfig: UserInstbConfigData[]) {
+        this._configDataList = [];
+        userInstbConfig.forEach(element => {
+            if (element.isPur === IsPur.Yes && element.purConCoin === PurConCoin.gold) {
+                this._configDataList.push(element);
+            }
+        });
+    }
 }
-
-

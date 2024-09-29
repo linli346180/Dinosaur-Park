@@ -5,10 +5,17 @@
  * @LastEditTime: 2024-03-31 01:20:18
  */
 import { oops } from "../../../../../extensions/oops-plugin-framework/assets/core/Oops";
+import { JsonUtil } from "../../../../../extensions/oops-plugin-framework/assets/core/utils/JsonUtil";
 import { AsyncQueue, NextFunction } from "../../../../../extensions/oops-plugin-framework/assets/libs/collection/AsyncQueue";
 import { ecs } from "../../../../../extensions/oops-plugin-framework/assets/libs/ecs/ECS";
 import { ModuleUtil } from "../../../../../extensions/oops-plugin-framework/assets/module/common/ModuleUtil";
+import { Account } from "../../account/Account";
 import { UIID } from "../../common/config/GameUIConfig";
+import { smc } from "../../common/SingletonModuleComp";
+import { TableItemConfig } from "../../common/table/TableItemConfig";
+import { TableMiddleDebrisConfig } from "../../common/table/TableMiddleDebrisConfig";
+import { TablePrimaryDebrisConfig } from "../../common/table/TablePrimaryDebrisConfig";
+import { TableSTBConfig } from "../../common/table/TableSTBConfig";
 import { Initialize } from "../Initialize";
 import { LoadingViewComp } from "../view/LoadingViewComp";
 
@@ -66,6 +73,11 @@ export class InitResSystem extends ecs.ComblockSystem implements ecs.IEntityEnte
         queue.push(async (next: NextFunction, params: any, args: any) => {
             // 加载多语言对应字体
             oops.res.load("language/font/" + oops.language.current, next);
+
+            await JsonUtil.loadAsync(TableItemConfig.TableName);
+            await JsonUtil.loadAsync(TablePrimaryDebrisConfig.TableName);
+            await JsonUtil.loadAsync(TableMiddleDebrisConfig.TableName);
+            await JsonUtil.loadAsync(TableSTBConfig.TableName);
         });
     }
 
@@ -94,6 +106,9 @@ export class InitResSystem extends ecs.ComblockSystem implements ecs.IEntityEnte
     /** 加载完成进入游戏内容加载界面 */
     private onComplete(queue: AsyncQueue, e: Initialize) {
         queue.complete = async () => {
+            // 初始化账号数据
+            smc.account = ecs.getEntity<Account>(Account);
+            // 加载进度提示界面
             ModuleUtil.addViewUi(e, LoadingViewComp, UIID.Loading);
             e.remove(InitResComp);
         };

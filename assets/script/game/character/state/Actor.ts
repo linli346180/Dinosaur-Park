@@ -6,6 +6,7 @@ import { StateDefine } from './StateDefine';
 import { Sprite } from 'cc';
 import { mathutil } from '../../common/utils/MathUtil';
 import { Quat } from 'cc';
+import { Label } from 'cc';
 const { ccclass, property, requireComponent, disallowMultiple } = _decorator;
 
 @ccclass('Actor')
@@ -19,10 +20,12 @@ export class Actor extends Component {
 
     @property(Animation)
     animation: Animation = null!;
-
     @property(Sprite)
     mainRenderer: Sprite = null!;
+    @property(Label)
+    survival:Label = null!;
 
+    @property
     linearSpeed: number = 3;    // 移动速度
 
     _input: Vec2 = v2();

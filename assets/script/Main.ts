@@ -28,10 +28,5 @@ export class Main extends Root {
 
     protected run() {
         smc.initialize = ecs.getEntity<Initialize>(Initialize);
-        smc.account = ecs.getEntity<Account>(Account);
     }
-
-    // protected initEcsSystem() {
-    //     oops.ecs.add(new EcsInitializeSystem());
-    // }
 }

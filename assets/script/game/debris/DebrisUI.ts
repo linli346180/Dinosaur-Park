@@ -6,28 +6,32 @@ import { ReviveNetService } from './ReviveNet';
 import { DebrisConfigData, DebrisDetail, PuzzleID, UserDebrisData } from './DebrisData';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { DebrisResult } from './DebrisResult';
+import { ResultCode } from '../common/network/HttpManager';
 
 const { ccclass, property } = _decorator;
 
 /** 碎片拼图功能 */
-@ccclass('Debris')
-export class Debris extends Component {
+@ccclass('DebrisView')
+export class DebrisView extends Component {
     @property(Prefab)
     itemPrefab: Prefab = null!;
+    @property(Button)
+    btn_close: Button = null!;
+
     @property(Node)
     level_1: Node = null!;
     @property(Node)
     level_2: Node = null!;
     @property(Button)
-    btn_close: Button = null!;
-    @property(Button)
     btn_left: Button = null!;
     @property(Button)
     btn_right: Button = null!;
+
     @property(Button)
     btn_onekey: Button = null!;
     @property(Node)
     pieces_panel: Node = null!;
+
     @property(Label)
     label_level: Label = null!;
     @property(Label)
@@ -64,7 +68,6 @@ export class Debris extends Component {
     }
 
     async initUI() {
-        // 获取碎片配置
         this.configData.debrisConfigList = await ReviveNetService.getDebrisConfig();
         this.pieces_panel.removeAllChildren();
         this.configData.debrisConfigList.forEach((config) => {
@@ -180,24 +183,21 @@ export class Debris extends Component {
         }
     }
 
+    /** 合成碎片 */
     async requestDebrisData() {
-        let respose = await ReviveNetService.clampDebris(this._index);
-        if (respose) {
-            if (respose.resultCode == "OK") {
-                var uic: UICallbacks = {
-                    onAdded: (node: Node, params: any) => {
-                        const widget = node.getComponent(DebrisResult);
-                        widget?.initUI(respose.userInstb.stbConfigID, 1);
-                    }
-                };
-                let uiArgs: any;
-                this.scheduleOnce(() => {
-                    oops.gui.open(UIID.DebrisResult, uiArgs, uic);
-                    this.updateUI(this._index)
-                }, 1);
-            } else {
-                oops.gui.toast(respose.resultMsg, false);
-            }
+        let res = await ReviveNetService.clampDebris(this._index);
+        if (res.resultCode == ResultCode.OK) {
+            var uic: UICallbacks = {
+                onAdded: (node: Node, params: any) => {
+                    const widget = node.getComponent(DebrisResult);
+                    widget?.initUI(res.userInstb.stbConfigID, 1);
+                }
+            };
+            let uiArgs: any;
+            oops.gui.open(UIID.DebrisResult, uiArgs, uic);
+            this.updateUI(this._index)
+        }else {
+            oops.gui.toast(res.resultMsg, false);
         }
     }
 }
