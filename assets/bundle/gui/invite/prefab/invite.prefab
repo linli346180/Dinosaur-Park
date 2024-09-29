@@ -1786,7 +1786,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sprite",
+    "_name": "QRCode",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -9169,6 +9169,9 @@
     },
     "nofriend": {
       "__id__": 218
+    },
+    "icon": {
+      "__id__": 75
     },
     "_id": ""
   },

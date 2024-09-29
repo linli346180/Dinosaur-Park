@@ -1,14 +1,16 @@
-import { _decorator, Component, Node, Button, Prefab } from 'cc';
+import { _decorator, Component, Node, Button, Prefab, Sprite, Texture2D, ImageAsset, SpriteFrame,instantiate } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { InviteNetService } from './InviteNet';
 import { InviteDataList } from './InviteData';
-import { instantiate } from 'cc';
 import { InviteItemView } from './InviteItemView';
+
+// import QRCode from 'qrcode';
+
 const { ccclass, property } = _decorator;
 
-@ccclass('Invite')
-export class Invite extends Component {
+@ccclass('InviteVeiw')
+export class InviteVeiw extends Component {
     @property(Prefab)
     inviteItem: Prefab = null!;
     @property(Button)
@@ -21,6 +23,9 @@ export class Invite extends Component {
     inviteContent: Node = null!;
     @property(Node)
     nofriend: Node = null!;
+
+    @property(Sprite)
+    icon: Sprite = null!;
 
     private inviteLink: string = "";
     private inviteData: InviteDataList = new InviteDataList();
@@ -37,10 +42,8 @@ export class Invite extends Component {
         InviteNetService.getCopyLink().then((res) => {
             this.inviteLink = res.copyInviteLinkReturn.inviteLink;
             console.log("邀请链接", this.inviteLink);
+            this.generateQRCode(this.inviteLink);
         });
-
-        // 生成
-        InviteNetService.getInviteRewardConfig();
 
         let res = await InviteNetService.getInviteList();
         if (res) {
@@ -73,5 +76,24 @@ export class Invite extends Component {
         } else {
             oops.gui.toast("当前浏览器不支持 Clipboard API");
         }
+    }
+
+
+    // 生成二维码
+    async generateQRCode(text: string) {
+        // try {
+        //     const url = await QRCode.toDataURL(text);
+        //     const image = new Image();
+        //     image.src = url;
+        //     image.onload = () => {
+        //         const texture = new Texture2D();
+        //         const imageAsset = new ImageAsset(image);
+        //         texture.image = imageAsset;
+        //         this.icon.spriteFrame = new SpriteFrame();
+        //         this.icon.spriteFrame.texture = texture;
+        //     };
+        // } catch (error) {
+        //     console.error('生成二维码失败:', error);
+        // }
     }
 }

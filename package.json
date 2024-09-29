@@ -5,11 +5,13 @@
   },
   "dependencies": {
     "axios": "^1.7.4",
-    "crypto-es": "^1.2.7",
-    "qrcode": "^1.5.4"
+    "crypto-es": "^1.2.7"
   },
   "description": "恐龙乐园",
   "name": "dinosaur-park",
   "uuid": "00d7d957-a3e8-4ad6-80f4-2fcfb235bca4",
-  "version": "3.6.3"
+  "version": "3.6.3",
+  "devDependencies": {
+    "@types/qrcode": "^1.5.5"
+  }
 }
