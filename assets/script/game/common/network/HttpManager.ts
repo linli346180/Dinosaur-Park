@@ -51,6 +51,8 @@ export class HttpManager {
     /** 令牌 */
     token: string = "";
 
+    url: string = "";
+
     /**
     * Post请求获取文本格式数据
     * @param name      协议名
@@ -130,26 +132,26 @@ export class HttpManager {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
-            var url = `${this.server}${name}`;
+            this.url = `${this.server}${name}`;
             var body: BodyInit | null = null;
             if (method == HttpMethod.GET) {
                 if (params && typeof params === "object") {
                     var paramsStr = this.getParamString(params);
-                    if (url.indexOf("?") > -1)
-                        url = url + "&" + paramsStr;
+                    if (this.url.indexOf("?") > -1)
+                        this.url = this.url + "&" + paramsStr;
                     else
-                        url = url + "?" + paramsStr;
+                    this.url = this.url + "?" + paramsStr;
                 }
             }
             else if (method == HttpMethod.POST) {
                 body = params;
             }
             body = params;
-            urls.set(url, true);
-            if (urls.has(url) == false) {
-                var err = `地址【${url}】已正在请求中，不能重复请求`;
+            urls.set(this.url, true);
+            if (urls.has(this.url) == false) {
+                var err = `地址【${this.url}】已正在请求中，不能重复请求`;
                 console.warn(err);
-                this.setReturn(url, resolve, false, err);
+                this.setReturn(this.url, resolve, false, err);
             }
 
             var ri: RequestInit = {
@@ -160,7 +162,7 @@ export class HttpManager {
             }
 
             // console.log("请求参数：" + ri);
-            fetch(url, ri).then((response: Response): any => {
+            fetch(this.url, ri).then((response: Response): any => {
                 clearTimeout(timeoutId);
                 if (response.ok) {
                     switch (type) {
@@ -177,12 +179,12 @@ export class HttpManager {
                     }
                 }
                 else {
-                    this.setReturn(url, resolve, false, response);
+                    this.setReturn(this.url, resolve, false, response);
                 }
             }).then((value: any) => {
-                this.setReturn<T>(url, resolve, true, value);
+                this.setReturn<T>(this.url, resolve, true, value);
             }).catch((reason: any) => {
-                this.setReturn<T>(url, resolve, false, reason);
+                this.setReturn<T>(this.url, resolve, false, reason);
             });
 
         });
@@ -202,19 +204,19 @@ export class HttpManager {
         return new Promise((resolve, reject) => {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-            var url = `${this.server}${name}`;
+            this.url = `${this.server}${name}`;
 
-            urls.set(url, true);
-            if (urls.has(url) == false) {
-                var err = `地址【${url}】已正在请求中，不能重复请求`;
+            urls.set(this.url, true);
+            if (urls.has(this.url) == false) {
+                var err = `地址【${this.url}】已正在请求中，不能重复请求`;
                 console.warn(err);
-                this.setReturn(url, resolve, false, err);
+                this.setReturn(this.url, resolve, false, err);
             }
 
             var ri: RequestInit = {
                 method: 'GET',
             }
-            fetch(url, ri).then((response: Response): any => {
+            fetch(this.url, ri).then((response: Response): any => {
                 clearTimeout(timeoutId);
                 if (response.ok) {
                     switch (type) {
@@ -231,12 +233,12 @@ export class HttpManager {
                     }
                 }
                 else {
-                    this.setReturn(url, resolve, false, response);
+                    this.setReturn(this.url, resolve, false, response);
                 }
             }).then((value: any) => {
-                this.setReturn<T>(url, resolve, true, value);
+                this.setReturn<T>(this.url, resolve, true, value);
             }).catch((reason: any) => {
-                this.setReturn<T>(url, resolve, false, reason);
+                this.setReturn<T>(this.url, resolve, false, reason);
             });
 
         });

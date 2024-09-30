@@ -3,7 +3,7 @@
 /** 网络配置 */
 class NetConfig {
     // public Server: string = "http://54.169.243.11:10000/";
-    public Server: string = "http://konglong.live/";
+    public Server: string = "https://konglong.live/";
     public API: string = "/tgapp/api";
     public VERSION: string = "/v1";
     public PATH: string = "/login";

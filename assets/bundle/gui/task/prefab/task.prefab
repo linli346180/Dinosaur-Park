@@ -6781,7 +6781,7 @@
     "node": {
       "__id__": 34
     },
-    "_enabled": true,
+    "_enabled": false,
     "__prefab": {
       "__id__": 308
     },

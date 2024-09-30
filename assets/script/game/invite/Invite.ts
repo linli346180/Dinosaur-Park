@@ -1,10 +1,12 @@
 import { _decorator, Component, Node, Button, Prefab, Sprite, Texture2D, ImageAsset, SpriteFrame,instantiate } from 'cc';
+
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { InviteNetService } from './InviteNet';
 import { InviteDataList } from './InviteData';
 import { InviteItemView } from './InviteItemView';
 
+// TODO 导致项目无法正常运行浏览器预览，需要注释掉
 // import QRCode from 'qrcode';
 
 const { ccclass, property } = _decorator;

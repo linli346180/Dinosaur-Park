@@ -108,6 +108,7 @@ export class InitResSystem extends ecs.ComblockSystem implements ecs.IEntityEnte
         queue.complete = async () => {
             // 初始化账号数据
             smc.account = ecs.getEntity<Account>(Account);
+            
             // 加载进度提示界面
             ModuleUtil.addViewUi(e, LoadingViewComp, UIID.Loading);
             e.remove(InitResComp);

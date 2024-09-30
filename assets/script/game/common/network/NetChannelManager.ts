@@ -36,10 +36,12 @@ export class NetChannelManager {
         const response = await http.postUrl("tgapp/api/login", paramString);
         if (response.isSucc && response.res.resultCode == ResultCode.OK) {
             netConfig.Token = response.res.token;
-            console.warn("登录成功", response.res);
+            console.warn("登录成功", http.url + response.res);
+            alert("登录结果:"+response.res.token);
             return response.res;
         } else {
-            console.error("登录异常", response);
+            console.error("登录异常",http.url +  response);
+            alert("登录异常:"+ http.url + response);
             return null;
         }
     }
