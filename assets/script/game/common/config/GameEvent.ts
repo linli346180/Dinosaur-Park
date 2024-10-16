@@ -7,6 +7,8 @@
 
 /** 游戏事件 */
 export enum GameEvent {
+    /** 应用初始化成功 */
+    APPInitialized = "APPInitialized",
     /** 游戏服务器连接成功 */
     GameServerConnected = "GameServerConnected",
     /** 登陆成功 */

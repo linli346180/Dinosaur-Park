@@ -1,5 +1,6 @@
-import { HttpManager, ResultCode } from '../common/network/HttpManager';
-import { netConfig } from '../common/network/NetConfig';
+import { HttpManager } from '../../net/HttpManager';
+import { netConfig } from '../../net/custom/NetConfig';
+import { NetErrorCode } from '../../net/custom/NetErrorCode';
 
 export namespace InviteNetService {
 
@@ -11,7 +12,7 @@ export namespace InviteNetService {
         http.timeout = netConfig.Timeout;
 
         const response = await http.getUrl("tgapp/api/user/invite/copyLink?token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("复制邀请链接:", response.res);
             return response.res;
         } else {
@@ -28,7 +29,7 @@ export namespace InviteNetService {
         http.timeout = netConfig.Timeout;
 
         const response = await http.getUrl("tgapp/api/user/invite/getRewardConfig?token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("查询邀请奖励配置:", response.res);
             return response.res;
         } else {
@@ -44,8 +45,8 @@ export namespace InviteNetService {
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
 
-        const response = await http.getUrl("tgapp/api/user/invite/inviteList?pageSize=100&page=1&token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        const response = await http.getUrl("tgapp/api/presell/getUserInviteDetail?token=" + netConfig.Token);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("查询邀请名单:", response.res);
             return response.res;
         } else {

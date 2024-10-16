@@ -1,12 +1,14 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator } from 'cc';
 import { ecs } from '../../../../../extensions/oops-plugin-framework/assets/libs/ecs/ECS';
 import { AccountModelComp } from '../model/AccountModelComp';
-import { netChannelManager } from '../../common/network/NetChannelManager';
 import { Account } from '../Account';
 import { oops } from '../../../../../extensions/oops-plugin-framework/assets/core/Oops';
-import { AccountEvent } from '../AccountEvent';
 import { AccountNetService } from '../AccountNet';
-const { ccclass, property } = _decorator;
+import { TGNetService } from '../../../telegram/TGNet';
+import { EDITOR } from 'cc/env';
+import { netChannel } from '../../../net/custom/NetChannelManager';
+import { GameEvent } from '../../common/config/GameEvent';
+import { sys } from 'cc';
 
 /** 请求玩家游戏数据 */
 @ecs.register('AccountNetData')
@@ -22,31 +24,43 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
     }
 
     async entityEnter(entity: Account): Promise<void> {
-        const response = await netChannelManager.LoginAccount();
-        if (response) {
-            try {
-                // entity.AccountModel.fillData(response);
-                entity.AccountModel.user = response.user;
-
-                // 星兽配置
-                const configData = await AccountNetService.getStartBeastConfig();
-                entity.STBConfigMode.instbConfigData = configData.userInstbData;
-    
-                // entity.STBConfigMode.instbConfigData.forEach((element: any) => { 
-                //     console.log("星兽配置:"+ JSON.stringify(element))
-                // });
-               
-                // 星兽数据
-                const stbData = await AccountNetService.GetUserSTBData();
-                entity.AccountModel.userInstbData = stbData.userInstbData;
-                oops.message.dispatchEvent(AccountEvent.LoginSuccess);
-
-            } catch (error) {
-                console.error("网络异常", error);   
+        if (EDITOR) {
+            const response = await AccountNetService.LoginTestAccount();
+            if (response) {
+                this.OnLogonResponse(entity, response);
+            }
+        } else {
+            const TGAppData = await TGNetService.GetTelegramAPPData();
+            const response = await AccountNetService.LoginTGAcount(TGAppData);
+            if (response) {
+                this.OnLogonResponse(entity, response);
             }
         }
         entity.remove(AccountNetDataComp);
     }
+
+    async OnLogonResponse(entity: Account, response: any) {
+        entity.AccountModel.user = response.user;
+
+        // 获取星兽配置数据
+        const configDataRes = await AccountNetService.getStartBeastConfig();
+        if (configDataRes && configDataRes.userInstbData) {
+            entity.STBConfigMode.instbConfigData = configDataRes.userInstbData;
+        }
+
+        // 获取用户星兽数据
+        const stbDataRes = await AccountNetService.GetUserSTBData();
+        if (stbDataRes && stbDataRes.userInstbData) {
+            // 收益星兽
+            if (stbDataRes.userInstbData.UserInstb) {
+                entity.AccountModel.UserInstb = stbDataRes.userInstbData.UserInstb;
+            }
+            // 无收益星守
+            if (stbDataRes.userInstbData.UserNinstb) {
+                entity.AccountModel.UserNinstb = stbDataRes.userInstbData.UserNinstb;
+            }
+        }
+
+        oops.message.dispatchEvent(GameEvent.LoginSuccess);
+    }
 }
-
-

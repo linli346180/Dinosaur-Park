@@ -1,5 +1,6 @@
-import { HttpManager, ResultCode } from '../common/network/HttpManager';
-import { netConfig } from '../common/network/NetConfig';
+import { HttpManager} from '../../net/HttpManager';
+import { netConfig } from '../../net/custom/NetConfig';
+import { NetErrorCode } from '../../net/custom/NetErrorCode';
 
 export namespace EmailNetService {
     /** 获取邮件列表 */
@@ -10,7 +11,7 @@ export namespace EmailNetService {
         http.timeout = netConfig.Timeout;
 
         const response = await http.getUrl("tgapp/api/user/mail/list?token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("获取邮件列表:", response.res);
             return response.res;
         } else {
@@ -31,7 +32,7 @@ export namespace EmailNetService {
         };
         const newParams = new URLSearchParams(params).toString();
         const response = await http.postUrl("tgapp/api/user/mail/read?token=" + netConfig.Token, newParams);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("读取邮件:", response.res);
             return response.res;
         } else {
@@ -53,7 +54,7 @@ export namespace EmailNetService {
         };
         const newParams = new URLSearchParams(params).toString();
         const response = await http.postUrl("tgapp/api/user/mail/receive?token=" + netConfig.Token, newParams);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("领取邮件奖励:", response.res);
             return response.res;
         } else {

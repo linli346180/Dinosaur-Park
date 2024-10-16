@@ -3,7 +3,7 @@
     "designResolution": {
       "fitWidth": true,
       "fitHeight": false,
-      "height": 2376,
+      "height": 1920,
       "width": 1080
     },
     "highQuality": false
@@ -26,6 +26,10 @@
     {
       "name": "SpawnPoint",
       "value": 2
+    },
+    {
+      "name": "3DWall",
+      "value": 4
     }
   ],
   "physics": {

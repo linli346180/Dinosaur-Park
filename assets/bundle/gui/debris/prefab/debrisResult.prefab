@@ -31,14 +31,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 62
+        "__id__": 64
       },
       {
-        "__id__": 64
+        "__id__": 66
       }
     ],
     "_prefab": {
-      "__id__": 66
+      "__id__": 68
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -250,8 +250,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 366.1875,
-      "height": 63
+      "width": 500,
+      "height": 75.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -286,14 +286,14 @@
       "b": 255,
       "a": 255
     },
-    "_string": "Puzzle sucess",
+    "_string": "合成成功",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 54,
     "_fontSize": 54,
     "_fontFamily": "Arial",
-    "_lineHeight": 50,
-    "_overflow": 0,
+    "_lineHeight": 60,
+    "_overflow": 3,
     "_enableWrapText": true,
     "_font": null,
     "_isSystemFontUsed": true,
@@ -1224,17 +1224,17 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 55
-      },
-      {
         "__id__": 57
       },
       {
         "__id__": 59
+      },
+      {
+        "__id__": 61
       }
     ],
     "_prefab": {
-      "__id__": 61
+      "__id__": 63
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -1281,15 +1281,18 @@
       },
       {
         "__id__": 52
+      },
+      {
+        "__id__": 54
       }
     ],
     "_prefab": {
-      "__id__": 54
+      "__id__": 56
     },
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 15.265,
+      "y": 13.553,
       "z": 0
     },
     "_lrot": {
@@ -1329,8 +1332,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80.5908203125,
-      "height": 50.4
+      "width": 300,
+      "height": 75.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1365,14 +1368,14 @@
       "b": 255,
       "a": 255
     },
-    "_string": "Get",
+    "_string": "确定",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
     "_fontSize": 50,
     "_fontFamily": "Arial",
-    "_lineHeight": 40,
-    "_overflow": 0,
+    "_lineHeight": 60,
+    "_overflow": 3,
     "_enableWrapText": true,
     "_font": null,
     "_isSystemFontUsed": true,
@@ -1412,6 +1415,26 @@
     "fileId": "27mIkKuMZJmregHMj98hq3"
   },
   {
+    "__type__": "110c8vEd5NEPL/N9meGQnaX",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 49
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 55
+    },
+    "_params": [],
+    "_dataID": "common_prompt_ok",
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "bfhbB+785BwqcJ1DYd5AaO"
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": {
       "__id__": 1
@@ -1434,7 +1457,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 56
+      "__id__": 58
     },
     "_contentSize": {
       "__type__": "cc.Size",
@@ -1462,7 +1485,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 58
+      "__id__": 60
     },
     "_customMaterial": null,
     "_srcBlendFactor": 2,
@@ -1480,7 +1503,7 @@
     },
     "_type": 1,
     "_fillType": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -1507,7 +1530,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 60
+      "__id__": 62
     },
     "clickEvents": [],
     "_interactable": true,
@@ -1581,7 +1604,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 63
+      "__id__": 65
     },
     "_contentSize": {
       "__type__": "cc.Size",
@@ -1609,13 +1632,13 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 65
+      "__id__": 67
     },
     "btn_close": {
       "__id__": 45
     },
     "btn_ok": {
-      "__id__": 59
+      "__id__": 61
     },
     "title": {
       "__id__": 7

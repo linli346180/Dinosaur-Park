@@ -94,7 +94,7 @@ export class KnapsackSlot extends Component {
         this.landingNode.active = false;
         this.levelUpNode.active = false;
         this.dragTipNode.active = false;
-        console.log("动画播放结束");
+        // console.log("动画播放结束");
         if (this.stbData) {
             this.container.active = true;
             this.LevelUpComp?.InitUI(this.stbData.stbConfigID);

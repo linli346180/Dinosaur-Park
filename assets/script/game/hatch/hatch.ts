@@ -5,10 +5,9 @@ import { UIID } from '../common/config/GameUIConfig';
 import { HatchNetService } from './HatchNet';
 import { UserHatchData } from './HatchData';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
-import { HatchShop } from './HatchShop';
 import { HatchReward } from './HatchReward';
 import { UserHatchEvent } from './HatchDefine';
-import { ResultCode } from '../common/network/HttpManager';
+import { NetErrorCode } from '../../net/custom/NetErrorCode';
 const { ccclass, property } = _decorator;
 
 /** 孵蛋视图(抽奖) */
@@ -96,7 +95,7 @@ export class HatchView extends Component {
         this.hatchAnim.stop();
         this.initUI();
 
-        if (this.hatchResult && this.hatchResult.resultCode == ResultCode.OK) {
+        if (this.hatchResult && this.hatchResult.resultCode == NetErrorCode.Success) {
             var uic: UICallbacks = {
                 onAdded: (node: Node, params: any) => {
                     const hatchReward = node.getComponent(HatchReward);

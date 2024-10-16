@@ -1927,9 +1927,8 @@
     "__prefab": {
       "__id__": 79
     },
-    "btn_collect": {
-      "__id__": 61
-    },
+    "btn_collectGold": null,
+    "btn_collectGem": null,
     "gold_num": {
       "__id__": 12
     },

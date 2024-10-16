@@ -16,25 +16,6 @@ import { Initialize } from './game/initialize/Initialize';
 
 const { ccclass, property } = _decorator;
 
-// 定义一个函数来动态加载脚本  
-function loadScript(callback?: () => void): void {
-    let script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://telegram.org/js/telegram-web-app.js';
-
-    // 当脚本加载完成时执行回调  
-    script.onload = () => {
-        if (callback) {
-            callback();
-        }
-    };
-
-    // 添加到DOM中  
-    document.head.appendChild(script);
-}
-
-loadScript();
-
 @ccclass('Main')
 export class Main extends Root {
     start() {
@@ -47,5 +28,6 @@ export class Main extends Root {
 
     protected run() {
         smc.initialize = ecs.getEntity<Initialize>(Initialize);
+        smc.account = ecs.getEntity<Account>(Account);
     }
 }

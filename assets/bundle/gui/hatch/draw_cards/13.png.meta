@@ -126,9 +126,12 @@
     }
   },
   "userData": {
-    "hasAlpha": true,
+    "hasAlpha": false,
     "type": "sprite-frame",
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "dd6a896c-4df6-4ddf-a688-266147b67191@6c48a"
+    "redirect": "dd6a896c-4df6-4ddf-a688-266147b67191@6c48a",
+    "compressSettings": {
+      "useCompressTexture": false
+    }
   }
 }

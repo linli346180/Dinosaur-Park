@@ -24,7 +24,7 @@ export class GemShop extends Component {
     @property(Button)
     btn_buy_lv4: Button = null!;
 
-    async onLoad(){
+    async onLoad() {
         let coinData :IUserCoinData = await AccountNetService.getUserCoinData();
         if (coinData) {
             this.gemNum.string = moneyUtil.formatMoney(coinData.gemsCoin);
@@ -45,15 +45,19 @@ export class GemShop extends Component {
     }
 
     buyGemLv1() {
-        oops.gui.toast("暂不支持购买宝石");
+        const tips = oops.language.getLangByID("common_tips_Not_Enabled");
+        oops.gui.toast(tips);
     }
     buyGemLv2() {
-        oops.gui.toast("暂不支持购买宝石");
+        const tips = oops.language.getLangByID("common_tips_Not_Enabled");
+        oops.gui.toast(tips);
     }
     buyGemLv3() {
-        oops.gui.toast("暂不支持购买宝石");
+        const tips = oops.language.getLangByID("common_tips_Not_Enabled");
+        oops.gui.toast(tips);
     }
     buyGemLv4() {
-        oops.gui.toast("暂不支持购买宝石");
+        const tips = oops.language.getLangByID("common_tips_Not_Enabled");
+        oops.gui.toast(tips);
     }
 }

@@ -2,6 +2,7 @@ import { _decorator, Component, Node, Button, Label } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { ReportNetService } from './ReportNet';
+import { Logger } from '../../Logger';
 const { ccclass, property } = _decorator;
 
 interface CodexData {
@@ -9,16 +10,21 @@ interface CodexData {
 }
 
 /** 图鉴 */
-@ccclass('stbReport')
-export class stbReport extends Component {
-    private btn_close: Button = null!;
-    private goldCntainer: Node = null!;
-    private superContainer: Node = null!;
-    private gamContainer: Node = null!;
-    private diamondContainer: Node = null!;
+@ccclass('STBReportView')
+export class STBReportView extends Component {
+    @property(Button)
+    btn_close: Button = null!;
+    @property(Node)
+    goldCntainer: Node = null!;
+    @property(Node)
+    superContainer: Node = null!;
+    @property(Node)
+    gamContainer: Node = null!;
+    @property(Node)
+    diamondContainer: Node = null!;
     private codexData: CodexData = {};
 
-    async onLoad() {
+    async onEnable() {
         const res = await ReportNetService.getStartBeastStatData();
         if (res) {
             this.codexData = res.codexData;
@@ -27,12 +33,11 @@ export class stbReport extends Component {
     }
 
     start() {
-        this.btn_close = this.node.getChildByName("btn_close")?.getComponent(Button)!;
-        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.Book) }, this);
-        this.goldCntainer = this.node.getChildByPath("panel/gold/contain")!;
-        this.superContainer = this.node.getChildByPath("panel/super/contain")!;
-        this.gamContainer = this.node.getChildByPath("panel/gem/contain")!;
-        this.diamondContainer = this.node.getChildByPath("panel/diamond/contain")!;
+        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
+    }
+
+    closeUI() {
+        oops.gui.remove(UIID.Book, false);
     }
 
     InitUI() {

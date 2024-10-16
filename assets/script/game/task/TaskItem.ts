@@ -1,11 +1,7 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Button,Label,Sprite,SpriteFrame } from 'cc';
 import { TaskData, TaskEvent, TaskStatus } from './TaskDefine';
-import { Button } from 'cc';
-import { Label } from 'cc';
-import { Sprite } from 'cc';
 import { TaskNetService } from './TaskNet';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
-import { SpriteFrame } from 'cc';
 import { TableItemConfig } from '../common/table/TableItemConfig';
 import { moneyUtil } from '../common/utils/moneyUtil';
 import { UIID } from '../common/config/GameUIConfig';
@@ -19,7 +15,6 @@ export class TaskItem extends Component {
     btn_available: Button = null!;
     @property(Button)
     btn_claimed: Button = null!;
-
     @property(Label)
     title: Label = null!;
     @property(Sprite)

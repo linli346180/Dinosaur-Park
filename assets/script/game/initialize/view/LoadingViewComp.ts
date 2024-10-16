@@ -17,6 +17,8 @@ import { TableItemConfig } from "../../common/table/TableItemConfig";
 import { TablePrimaryDebrisConfig } from "../../common/table/TablePrimaryDebrisConfig";
 import { TableMiddleDebrisConfig } from "../../common/table/TableMiddleDebrisConfig";
 import { TableSTBConfig } from "../../common/table/TableSTBConfig";
+import { macro } from "cc";
+import { GameEvent } from "../../common/config/GameEvent";
 
 const { ccclass, property } = _decorator;
 
@@ -37,13 +39,20 @@ export class LoadingViewComp extends CCVMParentComp {
     };
 
     private progress: number = 0;
+    private loginSuccess: boolean = false;
 
     start() {
-        this.enter();
+        oops.message.on(GameEvent.LoginSuccess, this.onHandler, this);
+        this.loadRes();
     }
 
-    enter() {
-        this.loadRes();
+    private onHandler(event: string, args: any) {
+        switch (event) {
+            case GameEvent.LoginSuccess:
+                this.loginSuccess = true;
+                this.onCompleteCallback();
+                break;
+        }
     }
 
     /** 加载资源 */
@@ -66,7 +75,11 @@ export class LoadingViewComp extends CCVMParentComp {
     private loadGameRes() {
         // 加载初始游戏内容资源的多语言提示文本
         this.data.prompt = oops.language.getLangByID("loading_load_game");
-        oops.res.loadDir("game", this.onProgressCallback.bind(this), this.onCompleteCallback.bind(this));
+
+        this.data.finished = 0;
+        this.data.total = 10;
+        this.schedule(this.updateProgress, 0.1);
+        // oops.res.loadDir("animation", this.onProgressCallback.bind(this), this.onCompleteCallback.bind(this));
     }
 
     /** 加载进度事件 */
@@ -85,16 +98,20 @@ export class LoadingViewComp extends CCVMParentComp {
     private async onCompleteCallback() {
         // 获取用户信息的多语言提示文本
         this.data.prompt = oops.language.getLangByID("loading_load_player");
-        // await ModuleUtil.addViewUiAsync(smc.account, DemoViewComp, UIID.Demo);
-        // oops.gui.open(UIID.Main);
-        // oops.gui.open(UIID.Map);
-        // oops.gui.open(UIID.Main);
-        
-        this.scheduleOnce(()=>{
-            ModuleUtil.removeViewUi(this.ent, LoadingViewComp, UIID.Loading);
-        }, 2);
 
-        
+        if (this.loginSuccess == true && this.progress >= 1) {
+            ModuleUtil.removeViewUi(this.ent, LoadingViewComp, UIID.Loading);
+        }
+    }
+
+    private updateProgress() {
+        if (this.progress >= 1) {
+            this.unschedule(this.updateProgress);
+            this.onCompleteCallback();
+        } else {
+            this.data.finished += 1;
+            this.onProgressCallback(this.data.finished, this.data.total, null);
+        }
     }
 
     reset(): void { }

@@ -1,4 +1,3 @@
-import { Console } from "console";
 import { oops } from "../../../../extensions/oops-plugin-framework/assets/core/Oops";
 import { ecs } from "../../../../extensions/oops-plugin-framework/assets/libs/ecs/ECS";
 import { GameEvent } from "../common/config/GameEvent";
@@ -6,11 +5,12 @@ import { UIID } from "../common/config/GameUIConfig";
 import { AccountEvent } from "./AccountEvent";
 import { AccountNetService } from "./AccountNet";
 import { AccountModelComp, IStartBeastData } from "./model/AccountModelComp";
-import { IsIncome, IsPur, PurConCoin, STBConfigModeComp, UserInstbConfigData } from "./model/STBConfigModeComp";
+import { IsIncome, STBConfigModeComp, UserInstbConfigData } from "./model/STBConfigModeComp";
 import { AccountNetDataComp } from "./system/AccountNetData";
 import { AccountEmailComp } from "./system/ChangeEmail";
 import { AccountNickNameComp } from "./system/ChangeNickName";
-import { ResultCode } from "../common/network/HttpManager";
+import { NetCmd, NetErrorCode } from "../../net/custom/NetErrorCode";
+import { netChannel } from "../../net/custom/NetChannelManager";
 
 /** 账号模块 */
 @ecs.register('Account')
@@ -31,27 +31,54 @@ export class Account extends ecs.Entity {
     protected init() {
         this.addComponents<ecs.Comp>(AccountModelComp);
         this.addComponents<ecs.Comp>(STBConfigModeComp);
+        oops.message.on(GameEvent.APPInitialized, this.onHandler, this);
         oops.message.on(GameEvent.LoginSuccess, this.onHandler, this);
-
-        // 发送请求用户数据
-        this.add(AccountNetDataComp);
+        oops.message.on(GameEvent.GameServerConnected, this.onHandler, this);
     }
 
     destroy(): void {
+        oops.message.off(GameEvent.APPInitialized, this.onHandler, this);
         oops.message.off(GameEvent.LoginSuccess, this.onHandler, this);
+        oops.message.off(GameEvent.GameServerConnected, this.onHandler, this);
         super.destroy();
     }
 
     private onHandler(event: string, args: any) {
         switch (event) {
+            case GameEvent.APPInitialized:
+                this.add(AccountNetDataComp);
+                break;
             case GameEvent.LoginSuccess:
                 oops.storage.setUser(this.AccountModel.user.id.toString());
                 oops.audio.load();
-
+                this.loadUserLanguage();
                 oops.gui.open(UIID.Map);
                 oops.gui.open(UIID.Main);
+
+                // WebSocket连接
+                netChannel.gameCreate();
+                netChannel.gameConnect();
+                netChannel.game.on(NetCmd.UserNinstbType, '', (data) => {
+                    this.OnRecevieMessage(NetCmd.UserNinstbType, data);
+                });
+                break;
+
+            case GameEvent.GameServerConnected:
                 break;
         }
+    }
+
+    /** 加载化语言包（可选） */
+    private loadUserLanguage() {
+        // 设置默认语言
+        let lan = oops.storage.get("language");
+        if (lan == null || lan == "") {
+            lan = "zh";
+            oops.storage.set("language", lan);
+        }
+
+        // 加载语言包资源
+        oops.language.setLanguage(lan, (a)=>{});
     }
 
     changeAvatar(avatar: string) {
@@ -84,7 +111,7 @@ export class Account extends ecs.Entity {
      */
     async adopStartBeastNet(stbConfigId: number, autoAdop: boolean, callback: (success: boolean, msg: string) => void) {
         const res = await AccountNetService.adopStartBeast(stbConfigId);
-        if (res.resultCode == ResultCode.OK) {
+        if (res.resultCode == NetErrorCode.Success) {
             if (!autoAdop)
                 oops.message.dispatchEvent(AccountEvent.CoinDataChange);
 
@@ -93,11 +120,11 @@ export class Account extends ecs.Entity {
             if (stbConfig) {
                 console.log("星兽配置:" + stbConfigId + "  收益类型: " + stbConfig.isIncome)
                 if (stbConfig.isIncome == IsIncome.Yes) {
-                    this.AccountModel.userInstbData.UserInstb.push(STBData);
+                    this.AccountModel.UserInstb.push(STBData);
                     console.log("领养收益星兽: ", STBData.id + " 名称:" + stbConfig.stbName);
                     oops.message.dispatchEvent(AccountEvent.AddInComeSTB, STBData.id);
                 } else {
-                    this.AccountModel.userInstbData.UserNinstb.push(STBData);
+                    this.AccountModel.UserNinstb.push(STBData);
                     console.log("领养无收益星兽: ", STBData.id + " 名称:" + stbConfig.stbName + " 自动领养:" + autoAdop);
                     oops.message.dispatchEvent(autoAdop ? AccountEvent.AutoAddUnIncomeSTB : AccountEvent.AddUnIncomeSTB, STBData.id);
                 }
@@ -108,6 +135,16 @@ export class Account extends ecs.Entity {
         callback(false, res.resultMsg);
     }
 
+    private OnRecevieMessage(cmd: number, data: any) {
+        if (cmd == NetCmd.UserNinstbType) {
+            const STBData: IStartBeastData = data;
+            let stbConfig = this.STBConfigMode.GetSTBConfigData(STBData.stbConfigID);
+            if (stbConfig) {
+                this.AccountModel.UserNinstb.push(STBData)
+                oops.message.dispatchEvent(AccountEvent.AutoAddUnIncomeSTB, STBData.id);
+            }
+        }
+    }
 
     /**
      * 合并无收益星兽
@@ -158,7 +195,7 @@ export class Account extends ecs.Entity {
      */
     async mergeIncomeSTBNet(stbID1: number, stbID2: number, isUpProb: number, callback: (success: boolean, msg: string) => void) {
         let res = await AccountNetService.mergeGoldSTB(stbID1, stbID2, isUpProb);
-        if (res.resultCode == ResultCode.OK) {
+        if (res.resultCode == NetErrorCode.Success) {
             // 删除合成的两个星兽
             this.AccountModel.delUserInComeSTB(stbID1);
             this.AccountModel.delUserInComeSTB(stbID2);
@@ -175,7 +212,7 @@ export class Account extends ecs.Entity {
             }
 
             // 更新宝石数量
-            if(isUpProb == 1)
+            if (isUpProb == 1)
                 oops.message.dispatchEvent(AccountEvent.CoinDataChange);
         }
         callback(false, res.resultMsg);
@@ -186,7 +223,7 @@ export class Account extends ecs.Entity {
     async changeSTBSlotIdNet(stbId: number, slotId: number, callback: (success: boolean) => void) {
         const res = await AccountNetService.swapPosition(stbId, slotId);
         if (res) {
-            let stbData = this.AccountModel.userInstbData.UserNinstb;
+            let stbData = this.AccountModel.UserNinstb;
             const index = stbData.findIndex((element) => element.id === stbId);
             if (index !== -1) {
                 stbData[index].stbPosition = slotId;
@@ -203,19 +240,19 @@ export class Account extends ecs.Entity {
      * @returns 存活时间, 0:已经死亡, >0:剩余存活时间(秒) -1:不限制存活时间
      */
     getSTBSurvivalSec(stbId: number): number {
-        let stbData = this.AccountModel.getUserSTBData(stbId);
-        if (stbData) {
-            const stbConfigID = stbData.stbConfigID;
-            let stbConfig = this.STBConfigMode.GetSTBConfigData(stbConfigID);
-            if (stbConfig) {
-                if (stbConfig.stbSurvival > 0) {
-                    const createdTime = new Date(stbData.createdAt);
-                    const diffTime = new Date().getTime() - createdTime.getTime();
-                    const elapsedSecs = Math.floor(diffTime / 1000);
-                    return Math.max(0, stbConfig.stbSurvival - elapsedSecs);
-                }
-            }
-        }
+        // let stbData = this.AccountModel.getUserSTBData(stbId);
+        // if (stbData) {
+        //     const stbConfigID = stbData.stbConfigID;
+        //     let stbConfig = this.STBConfigMode.GetSTBConfigData(stbConfigID);
+        //     if (stbConfig) {
+        //         if (stbConfig.stbSurvival > 0) {
+        //             const createdTime = new Date(stbData.createdAt);
+        //             const diffTime = new Date().getTime() - createdTime.getTime();
+        //             const elapsedSecs = Math.floor(diffTime / 1000);
+        //             return Math.max(0, stbConfig.stbSurvival - elapsedSecs);
+        //         }
+        //     }
+        // }
         return -1;
     }
 
@@ -226,14 +263,14 @@ export class Account extends ecs.Entity {
      * @returns 返回星兽数据
      */
     getUserSTBData(stbId: number): IStartBeastData | null {
-        let index = this.AccountModel.userInstbData.UserInstb.findIndex((element) => element.id === stbId);
+        let index = this.AccountModel.UserInstb.findIndex((element) => element.id === stbId);
         if (index !== -1) {
-            return this.AccountModel.userInstbData.UserInstb[index];
+            return this.AccountModel.UserInstb[index];
         }
 
-        index = this.AccountModel.userInstbData.UserNinstb.findIndex((element) => element.id === stbId);
+        index = this.AccountModel.UserNinstb.findIndex((element) => element.id === stbId);
         if (index !== -1) {
-            return this.AccountModel.userInstbData.UserNinstb[index];
+            return this.AccountModel.UserNinstb[index];
         }
         return null;
     }
@@ -252,16 +289,21 @@ export class Account extends ecs.Entity {
     /** 获取指定类型的星兽数据 */
     getSTBDataByConfigId(configId: number): IStartBeastData[] {
         let dataList: IStartBeastData[] = [];
-        this.AccountModel.userInstbData.UserNinstb.forEach((element) => {
-            if (element.stbConfigID == configId) {
-                dataList.push(element);
-            }
-        });
-        this.AccountModel.userInstbData.UserInstb.forEach((element) => {
-            if (element.stbConfigID == configId) {
-                dataList.push(element);
-            }
-        });
+        if (this.AccountModel.UserNinstb) {
+            this.AccountModel.UserNinstb.forEach((element) => {
+                if (element.stbConfigID == configId) {
+                    dataList.push(element);
+                }
+            });
+        }
+
+        if (this.AccountModel.UserInstb) {
+            this.AccountModel.UserInstb.forEach((element) => {
+                if (element.stbConfigID == configId) {
+                    dataList.push(element);
+                }
+            });
+        }
         return dataList;
     }
 

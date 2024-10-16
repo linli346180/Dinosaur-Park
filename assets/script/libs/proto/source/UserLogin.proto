@@ -1,0 +1,12 @@
+package proto;
+
+// 登录请求
+message UserLoginReq {
+    required string token = 1;
+    optional int32 serverId = 2;        // 登录游戏时 需要传递游戏的serverId
+    optional string machineId = 3;      // 登录设备号
+}
+// 登录响应
+message UserLoginResp {
+    optional int32 userId = 1;
+}

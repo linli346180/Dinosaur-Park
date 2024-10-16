@@ -5,6 +5,7 @@ import { UIID } from '../common/config/GameUIConfig';
 import { InviteNetService } from './InviteNet';
 import { InviteDataList } from './InviteData';
 import { InviteItemView } from './InviteItemView';
+import { assetManager } from 'cc';
 
 // TODO 导致项目无法正常运行浏览器预览，需要注释掉
 // import QRCode from 'qrcode';
@@ -49,13 +50,13 @@ export class InviteVeiw extends Component {
 
         let res = await InviteNetService.getInviteList();
         if (res) {
-            this.inviteData.inviteList = res.inviteList;
-            this.nofriend.active = this.inviteData.inviteList.length == 0;
+            this.inviteData.userInviteDetail = res.userInviteDetail;
+            this.nofriend.active = this.inviteData.userInviteDetail.length == 0;
             this.inviteContent.removeAllChildren();
-            for (const item of this.inviteData.inviteList) {
+            for (const item of this.inviteData.userInviteDetail) {
                 const itemNode = instantiate(this.inviteItem);
                 itemNode.setParent(this.inviteContent);
-                itemNode.getComponent(InviteItemView)?.initItem(item.inviteeUserName, "item.userIcon");
+                itemNode.getComponent(InviteItemView)?.initItem(item.inviteeUserName, item.avatarUrl);
             }
         }
     }
@@ -65,7 +66,7 @@ export class InviteVeiw extends Component {
     }
 
     openInviteLink() {
-        // TODO 调用原生分享
+        // TODO 调用原生分享s
     }
 
     copyInviteLink() {
@@ -98,4 +99,6 @@ export class InviteVeiw extends Component {
         //     console.error('生成二维码失败:', error);
         // }
     }
+
+  
 }

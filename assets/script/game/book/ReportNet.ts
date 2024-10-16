@@ -1,5 +1,6 @@
-import { HttpManager, ResultCode } from '../common/network/HttpManager';
-import { netConfig } from '../common/network/NetConfig';
+import { HttpManager } from '../../net/HttpManager';
+import { netConfig } from '../../net/custom/NetConfig';
+import { NetErrorCode } from '../../net/custom/NetErrorCode';
 
 export namespace ReportNetService {
 
@@ -11,7 +12,7 @@ export namespace ReportNetService {
         http.timeout = netConfig.Timeout;
 
         const response = await http.getUrl("tgapp/api/user/stb/codex?token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.log("获取星兽图鉴请求成功", response.res);
             return response.res;
         } else {

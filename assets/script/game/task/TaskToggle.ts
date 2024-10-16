@@ -1,9 +1,6 @@
-import { Label } from 'cc';
-import { Toggle } from 'cc';
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Label, Toggle, Enum } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { TaskEvent, TaskType } from './TaskDefine';
-import { Enum } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('TaskToggle')
@@ -14,13 +11,12 @@ export class TaskToggle extends Component {
     private toggle: Toggle = null!;
     private UnCheckLabel: Label = null!;
 
-
     start() {
         this.toggle = this.node.getComponent(Toggle)!;
         this.UnCheckLabel = this.node.getChildByName("UnCheckLabel")?.getComponent(Label)!;
         this.toggle?.node.on(Toggle.EventType.TOGGLE, this.onToggle, this);
-       
-        if(this.toggle.isChecked)
+
+        if (this.toggle.isChecked)
             this.UnCheckLabel.node.active = false;
     }
 

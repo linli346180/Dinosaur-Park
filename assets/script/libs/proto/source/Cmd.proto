@@ -1,0 +1,6 @@
+package proto;
+
+enum Cmd {
+  Push = 999;        // 服务器主动推送
+  UserLogin = 1000;  // 用户登陆
+}

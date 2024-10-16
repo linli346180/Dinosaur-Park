@@ -1,11 +1,7 @@
-import { Button } from 'cc';
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Button, Label, Sprite, SpriteFrame } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
-import { Label } from 'cc';
-import { Sprite } from 'cc';
 import { TableSTBConfig } from '../common/table/TableSTBConfig';
-import { SpriteFrame } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('DebrisResult')
@@ -40,5 +36,3 @@ export class DebrisResult extends Component {
         oops.gui.remove(UIID.DebrisResult);
     }
 }
-
-

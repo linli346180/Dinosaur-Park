@@ -2,10 +2,12 @@ import * as exp from "constants";
 
 
 export class InviteDataList {
-    inviteList: InviteData[] = [];
+    userInviteDetail: InviteData[] = [];
 }
 
 export interface InviteData {
     inviteeUserName : string;
+    avatarUrl:string;
+    inviteeUserInviteNum:number;
 }
 

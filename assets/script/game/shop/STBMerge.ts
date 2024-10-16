@@ -1,8 +1,6 @@
 import { Button, Toggle, _decorator, Component, Node } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
-import { AccountNetService } from '../account/AccountNet';
-import { AccountEvent } from '../account/AccountEvent';
 import { smc } from '../common/SingletonModuleComp';
 const { ccclass, property } = _decorator;
 
@@ -40,7 +38,7 @@ export class STBMerge extends Component {
         this.btn_close2?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_evolve?.node.on(Button.EventType.CLICK, this.onEvolve, this);
     }
-    
+
 
     public InitUI(firstStbID: number, twoStbID: number,) {
         this.stbID1 = firstStbID;
@@ -55,26 +53,8 @@ export class STBMerge extends Component {
     async onEvolve() {
         let isUpProb = this.tog_add.isChecked ? 1 : 2;
         smc.account.mergeIncomeSTBNet(this.stbID1, this.stbID2, isUpProb, (success) => {
-            this.showMergeResult(success);  
+            this.showMergeResult(success);
         });
-
-        // let mergeResponse: MergeResponse = await AccountNetService.mergeGoldSTB(this.stbID1, this.stbID2, isUpProb);
-        // if (mergeResponse) {
-        //     this.showMergeResult(mergeResponse.isSucc);
-
-        //     // 删除合成的两个星兽
-        //     smc.account.AccountModel.delUserInComeSTB(this.stbID1);
-        //     smc.account.AccountModel.delUserInComeSTB(this.stbID2);
-        //     oops.message.dispatchEvent(AccountEvent.DedIncomeSTB, this.stbID1);
-        //     oops.message.dispatchEvent(AccountEvent.DedIncomeSTB, this.stbID2);
-
-        //     // 添加合成后的星兽
-        //     if (mergeResponse.isSucc) {
-        //         smc.account.AccountModel.addInComeSTBData(mergeResponse.userInStb);
-        //         oops.message.dispatchEvent(AccountEvent.AddInComeSTB, mergeResponse.userInStb.id);
-        //     }
-        //     return;
-        // }
     }
 
     showMergeResult(isSucc: boolean) {

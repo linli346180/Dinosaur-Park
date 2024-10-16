@@ -3,10 +3,9 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { UIID } from '../common/config/GameUIConfig';
 const { ccclass, property } = _decorator;
 
-@ccclass('homeComp')
-export class homeComp extends Component {
-
-    @property(Button) 
+@ccclass('HomeView')
+export class HomeView extends Component {
+    @property(Button)
     btn_user: Button = null!;
     @property(Button)
     btn_email: Button = null!;
@@ -38,5 +37,4 @@ export class homeComp extends Component {
         this.btn_hatch?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Hatch) }, this);
         this.btn_invite?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Invite) }, this);
     }
-
 }

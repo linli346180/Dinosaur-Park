@@ -33,7 +33,7 @@
         "_value": true
       },
       "particle": {
-        "_value": true
+        "_value": false
       },
       "physics": {
         "_value": true,
@@ -86,7 +86,7 @@
         "_value": true
       },
       "video": {
-        "_value": true
+        "_value": false
       },
       "webview": {
         "_value": true
@@ -101,10 +101,10 @@
         "_value": false
       },
       "terrain": {
-        "_value": true
+        "_value": false
       },
       "light-probe": {
-        "_value": true
+        "_value": false
       },
       "tiled-map": {
         "_value": true
@@ -135,10 +135,8 @@
       "dragon-bones",
       "gfx-webgl",
       "intersection-2d",
-      "light-probe",
       "marionette",
       "meshopt",
-      "particle",
       "particle-2d",
       "physics-2d-box2d",
       "physics-ammo",
@@ -146,11 +144,9 @@
       "profiler",
       "skeletal-animation",
       "spine",
-      "terrain",
       "tiled-map",
       "tween",
       "ui",
-      "video",
       "websocket",
       "webview"
     ],

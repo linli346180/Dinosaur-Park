@@ -1,5 +1,4 @@
 import { _decorator, Component, Node, Animation, Button } from 'cc';
-import { KnapsackControlle } from './KnapsackControlle';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { AccountEvent } from '../account/AccountEvent';
 const { ccclass, property } = _decorator;

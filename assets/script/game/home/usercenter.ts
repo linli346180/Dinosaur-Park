@@ -4,6 +4,11 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { AccountEvent } from '../account/AccountEvent';
 import { UIID } from '../common/config/GameUIConfig';
 import { Toggle } from 'cc';
+import { Sprite } from 'cc';
+import { assetManager } from 'cc';
+import { ImageAsset } from 'cc';
+import { Texture2D } from 'cc';
+import { SpriteFrame } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('usercenter')
@@ -37,22 +42,38 @@ export class usercenter extends Component {
     @property(Toggle)
     toggle_sound: Toggle = null!;
 
+    @property(Sprite)
+    avatar: Sprite = null!;
+
+    @property(Button)
+    btn_cs01: Button = null!;
+    @property(Button)
+    btn_cs02: Button = null!;
+
     start() {
         this.initUI();
-    
+
         this.btn_clsoe.node.on(Button.EventType.CLICK, this.CloseUI, this);
         this.btn_nickname.node.on(Button.EventType.CLICK, this.ChangeNickNameClicked, this);
         this.btn_email.node.on(Button.EventType.CLICK, this.ChangeEmailClicked, this);
+        this.btn_language.node.on(Button.EventType.CLICK, this.ChangeLanguageClicked, this);
+        this.btn_cs01.node.on(Button.EventType.CLICK, this.customerService, this);
+        this.btn_cs02.node.on(Button.EventType.CLICK, this.customerService, this);
 
         this.toggle_music.node.on(Toggle.EventType.TOGGLE, this.onToggleMusic, this);
         this.toggle_sound.node.on(Toggle.EventType.TOGGLE, this.onToggleSound, this);
 
+        console.log("显示UI");
         oops.message.on(AccountEvent.ChangeNickName, this.onHandler, this);
         oops.message.on(AccountEvent.ChangeEmail, this.onHandler, this);
+        oops.message.on(AccountEvent.ChangeLanguage, this.onHandler, this);
     }
+
     onDestroy() {
+        console.log("销毁UI");
         oops.message.off(AccountEvent.ChangeNickName, this.onHandler, this);
         oops.message.off(AccountEvent.ChangeEmail, this.onHandler, this);
+        oops.message.off(AccountEvent.ChangeLanguage, this.onHandler, this);
     }
 
     initUI() {
@@ -60,9 +81,28 @@ export class usercenter extends Component {
         this.label_id.string = userData.id.toString();
         this.label_name.string = userData.name;
         this.label_email.string = userData.email;
-
         this.toggle_music.isChecked = oops.audio.switchMusic;
         this.toggle_sound.isChecked = oops.audio.switchEffect;
+        this.label_language.string = oops.language.languageNames[oops.language.current];
+        this.loadAvatar(userData.avatarPath);
+    }
+
+    private loadAvatar(url: string) {
+        if (!url || url.length === 0) {
+            return;
+        }
+
+        assetManager.loadRemote<ImageAsset>(url, (err, imageAsset) => {
+            if (err) {
+                console.error('Failed to load avatar:', err);
+                return;
+            }
+            const texture = new Texture2D();
+            texture.image = imageAsset;
+            const spriteFrame = new SpriteFrame();
+            spriteFrame.texture = texture;
+            this.avatar.spriteFrame = spriteFrame;
+        });
     }
 
     private onHandler(event: string, args: any) {
@@ -73,21 +113,27 @@ export class usercenter extends Component {
             case AccountEvent.ChangeEmail:
                 this.label_email.string = args;
                 break;
+            case AccountEvent.ChangeLanguage:
+                this.label_language.string = oops.language.languageNames[oops.language.current];
+                break;
             default:
                 break;
         }
     }
 
     ChangeNickNameClicked() {
-        smc.account.changeNickname("new nickname");
+        // smc.account.changeNickname("new nickname");
     }
 
     ChangeEmailClicked() {
-        smc.account.changeEmail("123@email.com");
+        // smc.account.changeEmail("123@email.com");
+    }
+
+    ChangeLanguageClicked() {
+        oops.gui.open(UIID.LanguageUI);
     }
 
     onToggleMusic(toggle: Toggle) {
-        console.log("onToggleMusic", toggle.isChecked);
         oops.audio.switchMusic = toggle.isChecked;
         oops.audio.save();
         if (toggle.isChecked) {
@@ -98,14 +144,17 @@ export class usercenter extends Component {
     }
 
     onToggleSound(toggle: Toggle) {
-        console.log("onToggleSound", toggle.isChecked);
         oops.audio.switchEffect = toggle.isChecked;
         oops.audio.save();
     }
 
     CloseUI() {
-        oops.gui.remove(UIID.User);
+        oops.gui.remove(UIID.User, false);
     }
+
+    private customerService() { 
+        const tips = oops.language.getLangByID("common_tips_Not_Enabled");
+        oops.gui.toast(tips);
+    }
+
 }
-
-

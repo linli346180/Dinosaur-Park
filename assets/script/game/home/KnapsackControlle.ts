@@ -9,6 +9,8 @@ import { IStartBeastData } from '../account/model/AccountModelComp';
 import { STBID } from '../character/STBDefine';
 import { tween } from 'cc';
 import { Tween } from 'cc';
+import { netChannel } from '../../net/custom/NetChannelManager';
+import { NetCmd } from '../../net/custom/NetErrorCode';
 const { ccclass, property } = _decorator;
 
 
@@ -63,10 +65,11 @@ export class KnapsackControlle extends Component {
         for (let i = 1; i <= this.maxslotNum; i++) {
             this.CreateSlotItem(i);
         }
-        smc.account.AccountModel.userInstbData.UserNinstb.forEach(element => {
-            this.CreateSTBItem(element);
-        });
-        this.autoAdoptBeast();
+        if (smc.account.AccountModel.UserNinstb && smc.account.AccountModel.UserNinstb.length > 0) {
+            smc.account.AccountModel.UserNinstb.forEach(element => {
+                this.CreateSTBItem(element);
+            });
+        }
     }
 
     private onHandler(event: string, args: any) {
@@ -197,7 +200,7 @@ export class KnapsackControlle extends Component {
             }
         }
         if (startNode == null || endNode == null) {
-            console.error("未找到匹配的星兽");
+            console.log("未找到匹配的星兽");
             return;
         }
         console.log("开始节点:" + startNode.name + " 结束节点:" + endNode.name);
@@ -231,7 +234,6 @@ export class KnapsackControlle extends Component {
         }, this.interval, macro.REPEAT_FOREVER, this.interval);
     };
 
-
     /**
      * 领养星兽
      * @param stbConfigId - 星兽配置ID 1-10
@@ -244,7 +246,7 @@ export class KnapsackControlle extends Component {
             return;
         }
         smc.account.adopStartBeastNet(stbConfigId, autoAdop, (success: boolean, msg: string) => {
-            if (!success) 
+            if (!success)
                 oops.gui.toast(msg);
         });
     }

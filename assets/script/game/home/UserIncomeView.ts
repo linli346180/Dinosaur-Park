@@ -23,8 +23,8 @@ export class UserIncomeView extends Component {
     gold_speed: Label = null!;
     @property(Label)
     gem_num: Label = null!;
-    @property(Label)
-    gem_speed: Label = null!;
+    // @property(Label)
+    // gem_speed: Label = null!;
 
     // 金币池数据
     private coinPoolVM: CoinPoolViewModel = new CoinPoolViewModel();
@@ -36,7 +36,6 @@ export class UserIncomeView extends Component {
 
         oops.message.on(AccountEvent.AddInComeSTB, this.onHandler, this);
         oops.message.on(AccountEvent.DedIncomeSTB, this.onHandler, this);
-        oops.message.on(AccountEvent.LoginSuccess, this.onHandler, this);
         oops.message.on(AccountEvent.UserCollectCoin, this.onHandler, this);
         this.coinPoolVM.Init();
         this.initUI();
@@ -46,7 +45,6 @@ export class UserIncomeView extends Component {
         switch (event) {
             case AccountEvent.AddInComeSTB:
             case AccountEvent.DedIncomeSTB:
-            case AccountEvent.LoginSuccess:
             case AccountEvent.UserCollectCoin:
                 this.initUI();
                 break
@@ -65,7 +63,7 @@ export class UserIncomeView extends Component {
 
     private initUI() {
         this.gold_speed.string = moneyUtil.formatMoney(Math.floor(this.coinPoolVM.GoldSpeed / 60)).toString() + "/s";
-        this.gem_speed.string = moneyUtil.formatMoney(Math.floor(this.coinPoolVM.gemSpeed / 60)).toString() + "/s";
+        // this.gem_speed.string = moneyUtil.formatMoney(Math.floor(this.coinPoolVM.gemSpeed / 60)).toString() + "/s";
         this.gold_num.string = moneyUtil.formatMoney(this.coinPoolVM.GoldNum);
         this.gem_num.string = moneyUtil.formatMoney(this.coinPoolVM.GemNum);
 

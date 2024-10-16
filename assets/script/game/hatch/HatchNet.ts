@@ -1,5 +1,6 @@
-import { HttpManager, ResponseData, ResultCode } from '../common/network/HttpManager';
-import { netConfig } from '../common/network/NetConfig';
+import { HttpManager} from '../../net/HttpManager';
+import { netConfig } from '../../net/custom/NetConfig';
+import { NetErrorCode } from '../../net/custom/NetErrorCode';
 
 
 export namespace HatchNetService {
@@ -12,7 +13,7 @@ export namespace HatchNetService {
         http.timeout = netConfig.Timeout;
 
         const response = await http.getUrl("tgapp/api/hatch/min/num?token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("获取孵蛋保底次数:", response.res);
             return response.res;
         } else {
@@ -29,7 +30,7 @@ export namespace HatchNetService {
         http.timeout = netConfig.Timeout;
 
         const response = await http.getUrl("tgapp/api/user/hatch/num?token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("获取用户孵化次数:", response.res);
             return response.res;
         } else {
@@ -46,7 +47,7 @@ export namespace HatchNetService {
         http.timeout = netConfig.Timeout;
 
         const response = await http.getUrl("tgapp/api/hatch/reward/sett?token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("获取孵蛋奖励预览:", response.res.reHatchProbRewardArr);
             return response.res.reHatchProbRewardArr;
         } else {
@@ -63,7 +64,7 @@ export namespace HatchNetService {
         http.timeout = netConfig.Timeout;
 
         const response = await http.getUrl("tgapp/api/hatch/num/price?token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("获取孵蛋次数价格:", response.res.hatchConfigArr);
             return response.res.hatchConfigArr
         } else {
@@ -84,7 +85,7 @@ export namespace HatchNetService {
         };
         const newParams = new URLSearchParams(params).toString();
         const response = await http.postUrl("tgapp/api/user/hatch?token=" + netConfig.Token, newParams);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("用户孵化请求成功:", response.res);
             return response.res;
         } else {
@@ -106,7 +107,7 @@ export namespace HatchNetService {
 
         const newParams = new URLSearchParams(params).toString();
         const response = await http.postUrl("tgapp/api/user/hatch/num/pur?token=" + netConfig.Token, newParams);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("购买用户孵蛋次数:", response.res);
             return response.res;
         } else {

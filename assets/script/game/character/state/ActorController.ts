@@ -44,6 +44,8 @@ export class ActorController extends Component {
         if (this.actor && this.actor.survival) {
             this.actor.survival.string = ` ${this.survivalSec} 秒`;
         }
+
+        // TODO 生命周期
         if (this.survivalSec > 0) {
             console.log("剩余生命周期:" + this.survivalSec)
             this.schedule(this.updateActorTime, 1.0, this.survivalSec, 0);
@@ -72,9 +74,11 @@ export class ActorController extends Component {
             console.log('时间到，执行相关逻辑');
             
             this.isSurvival = false;
-            this.actor?.stateMgr.transit(StateDefine.Idle);
-            smc.account.delUserSTBData(this.stbId)
-            oops.message.dispatchEvent(AccountEvent.DedIncomeSTB, this.stbId);
+
+            // 监听Sock消息
+            // this.actor?.stateMgr.transit(StateDefine.Idle);
+            // smc.account.delUserSTBData(this.stbId)
+            // oops.message.dispatchEvent(AccountEvent.DedIncomeSTB, this.stbId);
         }
     }
 

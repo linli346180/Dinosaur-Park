@@ -1,6 +1,4 @@
-import { Button } from 'cc';
-import { Label } from 'cc';
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Button, Label } from 'cc';
 import { AccountNetService } from '../account/AccountNet';
 import { IUserCoinData } from '../account/AccountDefine';
 import { moneyUtil } from '../common/utils/moneyUtil';
@@ -30,6 +28,10 @@ export class UserCoinView extends Component {
         oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
         this.initUI();
     }
+
+    onDestroy() {
+        oops.message.off(AccountEvent.CoinDataChange, this.onHandler, this);
+    }   
 
     private onHandler(event: string, args: any) {
         switch (event) {

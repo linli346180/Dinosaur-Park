@@ -42,12 +42,12 @@
         "trimType": "auto",
         "trimThreshold": 1,
         "rotated": false,
-        "offsetX": 0.5,
-        "offsetY": 0.5,
-        "trimX": 8,
+        "offsetX": -0.5,
+        "offsetY": 0,
+        "trimX": 9,
         "trimY": 0,
-        "width": 113,
-        "height": 127,
+        "width": 109,
+        "height": 128,
         "rawWidth": 128,
         "rawHeight": 128,
         "borderTop": 0,
@@ -61,17 +61,17 @@
         "meshType": 0,
         "vertices": {
           "rawPosition": [
-            -56.5,
-            -63.5,
+            -54.5,
+            -64,
             0,
-            56.5,
-            -63.5,
+            54.5,
+            -64,
             0,
-            -56.5,
-            63.5,
+            -54.5,
+            64,
             0,
-            56.5,
-            63.5,
+            54.5,
+            64,
             0
           ],
           "indexes": [
@@ -83,33 +83,33 @@
             3
           ],
           "uv": [
-            8,
+            9,
             128,
-            121,
+            118,
             128,
-            8,
-            1,
-            121,
-            1
+            9,
+            0,
+            118,
+            0
           ],
           "nuv": [
-            0.0625,
-            0.0078125,
-            0.9453125,
-            0.0078125,
-            0.0625,
+            0.0703125,
+            0,
+            0.921875,
+            0,
+            0.0703125,
             1,
-            0.9453125,
+            0.921875,
             1
           ],
           "minPos": [
-            -56.5,
-            -63.5,
+            -54.5,
+            -64,
             0
           ],
           "maxPos": [
-            56.5,
-            63.5,
+            54.5,
+            64,
             0
           ]
         },
@@ -129,6 +129,9 @@
     "hasAlpha": true,
     "type": "sprite-frame",
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "fc48576a-1930-4fab-a2db-825ac890b374@6c48a"
+    "redirect": "fc48576a-1930-4fab-a2db-825ac890b374@6c48a",
+    "compressSettings": {
+      "useCompressTexture": false
+    }
   }
 }

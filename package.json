@@ -10,5 +10,8 @@
   "description": "恐龙乐园",
   "name": "dinosaur-park",
   "uuid": "00d7d957-a3e8-4ad6-80f4-2fcfb235bca4",
-  "version": "3.6.3"
+  "version": "3.6.3",
+  "devDependencies": {
+    "@types/node": "^22.7.4"
+  }
 }

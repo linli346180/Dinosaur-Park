@@ -10,6 +10,8 @@ import { AsyncQueue, NextFunction } from "../../../../../extensions/oops-plugin-
 import { ecs } from "../../../../../extensions/oops-plugin-framework/assets/libs/ecs/ECS";
 import { ModuleUtil } from "../../../../../extensions/oops-plugin-framework/assets/module/common/ModuleUtil";
 import { Account } from "../../account/Account";
+import { AccountEvent } from "../../account/AccountEvent";
+import { GameEvent } from "../../common/config/GameEvent";
 import { UIID } from "../../common/config/GameUIConfig";
 import { smc } from "../../common/SingletonModuleComp";
 import { TableItemConfig } from "../../common/table/TableItemConfig";
@@ -34,7 +36,6 @@ export class InitResSystem extends ecs.ComblockSystem implements ecs.IEntityEnte
 
     entityEnter(e: Initialize): void {
         var queue: AsyncQueue = new AsyncQueue();
-
         /** 加载远程资源配置 */
         this.loadBundle(queue);
         // 加载自定义资源
@@ -45,7 +46,6 @@ export class InitResSystem extends ecs.ComblockSystem implements ecs.IEntityEnte
         this.loadCommon(queue);
         // 加载游戏内容加载进度提示界面
         this.onComplete(queue, e);
-
         queue.play();
     }
 
@@ -61,7 +61,7 @@ export class InitResSystem extends ecs.ComblockSystem implements ecs.IEntityEnte
                 await oops.res.loadBundle(oops.config.game.bundleServer, oops.config.game.bundleVersion);
             }
             else {
-                console.log("启用本地资源运行游戏"+oops.config.game.bundleName);
+                console.log("启用本地资源运行游戏" + oops.config.game.bundleName);
                 await oops.res.loadBundle(oops.config.game.bundleName);
             }
             next();
@@ -73,7 +73,6 @@ export class InitResSystem extends ecs.ComblockSystem implements ecs.IEntityEnte
         queue.push(async (next: NextFunction, params: any, args: any) => {
             // 加载多语言对应字体
             oops.res.load("language/font/" + oops.language.current, next);
-
             await JsonUtil.loadAsync(TableItemConfig.TableName);
             await JsonUtil.loadAsync(TablePrimaryDebrisConfig.TableName);
             await JsonUtil.loadAsync(TableMiddleDebrisConfig.TableName);
@@ -106,11 +105,9 @@ export class InitResSystem extends ecs.ComblockSystem implements ecs.IEntityEnte
     /** 加载完成进入游戏内容加载界面 */
     private onComplete(queue: AsyncQueue, e: Initialize) {
         queue.complete = async () => {
-            // 初始化账号数据
-            smc.account = ecs.getEntity<Account>(Account);
-            
             // 加载进度提示界面
             ModuleUtil.addViewUi(e, LoadingViewComp, UIID.Loading);
+            oops.message.dispatchEvent(GameEvent.APPInitialized)
             e.remove(InitResComp);
         };
     }

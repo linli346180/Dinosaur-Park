@@ -6,7 +6,7 @@ import { ReviveNetService } from './ReviveNet';
 import { DebrisConfigData, DebrisDetail, PuzzleID, UserDebrisData } from './DebrisData';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { DebrisResult } from './DebrisResult';
-import { ResultCode } from '../common/network/HttpManager';
+import { NetErrorCode } from '../../net/custom/NetErrorCode';
 
 const { ccclass, property } = _decorator;
 
@@ -151,7 +151,8 @@ export class DebrisView extends Component {
     checkAddDebris(root: Node) {
         let isComplete = true;
         root.children.forEach((child) => {
-            if (child.active) {
+            console.log("child.active", child.active, child.name);
+            if (child.active && child.name != 'level') {
                 isComplete = false;
                 return;
             }
@@ -186,7 +187,7 @@ export class DebrisView extends Component {
     /** 合成碎片 */
     async requestDebrisData() {
         let res = await ReviveNetService.clampDebris(this._index);
-        if (res.resultCode == ResultCode.OK) {
+        if (res.resultCode == NetErrorCode.Success) {
             var uic: UICallbacks = {
                 onAdded: (node: Node, params: any) => {
                     const widget = node.getComponent(DebrisResult);

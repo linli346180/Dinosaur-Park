@@ -8,7 +8,6 @@ export class TableSTBConfig {
 
     init(id: number) {
         var table = JsonUtil.get(TableSTBConfig.TableName);
-        console.log("TableSTBConfig: ", table);
         this.data = table[id];
         this.id = id;
     }

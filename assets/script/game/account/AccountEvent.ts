@@ -3,9 +3,8 @@ const { ccclass, property } = _decorator;
 
 /** 账号模块全局事件 */
 export enum AccountEvent {
-
-  /** 登陆成功 */
-  LoginSuccess = "LoginSuccess",
+  /** 切换多语言 */
+  ChangeLanguage = "ChangeLanguage",
 
   /** 获取到配置 */
   STBConfigSuccess = "STBConfigSuccess",

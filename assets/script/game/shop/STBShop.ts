@@ -1,14 +1,9 @@
-import { Button } from 'cc';
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Node, Button, Label, Prefab, instantiate } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
-import { IUserCoinData } from '../account/AccountDefine';
 import { AccountNetService } from '../account/AccountNet';
-import { Label } from 'cc';
 import { moneyUtil } from '../common/utils/moneyUtil';
 import { IsPur, PurConCoin, UserInstbConfigData } from '../account/model/STBConfigModeComp';
-import { Prefab } from 'cc';
-import { instantiate } from 'cc';
 import { STBPurItem } from './STBPurItem';
 import { smc } from '../common/SingletonModuleComp';
 import { AccountEvent } from '../account/AccountEvent';
@@ -29,10 +24,13 @@ export class STBPurShop extends Component {
     btn_close: Button = null!;
     private configDataList: UserInstbConfigData[] = [];
 
-    start() {
-        this.btn_close?.node.on(Button.EventType.CLICK, ()=>{oops.gui.remove(UIID.STBShop, false)}, this);
-        oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
+    onEnable() {
         this.initUI();
+    }
+
+    start() {
+        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.STBShop, false) }, this);
+        oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
     }
 
     onDestroy() {
@@ -46,11 +44,10 @@ export class STBPurShop extends Component {
                 break
         }
     }
-    
+
     async initCoinData() {
         const userCoinData = await AccountNetService.getUserCoinData()
         if (userCoinData) {
-            console.log("用户货币数据", userCoinData.gemsCoin);  
             this.gemNum.string = moneyUtil.formatMoney(userCoinData.gemsCoin);
         }
     }

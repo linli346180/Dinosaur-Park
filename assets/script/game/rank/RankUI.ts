@@ -6,10 +6,10 @@ const { ccclass, property } = _decorator;
 
 @ccclass('RankUI')
 export class RankUI extends Component {
-    private btn_close: Button = null!;
+    @property(Button)
+    btn_close: Button = null!;
 
     start() {
-        this.btn_close = this.node.getChildByName("btn_close")?.getComponent(Button)!;
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
     }
 

@@ -1,29 +1,23 @@
 import { _decorator, Component, Node, Prefab, Button, instantiate } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
+import { EmailItem } from './EmailItem';
 import { EmailNetService } from './EmailNet';
 import { EmailEvent, EmailListData, MailRecord } from './EmailDefine';
-import { EmailItem } from './EmailItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('EmailView')
 export class EmailView extends Component {
     @property(Prefab)
     itemPrefab: Prefab = null!;
-
     @property(Button)
     btn_close: Button = null!;
-
     @property(Button)
     btn_onekey: Button = null!;
-
     @property(Node)
     content: Node = null!;
-
     @property(Node)
     noMail: Node = null!;
-   
-
     private emailsData: EmailListData = new EmailListData();
 
     start() {
@@ -33,7 +27,7 @@ export class EmailView extends Component {
         this.initUI();
     }
 
-    protected onDestroy(): void {
+    onDestroy() {
         oops.message.off(EmailEvent.EmailUpdate, this.onHandler, this);
     }
 
@@ -45,17 +39,16 @@ export class EmailView extends Component {
         }
     }
 
-    closeUI() {
+    private closeUI() {
         oops.gui.remove(UIID.Email);
     }
 
-    initUI() {
+    private initUI() {
         this.content.removeAllChildren();
         EmailNetService.getEmailList().then((res) => {
             if (res) {
                 this.noMail.active = res.mailList.length == 0;
                 this.emailsData.mailList = res.mailList;
-                console.warn("邮件列表:", this.emailsData.mailList.length);
                 for (let i = 0; i < this.emailsData.mailList.length; i++) {
                     this.createEmailItem(this.emailsData.mailList[i]);
                 }
@@ -63,7 +56,7 @@ export class EmailView extends Component {
         });
     }
 
-    createEmailItem(mailRecord: MailRecord) {
+    private createEmailItem(mailRecord: MailRecord) {
         let item = instantiate(this.itemPrefab);
         if (item) {
             item.parent = this.content;
@@ -74,7 +67,7 @@ export class EmailView extends Component {
         }
     }
 
-    onOneKey() {
+    private onOneKey() {
         this.emailsData.mailList.forEach(async (mailRecord) => {
             await EmailNetService.readEmail(mailRecord.mailRecordId);
             await EmailNetService.clampEmail(mailRecord.mailRecordId, mailRecord.mailConfigId);

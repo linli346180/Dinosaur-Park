@@ -50,8 +50,8 @@ export class MapComponent extends Component {
 
     initUI() {
         this.itemNodes.clear();
-        this.userInstbData = smc.account.AccountModel.userInstbData.UserInstb;
-        if (this.userInstbData.length > 0) {
+        if (smc.account.AccountModel.UserInstb && smc.account.AccountModel.UserInstb.length > 0) {
+            this.userInstbData = smc.account.AccountModel.UserInstb;
             this.schedule(this.scheduleAddUserSTBItem, 0.5, this.userInstbData.length, 0);
         }
     }

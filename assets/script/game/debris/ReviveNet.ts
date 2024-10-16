@@ -1,5 +1,7 @@
-import { HttpManager, ResultCode } from '../common/network/HttpManager';
-import { netConfig } from '../common/network/NetConfig';
+import { Logger } from '../../Logger';
+import { HttpManager } from '../../net/HttpManager';
+import { netConfig } from '../../net/custom/NetConfig';
+import { NetErrorCode } from '../../net/custom/NetErrorCode';
 
 export namespace ReviveNetService {
 
@@ -11,8 +13,8 @@ export namespace ReviveNetService {
         http.timeout = netConfig.Timeout;
 
         const response = await http.getUrl("tgapp/api/debris?token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
-            console.warn("获取拼图配置请求成功:", response.res);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
+            Logger.logNet("获取拼图配置请求成功:", response.res);
             return response.res.debrisArr;
         } else {
             console.error("获取拼图配置请求异常", response);
@@ -28,11 +30,11 @@ export namespace ReviveNetService {
         http.timeout = netConfig.Timeout;
 
         const response = await http.getUrl("tgapp/api/user/debris?token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
-            console.warn("获取用户拼图碎片数据:", response.res);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
+            Logger.logNet("拼图碎片数据:", response.res);
             return response.res.userDebrisArr;
         } else {
-            console.error("获取用户拼图碎片数据请求异常", response);
+            console.error("拼图碎片数据请求异常", response);
             return null;
         }
     }
@@ -49,8 +51,8 @@ export namespace ReviveNetService {
         };
         const newParams = new URLSearchParams(params).toString();
         const response = await http.postUrl("tgapp/api/user/debris/synth?token=" + netConfig.Token, newParams);
-        if (response.isSucc && response.res.resultCode == ResultCode.OK) {
-            console.warn("拼图碎片合成:", response.res);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
+            Logger.logNet("拼图碎片合成:", response.res);
             return response.res;
         } else {
             console.error("拼图碎片合成", response);
