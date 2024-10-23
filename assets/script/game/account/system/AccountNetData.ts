@@ -6,7 +6,6 @@ import { oops } from '../../../../../extensions/oops-plugin-framework/assets/cor
 import { AccountNetService } from '../AccountNet';
 import { TGNetService } from '../../../telegram/TGNet';
 import { EDITOR } from 'cc/env';
-import { netChannel } from '../../../net/custom/NetChannelManager';
 import { GameEvent } from '../../common/config/GameEvent';
 import { sys } from 'cc';
 
@@ -24,6 +23,7 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
     }
 
     async entityEnter(entity: Account): Promise<void> {
+        console.log('当前平台:', sys.platform);
         if (EDITOR) {
             const response = await AccountNetService.LoginTestAccount();
             if (response) {
@@ -44,20 +44,30 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
 
         // 获取星兽配置数据
         const configDataRes = await AccountNetService.getStartBeastConfig();
-        if (configDataRes && configDataRes.userInstbData) {
+        if (configDataRes && configDataRes.userInstbData != null) {
             entity.STBConfigMode.instbConfigData = configDataRes.userInstbData;
         }
 
         // 获取用户星兽数据
-        const stbDataRes = await AccountNetService.GetUserSTBData();
-        if (stbDataRes && stbDataRes.userInstbData) {
-            // 收益星兽
-            if (stbDataRes.userInstbData.UserInstb) {
-                entity.AccountModel.UserInstb = stbDataRes.userInstbData.UserInstb;
+        const res = await AccountNetService.GetUserSTBData();
+        if (res && res.userInstbData != null) {
+            const instbData = res.userInstbData;
+
+            const UserInstb = instbData.UserInstb;
+            if (UserInstb != null) {
+                entity.AccountModel.UserInstb = UserInstb;
+            } else {
+                entity.AccountModel.UserInstb = [];
+                console.log("收益星兽为空");
             }
-            // 无收益星守
-            if (stbDataRes.userInstbData.UserNinstb) {
-                entity.AccountModel.UserNinstb = stbDataRes.userInstbData.UserNinstb;
+
+            const UserNinstb = instbData.UserNinstb;
+            if (UserNinstb != null) {
+                entity.AccountModel.UserNinstb = UserNinstb;
+            }
+            else {
+                entity.AccountModel.UserNinstb = [];
+                console.log("无收益星兽为空");
             }
         }
 

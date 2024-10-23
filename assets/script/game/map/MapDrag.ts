@@ -35,7 +35,7 @@ export class MapDrag extends Component {
     private _elasticClamp: number = 50;
     private _isFastSwipe: SwipeDirection = SwipeDirection.None;
     private _lastTime: number = 0;
-    private fastSwipeThreshold: number = 2;
+    private fastSwipeThreshold: number = 1.5;
 
     start() {
         this.node.on(Node.EventType.TOUCH_START, this.onNodeTouchStart, this);
@@ -86,7 +86,6 @@ export class MapDrag extends Component {
         if (this._isFastSwipe) {
             let mapId = this._isFastSwipe == SwipeDirection.Left ? this.currentMapID + 1 : this.currentMapID - 1;
             this.switchMap(mapId);
-            console.log("快速滑动");
             return;
         }
         this.switchMap(this.getClosestMapID());

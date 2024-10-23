@@ -15,7 +15,6 @@ export class InviteItemView extends Component {
     userName: Label = null!;
 
     initItem(userName: string, userIcon: string) {
-        console.log("userName"+ userName + "userIcon", userIcon);
         this.userName.string = userName;
         this.loadIcon(userIcon);
     }
@@ -25,15 +24,13 @@ export class InviteItemView extends Component {
             return;
         }
         assetManager.loadRemote<ImageAsset>(url, (err, imageAsset) => {
-            if (err) {
-                console.error('Failed to load avatar:', err);
-                return;
+            if (!err) {
+                const texture = new Texture2D();
+                texture.image = imageAsset;
+                const spriteFrame = new SpriteFrame();
+                spriteFrame.texture = texture;
+                this.userIcon.spriteFrame = spriteFrame;
             }
-            const texture = new Texture2D();
-            texture.image = imageAsset;
-            const spriteFrame = new SpriteFrame();
-            spriteFrame.texture = texture;
-            this.userIcon.spriteFrame = spriteFrame;
         });
     }
 }

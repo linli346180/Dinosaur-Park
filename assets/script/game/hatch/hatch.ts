@@ -37,30 +37,35 @@ export class HatchView extends Component {
     private _userData: UserHatchData = new UserHatchData();
 
     async onLoad() {
-        // 获取孵蛋保底次数
-        const hatchMinData = await HatchNetService.getHatchMinNum();
-        if (hatchMinData) {
-            this._userData.guaranteedNum = hatchMinData.hatchGuaranteedNum.guaranteedNum;
-            this.label_guaranteedNum.string = `Reward rare items for every ${this._userData.guaranteedNum} hatches`;
-        }
-        this.initUI();
-    }
-
-    start() {
-        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.Hatch) }, this);
+        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_RewardView?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.RewardView) }, this);
         this.btn_HatchOneTime?.node.on(Button.EventType.CLICK, () => { this.userHatch(1) }, this);
         this.btn_HatchTenTimes?.node.on(Button.EventType.CLICK, () => { this.userHatch(10) }, this);
         this.btn_BuyHatchTime?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.HatchShop) }, this);
         this.hatchAnim.on(Animation.EventType.FINISHED, this.OnAnimFinish, this);
         oops.message.on(UserHatchEvent.HatchNumChange, this.onHandler, this);
+
+        // 获取孵蛋保底次数
+        const res = await HatchNetService.getHatchMinNum();
+        if (res) {
+            this._userData.guaranteedNum = res.hatchGuaranteedNum.guaranteedNum;
+            this.label_guaranteedNum.string = `Reward rare items for every ${this._userData.guaranteedNum} hatches`;
+        }
+    }
+
+    protected onEnable(): void {
+        this.initUI();
     }
 
     onDestroy() {
         oops.message.off(UserHatchEvent.HatchNumChange, this.onHandler, this);
     }
 
-   private async initUI() {
+    private closeUI() {
+        oops.gui.remove(UIID.Hatch, false);
+    }
+
+    private async initUI() {
         const hatchNumData = await HatchNetService.getUserHatchNum();
         if (hatchNumData) {
             this._userData.remainNum = hatchNumData.userHatch.remainNum;

@@ -1,3 +1,4 @@
+import { Logger } from '../../Logger';
 import { HttpManager } from '../../net/HttpManager';
 import { netConfig } from '../../net/custom/NetConfig';
 import { NetErrorCode } from '../../net/custom/NetErrorCode';
@@ -13,10 +14,10 @@ export namespace ReportNetService {
 
         const response = await http.getUrl("tgapp/api/user/stb/codex?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.log("获取星兽图鉴请求成功", response.res);
+            Logger.logNet("星兽图鉴请:" + JSON.stringify(response.res) );
             return response.res;
         } else {
-            console.error("获取星兽图鉴请求异常", response);
+            console.error("星兽图鉴请请求异常", response);
             return null;
         }
     }

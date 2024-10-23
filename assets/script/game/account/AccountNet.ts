@@ -5,6 +5,7 @@ import { netConfig } from '../../net/custom/NetConfig';
 import { AccountType } from './AccountDefine';
 import { AccountEvent } from './AccountEvent';
 import { NetErrorCode } from '../../net/custom/NetErrorCode';
+import { Logger } from '../../Logger';
 
 export namespace AccountNetService {
 
@@ -105,8 +106,8 @@ export namespace AccountNetService {
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
         const response = await http.getUrl("tgapp/api/user/coin?token=" + netConfig.Token);
-        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.warn("货币数据请求成功", response.res.userCoin);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success && response.res.userCoin != null) {
+            console.warn("货币数据请求成功", response.res);
             return response.res.userCoin;
         } else {
             console.error("货币数据请求异常", response);
@@ -200,20 +201,38 @@ export namespace AccountNetService {
         }
     }
 
-    /** 领取用户收益 */
-    export async function UserCoinReceive() {
+    /** 领取用户金币收益 */
+    export async function UseCollectCoin() {
         const http = new HttpManager();
         http.server = netConfig.Server;
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
 
-        const response = await http.postUrl("tgapp/api/user/coin/receive?token=" + netConfig.Token);
+        const response = await http.postUrl("tgapp/api/user/goldc/receive?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.warn("领取用户收益:", response.res);
+            Logger.logNet("领取金币:" + response.res);
             oops.message.dispatchEvent(AccountEvent.CoinDataChange);
             return response.res;
         } else {
-            console.error("请求异常", response);
+            console.error("领取金币:", response);
+            return null;
+        }
+    }
+
+    /** 领取用户宝石收益 */
+    export async function UseCollectGem() {
+        const http = new HttpManager();
+        http.server = netConfig.Server;
+        http.token = netConfig.Token;
+        http.timeout = netConfig.Timeout;
+
+        const response = await http.postUrl("tgapp/api/user/gemsc/receive?token=" + netConfig.Token);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
+            Logger.logNet("领取宝石:" + response.res);
+            oops.message.dispatchEvent(AccountEvent.CoinDataChange);
+            return response.res;
+        } else {
+            console.error("领取宝石", response);
             return null;
         }
     }

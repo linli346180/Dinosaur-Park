@@ -29,39 +29,41 @@ export class TaskView extends Component {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         oops.message.on(TaskEvent.TaskClaimed, this.onHandler, this);
         oops.message.on(TaskEvent.TaskUpdate, this.onHandler, this);
-        this.initUI();
+        this.initUI(this.index);
     }
 
-    protected onDestroy(): void {
+    onDestroy() {
         oops.message.off(TaskEvent.TaskClaimed, this.onHandler, this);
         oops.message.off(TaskEvent.TaskUpdate, this.onHandler, this);
+    }
+
+    private closeUI() {
+        oops.gui.remove(UIID.Task, false);
     }
 
     private onHandler(event: string, args: any) {
         switch (event) {
             case TaskEvent.TaskUpdate:
                 this.index = args;
-                this.initUI();
+                this.initUI(this.index);
                 break;
             case TaskEvent.TaskClaimed:
                 break;
         }
     }
 
-    initUI() {
+    private async initUI(taskType:TaskType) {
         this.TaskItems = [];
         this.content.removeAllChildren();
-        console.log("initUI", this.index);
-        TaskNetService.getTaskData(this.index).then((res) => {
-            if (res) {
-                this.taskList.fillData(this.index, res.taskList);
+        const res = await TaskNetService.getTaskData(this.index);
+        if (res && res.taskList != null) {
+            this.taskList.fillData(this.index, res.taskList);
 
-                for (let i = 0; i < res.taskList.length; i++) {
-                    let taskData = res.taskList[i];
-                    this.crteateTaskItem(taskData);
-                }
+            for (let i = 0; i < res.taskList.length; i++) {
+                let taskData = res.taskList[i];
+                this.crteateTaskItem(taskData);
             }
-        });
+        }
     }
 
     crteateTaskItem(taskData: TaskData) {
@@ -74,9 +76,5 @@ export class TaskView extends Component {
                 this.TaskItems.push(taskItem);
             }
         }
-    }
-
-    closeUI() {
-        oops.gui.remove(UIID.Task);
     }
 }

@@ -1,18 +1,16 @@
-import { Button } from 'cc';
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Button,Label } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
-import { Label } from 'cc';
 import { AccountNetService } from '../account/AccountNet';
 import { IUserCoinData } from '../account/AccountDefine';
 import { moneyUtil } from '../common/utils/moneyUtil';
+import { smc } from '../common/SingletonModuleComp';
 const { ccclass, property } = _decorator;
 
 /** 宝石商店 */
 @ccclass('GemShop')
 export class GemShop extends Component {
     private btn_close: Button = null!;
-
     @property(Label)
     gemNum: Label = null!;
     @property(Button)
@@ -29,6 +27,7 @@ export class GemShop extends Component {
         if (coinData) {
             this.gemNum.string = moneyUtil.formatMoney(coinData.gemsCoin);
         }
+        smc.account.AccountModel.user
     }
 
     start() {

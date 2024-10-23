@@ -11,6 +11,7 @@ import { tween } from 'cc';
 import { Tween } from 'cc';
 import { netChannel } from '../../net/custom/NetChannelManager';
 import { NetCmd } from '../../net/custom/NetErrorCode';
+import { EDITOR } from 'cc/env';
 const { ccclass, property } = _decorator;
 
 
@@ -33,11 +34,10 @@ export class KnapsackControlle extends Component {
     private toSTBID: number = -1;
     private fromSlot: KnapsackSlot | null = null;
     private toSlot: KnapsackSlot | null = null;
-    private interval = 60;  // 自动领养星兽时间间隔
+    private interval = 30;  // 自动领养星兽时间间隔
 
     protected onLoad(): void {
         KnapsackControlle.instance = this;
-        this.idleTips.active = false;
     }
 
     start() {
@@ -69,6 +69,10 @@ export class KnapsackControlle extends Component {
             smc.account.AccountModel.UserNinstb.forEach(element => {
                 this.CreateSTBItem(element);
             });
+        }
+
+        if (EDITOR) {
+            this.autoAdoptBeast();
         }
     }
 
@@ -167,30 +171,22 @@ export class KnapsackControlle extends Component {
     }
 
     private showIdleTipAnim(show: boolean = true) {
-        if (!show) {
-            Tween.stopAllByTarget(this.idleTips);
-            this.idleTips.active = false;
-            return;
-        }
+        Tween.stopAllByTarget(this.idleTips);
+        this.idleTips.active = show;
+        if (!show) return;
 
         let startNode: Node | null = null;
         let endNode: Node | null = null;
-        let stbConfigId = -1;
-        let curSTBId = -1;
-
         for (let i = 0; i < this.slotContainer.children.length; i++) {
             const slotNode = this.slotContainer.children[i];
             const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);
             if (slotComp && !slotComp.IsSlotEmpty()) {
                 startNode = slotNode;
-                stbConfigId = slotComp.STBConfigId;
-                curSTBId = slotComp.STBId;
-
                 for (const item of this.SlotNodes) {
                     const itemComp = item.getComponent<KnapsackSlot>(KnapsackSlot);
                     if (itemComp && !itemComp.IsSlotEmpty()
-                        && itemComp.STBId != curSTBId
-                        && itemComp.STBConfigId == stbConfigId) {
+                        && itemComp.STBId != slotComp.STBId
+                        && itemComp.STBConfigId == slotComp.STBConfigId) {
                         endNode = item;
                         break;
                     }
@@ -199,28 +195,25 @@ export class KnapsackControlle extends Component {
                     break;
             }
         }
-        if (startNode == null || endNode == null) {
-            console.log("未找到匹配的星兽");
-            return;
-        }
+        if (endNode == null) return;
         console.log("开始节点:" + startNode.name + " 结束节点:" + endNode.name);
         this.moveToDest(this.idleTips, startNode, endNode);
     }
 
     private moveToDest(tipsNode: Node, startNode: Node, endNode: Node) {
-        tipsNode.active = true;
         const startWorldPos = startNode.getWorldPosition();
         const endWorldPos = endNode.getWorldPosition();
         tipsNode.setWorldPosition(startWorldPos);
         const moveAction = tween(tipsNode)
+            .delay(1)
             .to(1.5, { worldPosition: endWorldPos })
             .delay(1)
             .call(() => {
                 tipsNode.setWorldPosition(startWorldPos);
             });
         const repeatAction = tween(tipsNode)
-            .repeatForever(moveAction);
-        repeatAction.start();
+            .repeatForever(moveAction)
+            .start();
     }
 
     /**
@@ -229,7 +222,6 @@ export class KnapsackControlle extends Component {
     private autoAdoptBeast() {
         this.schedule(() => {
             console.log("触发自动领养星兽");
-            // TODO: 接口不正确
             this.AdopStartBeast(STBID.STB_Gold_Level1, true)
         }, this.interval, macro.REPEAT_FOREVER, this.interval);
     };
@@ -345,6 +337,7 @@ export class KnapsackControlle extends Component {
 
     showDragTipAnim(slotId: number, isShow: boolean) {
         if (isShow) {
+            // 获取星兽配置ID
             let stbConfigId = -1;
             for (const slotNode of this.SlotNodes) {
                 const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);
@@ -352,19 +345,17 @@ export class KnapsackControlle extends Component {
                     stbConfigId = slotComp.STBConfigId;
                 }
             }
+
             if (stbConfigId == -1) return;
             for (const slotNode of this.SlotNodes) {
                 const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);
-                if (slotComp && slotComp.STBConfigId == stbConfigId) {
+                if (slotComp && slotId != slotComp.slotId && slotComp.STBConfigId == stbConfigId) {
                     slotComp.showDragTip(isShow);
                 }
             }
         } else {
             for (const slotNode of this.SlotNodes) {
-                const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);
-                if (slotComp) {
-                    slotComp.showDragTip(isShow);
-                }
+                slotNode.getComponent<KnapsackSlot>(KnapsackSlot)?.showDragTip(isShow);
             }
         }
     }

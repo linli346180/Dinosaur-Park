@@ -1,14 +1,8 @@
-import { _decorator, Component, Node, Button, Label } from 'cc';
+import { _decorator, Component, Node, Button, Label, Toggle, Sprite, assetManager, ImageAsset, Texture2D, SpriteFrame } from 'cc';
 import { smc } from '../common/SingletonModuleComp';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { AccountEvent } from '../account/AccountEvent';
 import { UIID } from '../common/config/GameUIConfig';
-import { Toggle } from 'cc';
-import { Sprite } from 'cc';
-import { assetManager } from 'cc';
-import { ImageAsset } from 'cc';
-import { Texture2D } from 'cc';
-import { SpriteFrame } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('usercenter')
@@ -152,7 +146,7 @@ export class usercenter extends Component {
         oops.gui.remove(UIID.User, false);
     }
 
-    private customerService() { 
+    private customerService() {
         const tips = oops.language.getLangByID("common_tips_Not_Enabled");
         oops.gui.toast(tips);
     }

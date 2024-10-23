@@ -99,8 +99,6 @@ export namespace bt {
         }
     }
 
-
-
     /** 翻转节点的结果 */
     export class InvertResultDecorator extends Decorator {
         decroateResult(result: ExecuteResult) {

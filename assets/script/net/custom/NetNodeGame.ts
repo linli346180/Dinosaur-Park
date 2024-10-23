@@ -9,29 +9,11 @@ import { Logger } from "../../Logger";
 import { CallbackObject, IRequestProtocol, IResponseProtocol, NetCallFunc } from "../NetInterface";
 import { NetNode, WebSocketReturn } from "../NetNode";
 import { WebSock } from "../WebSock";
-import { NetProtocolJson } from "../protocol/NetProtocolJson";
-import { NetProtocolProtobuf } from "../protocol/NetProtocolProtobuf";
-import { netChannel } from "./NetChannelManager";
-import { NetCmd, NetErrorCode } from "./NetErrorCode";
+import { NetErrorCode } from "./NetErrorCode";
+import { GameJson } from "./NetGameProtocol";
 import { NetGameTips } from "./NetGameTips";
 
-/** 自定义通讯协议 */
-class GameProtocol extends NetProtocolProtobuf {
-    async onHearbeat() {
-        // var ret = await netChannel.game.req(proto.ClientCmd.HEART.toString(), null!, "GameHeartResp");
-        // if (ret.isSucc) {
-        //     console.log(ret.res);
-        // }
-    }
-}
 
-/** 自定义通讯协议 */
-class GameJson extends NetProtocolJson {
-    async onHearbeat() {
-        // Logger.logNet("发送心跳包");
-        netChannel.game.req(NetCmd.HeartBeatType, "GameHeartReq", "GameHeartResp");
-    }
-}
 
 /** 网络节点扩展 */
 export class NetNodeGame extends NetNode {

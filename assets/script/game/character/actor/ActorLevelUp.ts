@@ -16,9 +16,12 @@ export class ActorAnimComp extends Component {
         this.idleAnim.on(Animation.EventType.FINISHED, this.onAnimationFinished, this);
     }
 
+    onDestroy() {
+        this.idleAnim.off(Animation.EventType.FINISHED, this.onAnimationFinished, this);
+    }
+
     public InitUI(stbConfigID: number) {
-        console.log("ActorAnimComp InitUI stbConfigID = ", stbConfigID);
-        if(stbConfigID == -1){
+        if(stbConfigID <= 0){
             this.idleAnim.stop();
             return;
         }

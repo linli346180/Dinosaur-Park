@@ -14,8 +14,11 @@ export class CheckIdleState extends Component {
 
     start() {
         this.node.on(Input.EventType.KEY_DOWN, this.resetTimer, this);
+        this.node.on(Input.EventType.KEY_UP, this.resetTimer, this);
         this.node.on(Input.EventType.MOUSE_DOWN, this.resetTimer, this);
+        this.node.on(Input.EventType.MOUSE_UP, this.resetTimer, this);
         this.node.on(Input.EventType.TOUCH_START, this.resetTimer, this);
+        this.node.on(Input.EventType.TOUCH_END, this.resetTimer, this);
         this.startNoOperationCheck();
     }
 
@@ -23,6 +26,7 @@ export class CheckIdleState extends Component {
         this.lastActivityTime = Date.now();
         if (this.noOperationTimer !== null) {
             clearTimeout(this.noOperationTimer);
+            this.noOperationTimer = null;
             oops.message.dispatchEvent(AccountEvent.UserOperation);
         }
         this.startNoOperationCheck();

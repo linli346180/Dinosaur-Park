@@ -38,6 +38,9 @@ export class EmailDetail extends Component {
     }
 
     initUI(mailRecord: MailRecord) {
+        if (mailRecord == null)
+            return;
+
         this.mailRecord = mailRecord;
         // 设置邮件已读状态
         if (this.mailRecord.readState == EmailReadState.unread) {

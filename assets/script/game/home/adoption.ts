@@ -3,7 +3,6 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { IsPur, PurConCoin, UserInstbConfigData } from '../account/model/STBConfigModeComp';
 import { resLoader } from '../../../../extensions/oops-plugin-framework/assets/core/common/loader/ResLoader';
 import { KnapsackControlle } from './KnapsackControlle';
-import { AccountNetService } from '../account/AccountNet';
 import { smc } from '../common/SingletonModuleComp';
 const { ccclass, property } = _decorator;
 
@@ -19,6 +18,8 @@ export class AdoptionView extends Component {
     price: Label = null!;
     @property(Sprite)
     beast: Sprite = null!;
+    @property(Label)
+    level:Label = null!;
 
     private _index: number = 0;
     private _configDataList: UserInstbConfigData[] = [];
@@ -28,14 +29,14 @@ export class AdoptionView extends Component {
         this.btn_adopt_one.node.on(Button.EventType.CLICK, this.onAdoptOne, this);
         this.btn_left.node.on(Button.EventType.CLICK, this.onLeft, this);
         this.btn_right.node.on(Button.EventType.CLICK, this.onRight, this);
+
         this.getSTBConfig_PurGold();
         this._index = oops.storage.getNumber("STBConfigIndex", 0);
-        const path = "gui/game/texture/adoption/";
-        resLoader.loadDir("bundle", path, SpriteFrame, (err: any, assets: any) => {
+        resLoader.loadDir("bundle", "gui/game/texture/adoption/", SpriteFrame, (err: any, assets: any) => {
             this._spriteFrames = assets.sort((a: any, b: any) => a.name.localeCompare(b.name));
             this.beast.spriteFrame = this._spriteFrames[this._index];
             this.InitUI();
-        });
+        });        
     }
 
     InitUI() {
@@ -43,7 +44,6 @@ export class AdoptionView extends Component {
     }
 
     onAdoptOne() {
-        // console.log("领养星兽:" + this._index + "  id:" + this._configDataList[this._index].id);
         KnapsackControlle.instance?.AdopStartBeast(this._configDataList[this._index].id);
     }
 
@@ -58,11 +58,13 @@ export class AdoptionView extends Component {
 
     changeSTBConfig() {
         this._index = math.clamp(this._index, 0, this._configDataList.length - 1);
-        oops.storage.set("STBConfigIndex", this._index);
+        this.level.string = this._configDataList[this._index].id.toString();
         this.price.string = this._configDataList[this._index].purConCoinNum.toString();
         if (this._spriteFrames.length > this._index) {
             this.beast.spriteFrame = this._spriteFrames[this._index];
         }
+
+        oops.storage.set("STBConfigIndex", this._index);
     }
 
     getSTBConfig_PurGold() {

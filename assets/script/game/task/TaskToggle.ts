@@ -29,5 +29,3 @@ export class TaskToggle extends Component {
         }
     }
 }
-
-

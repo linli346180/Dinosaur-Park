@@ -49,6 +49,7 @@ export class LoadingViewComp extends CCVMParentComp {
     private onHandler(event: string, args: any) {
         switch (event) {
             case GameEvent.LoginSuccess:
+                console.log("登录成功 关闭加载界面");
                 this.loginSuccess = true;
                 this.onCompleteCallback();
                 break;

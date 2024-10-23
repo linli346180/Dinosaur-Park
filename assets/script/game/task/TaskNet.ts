@@ -13,7 +13,7 @@ export namespace TaskNetService {
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
 
-        const response = await http.getUrl(`tgapp/api/user/task/list?taskType=${taskType}&token=${netConfig.Token}`);  
+        const response = await http.getUrl(`tgapp/api/user/task/list?taskType=${taskType}&token=${netConfig.Token}`);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("获取任务列表:", response.res);
             return response.res;
@@ -34,8 +34,7 @@ export namespace TaskNetService {
             'taskProgressId': taskProgressId.toString()
         };
         const newParams = new URLSearchParams(params).toString();
-        console.log("newParams", newParams);
-        const response = await http.getUrl("tgapp/api/user/task/receive?token="+netConfig.Token, newParams);
+        const response = await http.postUrl("tgapp/api/user/task/receive?token=" + netConfig.Token, newParams);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("领取任务奖励成功:", response.res);
             return response.res;

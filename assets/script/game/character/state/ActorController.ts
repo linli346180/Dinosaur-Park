@@ -1,19 +1,14 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, math, v3, Vec2, Color } from 'cc';
 import { Actor } from './Actor';
 import { StateDefine } from './StateDefine';
 import { Idle } from './Idle';
 import { Run } from './Run';
-import { math } from 'cc';
 import { bt } from '../ai/BehaviourTree';
-import { v3 } from 'cc';
 import { BlackboardKey } from '../ai/BlackboardKey';
-import { MoveToDest, SetMoveDest, StayIdle, Wait } from '../ai/Action';
-import { Vec2 } from 'cc';
+import { MoveToDest, SetMoveDest, StayIdle, WaitAction } from '../ai/Action';
 import { IStartBeastData } from '../../account/model/AccountModelComp';
 import { smc } from '../../common/SingletonModuleComp';
-import { Color } from 'cc';
-import { oops } from '../../../../../extensions/oops-plugin-framework/assets/core/Oops';
-import { AccountEvent } from '../../account/AccountEvent';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('ActorController')
@@ -64,7 +59,7 @@ export class ActorController extends Component {
                 this.actor.survival.string = ` ${this.survivalSec} 秒`;
             }
 
-            if(this.survivalSec<=3){
+            if (this.survivalSec <= 3) {
                 if (this.actor && this.actor.survival) {
                     this.actor.survival.color = Color.RED;
                 }
@@ -72,7 +67,7 @@ export class ActorController extends Component {
         } else {
             this.unschedule(this.updateActorTime);
             console.log('时间到，执行相关逻辑');
-            
+
             this.isSurvival = false;
 
             // 监听Sock消息
@@ -100,7 +95,8 @@ export class ActorController extends Component {
         // wait for nothing 
         let idleSeq = new bt.Sequence();
         idleSeq.addChild(new StayIdle());
-        let wait = new Wait();
+        
+        let wait = new WaitAction();
         wait.interval = 5.0;
         idleSeq.addChild(wait);
         idleSeq.addChild(new SetMoveDest());

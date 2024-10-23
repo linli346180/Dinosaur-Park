@@ -1,12 +1,7 @@
-import { v2 } from 'cc';
-import { Vec2 } from 'cc';
-import { _decorator, Component, Node, RigidBody2D, CircleCollider2D, Collider2D, Animation } from 'cc';
+import { _decorator, Component, Node, RigidBody2D, CircleCollider2D, Collider2D, Animation, v2, Vec2, Sprite, Quat, Label } from 'cc';
 import { StateMachine } from './StateMachine';
 import { StateDefine } from './StateDefine';
-import { Sprite } from 'cc';
 import { mathutil } from '../../common/utils/MathUtil';
-import { Quat } from 'cc';
-import { Label } from 'cc';
 const { ccclass, property, requireComponent, disallowMultiple } = _decorator;
 
 @ccclass('Actor')
@@ -23,7 +18,7 @@ export class Actor extends Component {
     @property(Sprite)
     mainRenderer: Sprite = null!;
     @property(Label)
-    survival:Label = null!;
+    survival: Label = null!;
 
     @property
     linearSpeed: number = 3;    // 移动速度
@@ -40,7 +35,7 @@ export class Actor extends Component {
     update(deltaTime: number) {
         this.stateMgr.update(deltaTime);
         if (this.input.x < 0) {
-            this.mainRenderer.node.rotation = Quat.IDENTITY ;
+            this.mainRenderer.node.rotation = Quat.IDENTITY;
         } else if (this.input.x > 0) {
             this.mainRenderer.node.rotation = mathutil.ROT_Y_180;
         }

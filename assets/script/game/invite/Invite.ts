@@ -1,17 +1,14 @@
-import { _decorator, Component, Node, Button, Prefab, Sprite, Texture2D, ImageAsset, SpriteFrame,instantiate } from 'cc';
-
+import { _decorator, Component, Node, Button, Prefab, Sprite, Texture2D, ImageAsset, SpriteFrame, instantiate, assetManager } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { InviteNetService } from './InviteNet';
 import { InviteDataList } from './InviteData';
 import { InviteItemView } from './InviteItemView';
-import { assetManager } from 'cc';
-
-// TODO 导致项目无法正常运行浏览器预览，需要注释掉
-// import QRCode from 'qrcode';
+import qr from 'qrcode-generator';
 
 const { ccclass, property } = _decorator;
 
+/** 邀请界面 */
 @ccclass('InviteVeiw')
 export class InviteVeiw extends Component {
     @property(Prefab)
@@ -26,7 +23,6 @@ export class InviteVeiw extends Component {
     inviteContent: Node = null!;
     @property(Node)
     nofriend: Node = null!;
-
     @property(Sprite)
     icon: Sprite = null!;
 
@@ -37,39 +33,47 @@ export class InviteVeiw extends Component {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_invite?.node.on(Button.EventType.CLICK, this.openInviteLink, this);
         this.btn_copy?.node.on(Button.EventType.CLICK, this.copyInviteLink, this);
-        this.initUI();
+        this.initQRCode()
     }
 
-    async initUI() {
-        // TODO 生成二维码
-        InviteNetService.getCopyLink().then((res) => {
-            this.inviteLink = res.copyInviteLinkReturn.inviteLink;
-            console.log("邀请链接", this.inviteLink);
-            this.generateQRCode(this.inviteLink);
-        });
-
-        let res = await InviteNetService.getInviteList();
-        if (res) {
-            this.inviteData.userInviteDetail = res.userInviteDetail;
-            this.nofriend.active = this.inviteData.userInviteDetail.length == 0;
-            this.inviteContent.removeAllChildren();
-            for (const item of this.inviteData.userInviteDetail) {
-                const itemNode = instantiate(this.inviteItem);
-                itemNode.setParent(this.inviteContent);
-                itemNode.getComponent(InviteItemView)?.initItem(item.inviteeUserName, item.avatarUrl);
-            }
-        }
+    onEnable() {
+        this.initInviteList();
     }
 
     closeUI() {
-        oops.gui.remove(UIID.Invite);
+        oops.gui.remove(UIID.Invite, false);
     }
 
-    openInviteLink() {
-        // TODO 调用原生分享s
+    private initQRCode() {
+        InviteNetService.getCopyLink().then((res) => {
+            if (res && res.copyInviteLinkReturn.inviteLink != null) {
+                this.inviteLink = res.copyInviteLinkReturn.inviteLink;
+                this.generateQRCode(this.inviteLink);
+            }
+        });
     }
 
-    copyInviteLink() {
+    private initInviteList() {
+        this.inviteContent.removeAllChildren();
+        InviteNetService.getInviteList().then((res) => {
+            if (res && res.userInviteDetail != null) {
+                this.inviteData.userInviteDetail = res.userInviteDetail;
+                this.nofriend.active = this.inviteData.userInviteDetail.length == 0;
+                for (const item of this.inviteData.userInviteDetail) {
+                    const itemNode = instantiate(this.inviteItem);
+                    itemNode.setParent(this.inviteContent);
+                    itemNode.getComponent(InviteItemView)?.initItem(item.inviteeUserName, item.avatarUrl);
+                }
+            }
+        })
+    }
+
+    private openInviteLink() {
+        let url = 'https://t.me/share/url?url=' + this.inviteLink;
+        window.open(url);
+    }
+
+    private copyInviteLink() {
         if (navigator.clipboard) {
             navigator.clipboard.writeText(this.inviteLink).then(() => {
                 oops.gui.toast("邀请链接已拷贝到剪切板");
@@ -81,24 +85,24 @@ export class InviteVeiw extends Component {
         }
     }
 
+    private generateQRCode(qrCodeUrl: string) {
+        const url = qrCodeUrl;
+        const qrCode = qr(0, 'M');
+        qrCode.addData(url);
+        qrCode.make();
 
-    // 生成二维码
-    async generateQRCode(text: string) {
-        // try {
-        //     const url = await QRCode.toDataURL(text);
-        //     const image = new Image();
-        //     image.src = url;
-        //     image.onload = () => {
-        //         const texture = new Texture2D();
-        //         const imageAsset = new ImageAsset(image);
-        //         texture.image = imageAsset;
-        //         this.icon.spriteFrame = new SpriteFrame();
-        //         this.icon.spriteFrame.texture = texture;
-        //     };
-        // } catch (error) {
-        //     console.error('生成二维码失败:', error);
-        // }
+        const dataURL = qrCode.createDataURL(4, 4);
+        const img = new Image();
+        img.src = dataURL;
+
+        assetManager.loadRemote(dataURL, { ext: '.png' }, (err, imageAsset: ImageAsset) => {
+            if (!err) {
+                const spriteFrame = new SpriteFrame();
+                const texture = new Texture2D();
+                texture.image = imageAsset;
+                spriteFrame.texture = texture;
+                this.icon.spriteFrame = spriteFrame;
+            }
+        });
     }
-
-  
 }

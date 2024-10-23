@@ -1,13 +1,10 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Vec3, v3 } from 'cc';
 import { bt } from './BehaviourTree';
 import { BlackboardKey } from './BlackboardKey';
 import { Actor } from '../state/Actor';
-import { Vec3 } from 'cc';
 import { StateDefine } from '../state/StateDefine';
-import { v3 } from 'cc';
 import { ActorController } from '../state/ActorController';
 import { ExecuteResult, markFail, markRunning, markSuccess } from './ExecuteResult';
-const { ccclass, property } = _decorator;
 
 /** 移动到指定的位置 */
 export class MoveToDest extends bt.Action {
@@ -31,7 +28,7 @@ export class MoveToDest extends bt.Action {
         // 添加距离阈值检查
         const distanceThreshold = 5.0; // 你可以根据需要调整这个阈值
         let movedDistance = dir.length();
-        if (isDrag|| distance < distanceThreshold || dur < 0) {
+        if (isDrag || distance < distanceThreshold || dur < 0) {
             markSuccess(result);
             result.blackboard.delete(BlackboardKey.MoveDest);
             actor.stateMgr.transit(StateDefine.Idle);
@@ -65,7 +62,7 @@ export class StayIdle extends bt.Action {
 }
 
 /** 等待一定时间 */
-export class Wait extends bt.Action {
+export class WaitAction extends bt.Action {
     elapsed: number = 0;
     interval: number = 1;
     start: boolean = false;

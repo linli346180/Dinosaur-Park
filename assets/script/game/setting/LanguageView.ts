@@ -46,6 +46,7 @@ export class LanguageView extends Component {
     closeUI() {
         oops.language.setLanguage(this._language , (success) => {
             if (success){
+                oops.storage.set("language", this._language);
                 oops.message.dispatchEvent(AccountEvent.ChangeLanguage);
                 console.log("切换多语言" + name);
             } 

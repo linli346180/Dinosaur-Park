@@ -1,9 +1,7 @@
-import { Button } from 'cc';
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Node, Button, Label } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { EmailRewardState, MailRecord } from './EmailDefine';
-import { Label } from 'cc';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { EmailDetail } from './EmailDetail';
 const { ccclass, property } = _decorator;
@@ -24,7 +22,6 @@ export class EmailItem extends Component {
     btn_unclaimed: Button = null!;
     @property(Button)
     btn_claimed: Button = null!;
-
     @property(Label)
     mailTitle: Label = null!;
     @property(Label)
@@ -40,7 +37,7 @@ export class EmailItem extends Component {
     }
 
     onClaimed() {
-        console.log("查看邮件")
+        // console.log("查看邮件")
         var uic: UICallbacks = {
             onAdded: (node: Node, params: any) => {
                 const emailDetail = node.getComponent(EmailDetail);
@@ -60,10 +57,8 @@ export class EmailItem extends Component {
             this.btn_unclaimed.node.active = false;
             this.icon_unclaimed.active = false;
         }
-
         this.num.string = 'X' + this.mailRecord.rewards.length.toString();
         this.mailTitle.string = this.mailRecord.mailTitle;
-
         this.mailContent.string = this.checkLabelMaxLength(this.mailRecord.mailContent, 19);
         const date = new Date(this.mailRecord.mailTime * 1000);
         this.mailTime.string = date.toLocaleString();
@@ -76,5 +71,3 @@ export class EmailItem extends Component {
         return content;
     }
 }
-
-

@@ -1,7 +1,7 @@
 import { _decorator, Component, Button,Label,Sprite,SpriteFrame } from 'cc';
-import { TaskData, TaskEvent, TaskStatus } from './TaskDefine';
-import { TaskNetService } from './TaskNet';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
+import { TaskNetService } from './TaskNet';
+import { TaskData, TaskEvent, TaskStatus } from './TaskDefine';
 import { TableItemConfig } from '../common/table/TableItemConfig';
 import { moneyUtil } from '../common/utils/moneyUtil';
 import { UIID } from '../common/config/GameUIConfig';
@@ -57,11 +57,13 @@ export class TaskItem extends Component {
     }
 
     closeUI() {
-        oops.gui.remove(UIID.Task);
+        oops.gui.remove(UIID.Task, false);
     }
 
     onClaim() {
-        TaskNetService.claimTaskReward(this.taskData.taskCompileConditionId, this.taskData.taskProgressId).then((res) => {
+        const CompileConditionId = this.taskData.taskCompileConditionId;
+        const taskProgressId = this.taskData.taskProgressId;
+        TaskNetService.claimTaskReward(CompileConditionId, taskProgressId).then((res) => {
             if(res){
                 oops.message.dispatchEvent(TaskEvent.TaskClaimed, this.taskData.taskId);
                 this.taskData.taskState = TaskStatus.Claimed;

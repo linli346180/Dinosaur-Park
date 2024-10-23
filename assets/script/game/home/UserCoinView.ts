@@ -31,7 +31,7 @@ export class UserCoinView extends Component {
 
     onDestroy() {
         oops.message.off(AccountEvent.CoinDataChange, this.onHandler, this);
-    }   
+    }
 
     private onHandler(event: string, args: any) {
         switch (event) {
@@ -57,5 +57,3 @@ export class UserCoinView extends Component {
         console.log("buyusdt");
     }
 }
-
-

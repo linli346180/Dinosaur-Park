@@ -24,12 +24,13 @@ export class STBReportView extends Component {
     diamondContainer: Node = null!;
     private codexData: CodexData = {};
 
-    async onEnable() {
-        const res = await ReportNetService.getStartBeastStatData();
-        if (res) {
-            this.codexData = res.codexData;
-            this.InitUI();
-        }
+    onEnable() {
+        ReportNetService.getStartBeastStatData().then((res) => {
+            if (res && res.codexData != null) {
+                this.codexData = res.codexData;
+                this.InitUI();
+            }
+        });
     }
 
     start() {
@@ -41,6 +42,7 @@ export class STBReportView extends Component {
     }
 
     InitUI() {
+        console.log("InitUI");
         this.goldCntainer?.children.forEach(child => {
             this.InitItem(child);
         });

@@ -27,8 +27,8 @@ export class NetChannelManager {
     /** 连接游戏服务器 */
     gameConnect() {
         NetManager.getInstance().connect({
-            url: `ws://${netConfig.WebSock}?token=${netConfig.Token}`,
-            autoReconnect: 10        // 重连接设置
+            url: `wss://${netConfig.WebSock}?token=${netConfig.Token}`,
+            autoReconnect: 3        // 重连接设置
         }, NetChannelType.Game);
     }
 

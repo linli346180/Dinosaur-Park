@@ -7,8 +7,8 @@ import { AccountType, RegisterType, UserData } from "../AccountDefine";
 @ecs.register('AccountModel')
 export class AccountModelComp extends ecs.Comp {
     user: UserData = new UserData(); // 用户数据
-    UserInstb: IStartBeastData[];    //用户收益星兽列表
-    UserNinstb: IStartBeastData[];  //用户无收益星兽列表
+    UserInstb?: IStartBeastData[];    //用户收益星兽列表
+    UserNinstb?: IStartBeastData[];  //用户无收益星兽列表
 
     reset() {
         this.user = new UserData();

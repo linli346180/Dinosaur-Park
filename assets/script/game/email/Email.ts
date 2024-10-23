@@ -46,7 +46,7 @@ export class EmailView extends Component {
     private initUI() {
         this.content.removeAllChildren();
         EmailNetService.getEmailList().then((res) => {
-            if (res) {
+            if (res && res.mailList != null) {
                 this.noMail.active = res.mailList.length == 0;
                 this.emailsData.mailList = res.mailList;
                 for (let i = 0; i < this.emailsData.mailList.length; i++) {

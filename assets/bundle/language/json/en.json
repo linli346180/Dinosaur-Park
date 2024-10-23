@@ -71,6 +71,7 @@
     "mail_tips_goclaim": "Go and claim",
     "mail_tips_receive_reward": "Receive the reward",
     "mail_tips_sender": "Dear Player:",
+    "mail_tips_claimfull": "Claim all",
 
     "task_center": "Task Center",
     "task_type_daily": "Daily Task",
@@ -111,6 +112,7 @@
     "invite_tips_copy":"Copy",
     "invite_tips_start_invite":"Invite a friend",
     "invite_tips_invite300": "(First 300 invitees)",
+    "invite_tips_pullnew": "Pull new leaderboard",
 
     "adopt_tips_adopt":"Adopt a dinosaur",
 
