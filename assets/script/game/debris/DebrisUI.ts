@@ -7,6 +7,9 @@ import { DebrisConfigData, DebrisDetail, PuzzleID, UserDebrisData } from './Debr
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { DebrisResult } from './DebrisResult';
 import { NetErrorCode } from '../../net/custom/NetErrorCode';
+import { IStartBeastData } from '../account/model/AccountModelComp';
+import { smc } from '../common/SingletonModuleComp';
+import { AccountEvent } from '../account/AccountEvent';
 
 const { ccclass, property } = _decorator;
 
@@ -187,7 +190,12 @@ export class DebrisView extends Component {
     /** 合成碎片 */
     async requestDebrisData() {
         let res = await ReviveNetService.clampDebris(this._index);
-        if (res.resultCode == NetErrorCode.Success) {
+        if (res.resultCode == NetErrorCode.Success && res.userInstb != null) {
+
+            // 合成成功
+            smc.account.AccountModel.addInComeSTBData(res.userInstb);
+            oops.message.dispatchEvent(AccountEvent.AddInComeSTB, res.userInstb.id);
+
             var uic: UICallbacks = {
                 onAdded: (node: Node, params: any) => {
                     const widget = node.getComponent(DebrisResult);
@@ -196,7 +204,7 @@ export class DebrisView extends Component {
             };
             let uiArgs: any;
             oops.gui.open(UIID.DebrisResult, uiArgs, uic);
-            this.updateUI(this._index)
+            this.updateUI(this._index);
         }else {
             oops.gui.toast(res.resultMsg, false);
         }

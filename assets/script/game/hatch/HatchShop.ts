@@ -1,16 +1,12 @@
-import { Button } from 'cc';
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Node, Button, Prefab, instantiate, Label } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { HatchNetService } from './HatchNet';
 import { HatchPriceConfig } from './HatchDefine';
-import { Prefab } from 'cc';
-import { instantiate } from 'cc';
 import { HatchPriceItem } from './HatchPriceItem';
-import { Label } from 'cc';
-import { AccountNetService } from '../account/AccountNet';
 import { moneyUtil } from '../common/utils/moneyUtil';
 import { AccountEvent } from '../account/AccountEvent';
+import { smc } from '../common/SingletonModuleComp';
 const { ccclass, property } = _decorator;
 
 /** 孵化商店:
@@ -38,6 +34,10 @@ export class HatchShop extends Component {
         this.initCoinData();
     }
 
+    protected onEnable(): void {
+        this.initCoinData();
+    }
+
     start() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
@@ -46,7 +46,6 @@ export class HatchShop extends Component {
     onDestroy() {
         oops.message.off(AccountEvent.CoinDataChange, this.onHandler, this);
     }
-    
 
     private onHandler(event: string, args: any) {
         switch (event) {
@@ -56,25 +55,20 @@ export class HatchShop extends Component {
         }
     }
 
-    async initCoinData() {
-        const userCoinData = await AccountNetService.getUserCoinData()
-        if (userCoinData) {
-            console.log("用户货币数据", userCoinData.gemsCoin);  
-            this.gemNum.string = moneyUtil.formatMoney(userCoinData.gemsCoin);
-        }
+    initCoinData() {
+        let coinData = smc.account.AccountModel.CoinData;
+        this.gemNum.string = moneyUtil.formatMoney(coinData.gemsCoin);
     }
 
     closeUI() {
-        oops.gui.remove(UIID.HatchShop);
+        oops.gui.remove(UIID.HatchShop, false);
     }
 
     createItem(priceData: HatchPriceConfig) {
         const item = instantiate(this.hatchPriceItem);
-        if(item)
-        {
+        if (item) {
             item.parent = this.content;
             item.getComponent<HatchPriceItem>(HatchPriceItem)?.initItem(priceData);
         }
-
     }
 }

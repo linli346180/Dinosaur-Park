@@ -148,8 +148,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
-      "height": 200
+      "width": 180,
+      "height": 180
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -185,7 +185,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "dce63218-75c2-4202-9fc4-df8cb3c61455@f9941",
+      "__uuid__": "703e6a94-01d4-4f3f-a835-bc218af6f963@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -198,7 +198,7 @@
     },
     "_fillStart": 0,
     "_fillRange": 0,
-    "_isTrimmedMode": true,
+    "_isTrimmedMode": false,
     "_useGrayscale": false,
     "_atlas": null,
     "_id": ""
@@ -230,7 +230,10 @@
         "__expectedType__": "cc.AnimationClip"
       }
     ],
-    "_defaultClip": null,
+    "_defaultClip": {
+      "__uuid__": "62eb7caa-210c-4592-828f-48eb8168ddb4",
+      "__expectedType__": "cc.AnimationClip"
+    },
     "_id": ""
   },
   {
@@ -259,7 +262,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 11
@@ -314,7 +317,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 166.845703125,
+      "width": 127.880859375,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -345,12 +348,12 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
+      "r": 0,
+      "g": 51,
       "b": 255,
       "a": 255
     },
-    "_string": "999999",
+    "_string": "00:00",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
@@ -363,7 +366,7 @@
     "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_isItalic": false,
-    "_isBold": false,
+    "_isBold": true,
     "_isUnderline": false,
     "_underlineHeight": 2,
     "_cacheMode": 0,
@@ -423,8 +426,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
-      "height": 200
+      "width": 180,
+      "height": 180
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -522,7 +525,6 @@
     "survival": {
       "__id__": 13
     },
-    "linearSpeed": 3,
     "_id": ""
   },
   {

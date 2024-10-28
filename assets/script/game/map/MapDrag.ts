@@ -1,13 +1,5 @@
-import { Enum } from 'cc';
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Node, Enum, Vec2, EventTouch, Tween, math, Vec3, tween, Button } from 'cc';
 import { MapConfigData, MapID } from './MapConfig';
-import { Vec2 } from 'cc';
-import { EventTouch } from 'cc';
-import { Tween } from 'cc';
-import { math } from 'cc';
-import { Vec3 } from 'cc';
-import { tween } from 'cc';
-import { Button } from 'cc';
 const { ccclass, property } = _decorator;
 
 enum SwipeDirection {
@@ -93,7 +85,11 @@ export class MapDrag extends Component {
 
     /** 切换地图 */
     public switchMap(mapID: MapID) {
-        const mapConfig = MapConfigData[mapID];
+        let mapConfig = MapConfigData[mapID];
+        if (mapConfig == null){
+            mapID = this.currentMapID;
+            mapConfig = MapConfigData[this.currentMapID];
+        }
         if (mapConfig) {
             const targetPosition = new Vec3(mapConfig.center, this.node.position.y, this.node.position.z);
             tween(this.node)

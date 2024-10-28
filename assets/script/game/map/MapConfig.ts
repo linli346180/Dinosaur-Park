@@ -30,21 +30,21 @@ export interface IMapConfig {
 /** 打开界面方式的配置数据 */
 export var MapConfigData: { [key: number]: IMapConfig } = {
     [MapID.Map1]: {
-        id: MapID.Map1, path: "Map1", width: 1080, center: 540, spawnPoint: [
+        id: MapID.Map1, path: "Map1/root", width: 1080, center: 540, spawnPoint: [
             { x: -350, y: 600 }, { x: -100, y: 600 }, { x: 150, y: 600 }, { x: 350, y: 600 },
             { x: -350, y: 400 }, { x: -100, y: 400 }, { x: 150, y: 400 }, { x: 350, y: 400 },
             { x: -350, y: 200 }, { x: -100, y: 200 }, { x: 150, y: 200 }, { x: 350, y: 200 },
         ],
-        widthLimit: new Vec2(-400, 400),
-        heightLimit: new Vec2(-600, 640),
+        widthLimit: new Vec2(-350, 350),
+        heightLimit: new Vec2(-400, 500),
         ItemLimit: 10
     },
     [MapID.Map2]: {
-        id: MapID.Map2, path: "Map2", width: 1080, center: -540, spawnPoint: [
+        id: MapID.Map2, path: "Map2/root", width: 1080, center: -540, spawnPoint: [
             { x: 350, y: 600 }, { x: 100, y: 600 }, { x: -150, y: 600 },
             { x: 350, y: 300 }, { x: 100, y: 300 }, { x: -150, y: 300 },
             { x: 350, y: 0 }, { x: 100, y: 0 }, { x: -150, y: 0 },],
-        widthLimit: new Vec2(-400, 400), heightLimit: new Vec2(-600, 640),
-        ItemLimit: 999
+        widthLimit: new Vec2(-350, 350), heightLimit: new Vec2(-400, 500),
+        ItemLimit: 10
     },
 }

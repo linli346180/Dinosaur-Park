@@ -23,17 +23,8 @@ export class AccountNickNameSystem extends ecs.ComblockSystem implements ecs.IEn
     }
 
     entityEnter(e: Account): void {
-
         let newNickname = e.AccountNickName.nickname;
-
-        // 数值更新
-        // e.AccountModel.userData.nickname = newNickname;
-
-        e.stockConfig();
-
-        // 通知视图层逻辑刷新界面效果，实现两层逻辑分离
         oops.message.dispatchEvent(AccountEvent.ChangeNickName, newNickname);
-
         e.remove(AccountNickNameComp);
     }
 }

@@ -24,6 +24,9 @@ export class EmailView extends Component {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_onekey?.node.on(Button.EventType.CLICK, this.onOneKey, this);
         oops.message.on(EmailEvent.EmailUpdate, this.onHandler, this);
+    }
+
+    onEnable() {
         this.initUI();
     }
 
@@ -40,7 +43,7 @@ export class EmailView extends Component {
     }
 
     private closeUI() {
-        oops.gui.remove(UIID.Email);
+        oops.gui.remove(UIID.Email, false);
     }
 
     private initUI() {

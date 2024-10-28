@@ -1,4 +1,6 @@
 import { _decorator, Component, Node, Animation, Button } from 'cc';
+import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
+import { AccountEvent } from '../account/AccountEvent';
 const { ccclass, property } = _decorator;
 
 @ccclass('KnapsackView')
@@ -20,20 +22,17 @@ export class KnapsackView extends Component {
     }
 
     private hideSubBtns() {
+        oops.message.dispatchEvent(AccountEvent.HideUserOperation);
         this.subBtnsAnim.play('sub_fold');
         this.subBtnsAnim.once(Animation.EventType.FINISHED, () => {
             this.btn_expand.node.active = true;
             this.btn_fold.node.active = false;
-            this.knapsackPanel.active = false;
         });
     }
 
     private showSubBtns() {
+        oops.message.dispatchEvent(AccountEvent.HideUserOperation);
         this.subBtnsAnim.play('sub_pop');
-        this.knapsackPanel.active = true;
-        this.subBtnsAnim.once(Animation.EventType.PLAY, () => {
-            this.knapsackPanel.active = true;
-        });
         this.subBtnsAnim.once(Animation.EventType.FINISHED, () => {
             this.btn_expand.node.active = false;
             this.btn_fold.node.active = true;

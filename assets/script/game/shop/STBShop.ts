@@ -1,7 +1,6 @@
 import { _decorator, Component, Node, Button, Label, Prefab, instantiate } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
-import { AccountNetService } from '../account/AccountNet';
 import { moneyUtil } from '../common/utils/moneyUtil';
 import { IsPur, PurConCoin, UserInstbConfigData } from '../account/model/STBConfigModeComp';
 import { STBPurItem } from './STBPurItem';
@@ -45,11 +44,8 @@ export class STBPurShop extends Component {
         }
     }
 
-    async initCoinData() {
-        const userCoinData = await AccountNetService.getUserCoinData()
-        if (userCoinData) {
-            this.gemNum.string = moneyUtil.formatMoney(userCoinData.gemsCoin);
-        }
+    initCoinData() {
+        this.gemNum.string = Math.floor(smc.account.AccountModel.CoinData.gemsCoin).toString();
     }
 
     async initUI() {
@@ -61,7 +57,6 @@ export class STBPurShop extends Component {
             item.parent = this.content;
             item.getComponent(STBPurItem)?.initItem(element);
         });
-
         this.initCoinData();
     }
 

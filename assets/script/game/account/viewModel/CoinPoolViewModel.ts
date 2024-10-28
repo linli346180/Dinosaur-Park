@@ -2,13 +2,14 @@ import { _decorator } from "cc";
 import { smc } from "../../common/SingletonModuleComp";
 import { STBID } from "../../character/STBDefine";
 import { oops } from "../../../../../extensions/oops-plugin-framework/assets/core/Oops";
+import { UserInstbConfigData } from "../model/STBConfigModeComp";
 
 /** 视图层对象 - 支持 MVVM 框架的数据绑定 */
 /** 用户金币池 */
 export class CoinPoolViewModel {
 
-    private goldConfig: any;
-    private gemConfig: any;
+    private goldConfig: UserInstbConfigData;
+    private gemConfig: UserInstbConfigData;
 
     /** 金币数量 */
     private gold_num: number = 0;
@@ -36,26 +37,33 @@ export class CoinPoolViewModel {
     private gold_speed: number = 0;
     get GoldSpeed(): number {
         this.gold_speed = 0;
-        const goldstbList = smc.account.getSTBDataByConfigId(STBID.STB_Gold_Level10);
+        const goldstbList = smc.account.getSTBDataByConfigId([STBID.STB_Gold_Level10]);
+        let surNum = 0;
         goldstbList.forEach((stbData) => {
             if (smc.account.getSTBSurvivalSec(stbData.id) != 0) {
+                surNum ++;
                 this.gold_speed += Number(this.goldConfig.incomeNumMin);
             }
         });
-        // console.log("金币速度", Math.floor(this.gold_speed));
-        return Math.floor(this.gold_speed);
+        this.gold_speed = Math.floor(this.gold_speed)
+        console.log("金币生产速度:" + this.gold_speed + " 总数量:" + goldstbList.length + "存活量:" + surNum + " 收益(分钟):" + this.goldConfig.incomeNumMin);
+        return this.gold_speed;
     }
 
     /** 宝石速度 */
     private gem_speed: number = 0;
-    get gemSpeed(): number {
-        this.gold_speed = 0;
-        const gemstbList = smc.account.getSTBDataByConfigId(STBID.STB_Gem);
+    get GemSpeed(): number {
+        this.gem_speed = 0;
+        const gemstbList = smc.account.getSTBDataByConfigId([STBID.STB_Gem]);
+        let surNum = 0;
         gemstbList.forEach((stbData) => {
-            if (smc.account.getSTBSurvivalSec(stbData.id) != 0)
-                this.gold_speed += Number(this.gemConfig.incomeNumMin);
+            if (smc.account.getSTBSurvivalSec(stbData.id) != 0) {
+                surNum ++;
+                this.gem_speed += Number(this.gemConfig.incomeNumMin);
+            }
         });
-        // console.log("宝石速度", Math.floor(this.gem_speed));
+        this.gem_speed = Math.floor(this.gem_speed)
+        console.log("宝石生产速度:" + this.gem_speed + " 总数量:" + gemstbList.length + "存活量:" + surNum + " 收益(分钟):" + this.gemConfig.incomeNumMin);
         return Math.floor(this.gem_speed);
     }
 
@@ -66,33 +74,33 @@ export class CoinPoolViewModel {
         this.goldConfig = smc.account.getSTBConfig(STBID.STB_Gold_Level10);
         this.gemConfig = smc.account.getSTBConfig(STBID.STB_Gem);
         if (this.goldConfig == null || this.gemConfig == null) {
-            console.error("配置为空");
+            console.error("星兽配置为空");
             return;
         }
 
         let godNum = 0;
-        const goldstbList = smc.account.getSTBDataByConfigId(STBID.STB_Gold_Level10);
-        goldstbList.forEach((stbData) => {
-            if (smc.account.getSTBSurvivalSec(stbData.id) != 0) {
-                const lastTime = new Date(stbData.lastIncomeTime);
-                const diffTime = new Date().getTime() - lastTime.getTime();
-                const diffMins = Math.floor(diffTime / 60000);
-                // console.log(`${stbData.id} ${goldConfig.stbName} 时间间隔为 ${diffMins} 分钟`);
-                godNum += this.goldConfig.incomeNumMin * diffMins / this.goldConfig.incomeCycle;
-            }
-        });
+        // const goldstbList = smc.account.getSTBDataByConfigId([STBID.STB_Gold_Level10]);
+        // goldstbList.forEach((stbData) => {
+        //     if (smc.account.getSTBSurvivalSec(stbData.id) != 0) {
+        //         const lastTime = new Date(stbData.lastIncomeTime);
+        //         const diffTime = new Date().getTime() - lastTime.getTime();
+        //         const diffMins = Math.floor(diffTime / 60000);
+        //         godNum += this.goldConfig.incomeNumMin * diffMins / this.goldConfig.incomeCycle;
+        //     }
+        // });
 
         let gemNum = 0;
-        const gemstbList = smc.account.getSTBDataByConfigId(STBID.STB_Gem);
-        gemstbList.forEach((stbData) => {
-            const lastTime = new Date(stbData.lastIncomeTime);
-            const diffTime = new Date().getTime() - lastTime.getTime();
-            const diffMins = Math.floor(diffTime / 60000);
-            // console.log(`${stbData.id} ${gemConfig.stbName} 时间间隔为 ${diffMins} 分钟`);
-            gemNum += this.gemConfig.incomeNumMin * diffMins / this.gemConfig.incomeCycle;
-        });
+        // const gemstbList = smc.account.getSTBDataByConfigId([STBID.STB_Gem]);
+        // gemstbList.forEach((stbData) => {
+        //     const lastTime = new Date(stbData.lastIncomeTime);
+        //     const diffTime = new Date().getTime() - lastTime.getTime();
+        //     const diffMins = Math.floor(diffTime / 60000);
+        //     gemNum += this.gemConfig.incomeNumMin * diffMins / this.gemConfig.incomeCycle;
+        // });
 
         this.gold_num = Math.max(pool_gold_num, godNum);
         this.gem_num = Math.max(pool_gem_num, gemNum);
     }
 }
+
+export let coinPoolVM = new CoinPoolViewModel();

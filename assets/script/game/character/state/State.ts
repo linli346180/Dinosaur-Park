@@ -1,3 +1,5 @@
+
+/** 状态 */
 export interface IState<TKey> {
     id: TKey
     onEnter(): void;
@@ -7,28 +9,34 @@ export interface IState<TKey> {
     canTransit(to: TKey): boolean;
 }
 
-export interface IMachine<TKey> {
-    add(state: IState<TKey>);
-    remove(name: TKey);
-    update(dt: number);
-}
-
+/** 跳转 */
 export interface ITransitable<TKey> {
-    transiteTo(name: TKey);
+    transiteTo(name: TKey): void;
 }
 
+export interface IMachine<TKey> {
+    addState(state: IState<TKey>): void;
+    removeState(name: TKey): void;
+    update(dt: number): void;
+}
+
+/** 状态机 */
 export class SubMachine<TKey> implements IMachine<TKey>, IState<TKey>, ITransitable<TKey> {
     id: TKey;
-    states: Map<TKey, IState<TKey>> = new Map();
-    currState: IState<TKey>;
-    defaultState: TKey;
+    states: Map<TKey, IState<TKey>> = new Map();    // 总状态
+    currState: IState<TKey>;    // 当前状态
+    defaultState: TKey;         // 默认状态
 
-    add(state: IState<TKey>) {
+    addState(state: IState<TKey>) {
         this.states.set(state.id, state);
     }
 
-    remove(name: TKey) {
+    removeState(name: TKey) {
         this.states.delete(name);
+    }
+
+    update(dt: number) {
+        this.currState?.update(dt);
     }
 
     transiteTo(name: TKey) {
@@ -38,10 +46,6 @@ export class SubMachine<TKey> implements IMachine<TKey>, IState<TKey>, ITransita
         this.currState?.onExit();
         this.currState = this.states.get(name);
         this.currState?.onEnter();
-    }
-
-    update(dt: number) {
-        this.currState?.update(dt);
     }
 
     onEnter(): void {

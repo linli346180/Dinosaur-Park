@@ -9,9 +9,10 @@ import { IStartBeastData } from '../account/model/AccountModelComp';
 import { STBID } from '../character/STBDefine';
 import { tween } from 'cc';
 import { Tween } from 'cc';
-import { netChannel } from '../../net/custom/NetChannelManager';
-import { NetCmd } from '../../net/custom/NetErrorCode';
 import { EDITOR } from 'cc/env';
+import { UIOpacity } from 'cc';
+import { Vec3 } from 'cc';
+import { easing } from 'cc';
 const { ccclass, property } = _decorator;
 
 
@@ -26,7 +27,6 @@ export class KnapsackControlle extends Component {
     slotContainer: Node = null!;
     @property(Node)
     idleTips: Node = null!;
-
     public SlotNodes: Node[] = [];
 
     private maxslotNum: number = 12;
@@ -38,12 +38,13 @@ export class KnapsackControlle extends Component {
 
     protected onLoad(): void {
         KnapsackControlle.instance = this;
+        this.idleTips.active = false;
     }
 
     start() {
         oops.message.on(AccountEvent.AddUnIncomeSTB, this.onHandler, this);
         oops.message.on(AccountEvent.DelUnIncomeSTB, this.onHandler, this);
-        oops.message.on(AccountEvent.UpdateUnIncomeSTB, this.onHandler, this);
+        oops.message.on(AccountEvent.LevelUpUnIncomeSTB, this.onHandler, this);
         oops.message.on(AccountEvent.AutoAddUnIncomeSTB, this.onHandler, this);
         oops.message.on(AccountEvent.UserNoOperation, this.onHandler, this);
         oops.message.on(AccountEvent.UserOperation, this.onHandler, this);
@@ -53,7 +54,7 @@ export class KnapsackControlle extends Component {
     onDestroy() {
         oops.message.off(AccountEvent.AddUnIncomeSTB, this.onHandler, this);
         oops.message.off(AccountEvent.DelUnIncomeSTB, this.onHandler, this);
-        oops.message.off(AccountEvent.UpdateUnIncomeSTB, this.onHandler, this);
+        oops.message.off(AccountEvent.LevelUpUnIncomeSTB, this.onHandler, this);
         oops.message.off(AccountEvent.AutoAddUnIncomeSTB, this.onHandler, this);
         oops.message.off(AccountEvent.UserNoOperation, this.onHandler, this);
         oops.message.off(AccountEvent.UserOperation, this.onHandler, this);
@@ -71,9 +72,9 @@ export class KnapsackControlle extends Component {
             });
         }
 
-        if (EDITOR) {
-            this.autoAdoptBeast();
-        }
+        // if (EDITOR) {
+        //     this.autoAdoptBeast();
+        // }
     }
 
     private onHandler(event: string, args: any) {
@@ -84,7 +85,7 @@ export class KnapsackControlle extends Component {
             case AccountEvent.DelUnIncomeSTB:
                 this.RemoveSTBItem(args);
                 break;
-            case AccountEvent.UpdateUnIncomeSTB:
+            case AccountEvent.LevelUpUnIncomeSTB:
                 this.UpdateSTBItem(smc.account.getUserSTBData(args));
                 break;
             case AccountEvent.AutoAddUnIncomeSTB:
@@ -137,7 +138,7 @@ export class KnapsackControlle extends Component {
             console.error("添加星兽数据为空");
             return
         }
-        console.log("添加无收益星兽数据:" + stbData.id + " 槽位:" + stbData.stbPosition);
+        // console.log("添加无收益星兽数据:" + stbData.id + " 槽位:" + stbData.stbPosition);
         for (const slotNode of this.SlotNodes) {
             const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);
             if (slotComp && slotComp.slotId == stbData.stbPosition) {
@@ -171,9 +172,17 @@ export class KnapsackControlle extends Component {
     }
 
     private showIdleTipAnim(show: boolean = true) {
-        Tween.stopAllByTarget(this.idleTips);
-        this.idleTips.active = show;
-        if (!show) return;
+        if (!show) {
+            // console.log("隐藏空闲引导");
+            Tween.stopAllByTarget(this.idleTips);
+            this.idleTips.active = false;
+            return;
+        }
+
+        if (show && this.idleTips.active) {
+            // console.error("已经显示空闲引导");
+            return;
+        }
 
         let startNode: Node | null = null;
         let endNode: Node | null = null;
@@ -195,22 +204,28 @@ export class KnapsackControlle extends Component {
                     break;
             }
         }
-        if (endNode == null) return;
-        console.log("开始节点:" + startNode.name + " 结束节点:" + endNode.name);
+        if (startNode == null || endNode == null) {
+            console.error("无相同等级星兽");
+            return;
+        }
+        console.log("显示空闲引导 起点:" + startNode.name + " 终点:" + endNode.name);
+        this.idleTips.active = true;
         this.moveToDest(this.idleTips, startNode, endNode);
     }
 
     private moveToDest(tipsNode: Node, startNode: Node, endNode: Node) {
-        const startWorldPos = startNode.getWorldPosition();
-        const endWorldPos = endNode.getWorldPosition();
-        tipsNode.setWorldPosition(startWorldPos);
+        let uiOpacity = tipsNode.getComponent(UIOpacity);
         const moveAction = tween(tipsNode)
-            .delay(1)
-            .to(1.5, { worldPosition: endWorldPos })
-            .delay(1)
             .call(() => {
-                tipsNode.setWorldPosition(startWorldPos);
-            });
+                uiOpacity.opacity = 0; // 初始透明度为 0
+                tipsNode.setWorldPosition(startNode.getWorldPosition());
+            })
+            .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 * ratio; } }) // 透明度增加到 255
+            .delay(1)
+            .to(1.5, { worldPosition: endNode.getWorldPosition() })
+            .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 * (1 - ratio); } }) // 透明度减少到 0
+            .delay(1);
+
         const repeatAction = tween(tipsNode)
             .repeatForever(moveAction)
             .start();
@@ -232,13 +247,13 @@ export class KnapsackControlle extends Component {
      * @param autoAdop - 是否系统自动领养
      */
     AdopStartBeast(stbConfigId: number, autoAdop: boolean = false) {
-        if (this.getEmptySlot() == -1) {
-            if (!autoAdop)
-                oops.gui.toast("背包已满，无法添加新物品", false);
-            return;
-        }
+        // if (this.getEmptySlot() == -1) {
+        //     if (!autoAdop)
+        //         oops.gui.toast("背包已满，无法添加新物品", false);
+        //     return;
+        // }
         smc.account.adopStartBeastNet(stbConfigId, autoAdop, (success: boolean, msg: string) => {
-            if (!success)
+            if (!autoAdop && !success)
                 oops.gui.toast(msg);
         });
     }
@@ -304,11 +319,16 @@ export class KnapsackControlle extends Component {
         // 交换位置
         if (this.fromSlot.STBConfigId != this.toSlot.STBConfigId) {
             console.log("交换位置A:" + this.fromSTBID + " B:" + this.toSTBID);
-            smc.account.changeSTBSlotIdNet(this.toSTBID, fromslotId, (success) => {
-                if (!success) this.recoverSlot();
-            });
+            // smc.account.changeSTBSlotIdNet(this.toSTBID, fromslotId, (success) => {
+            //     if (!success) {
+            //         this.recoverSlot();
+            //     }
+            // });
             smc.account.changeSTBSlotIdNet(this.fromSTBID, toslotId, (success) => {
-                if (!success) this.recoverSlot();
+                if (!success)
+                    this.recoverSlot();
+                else
+                    smc.account.setUserNinstbSlot(this.toSTBID, fromslotId);
             })
             let stbData = this.toSlot.stbData;
             this.toSlot.InitUI(this.fromSlot.stbData);

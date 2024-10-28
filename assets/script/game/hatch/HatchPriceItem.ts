@@ -4,6 +4,8 @@ import { HatchNetService } from './HatchNet';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { AccountEvent } from '../account/AccountEvent';
 import { NetErrorCode } from '../../net/custom/NetErrorCode';
+import { AccountNetService } from '../account/AccountNet';
+import { smc } from '../common/SingletonModuleComp';
 const { ccclass, property } = _decorator;
 
 @ccclass('HatchPriceItem')
@@ -42,7 +44,13 @@ export class HatchPriceItem extends Component {
     async buyHatchNum() {
         const res = await HatchNetService.requestHatchNum(this._priceData.id);
         if (res && res.resultCode == NetErrorCode.Success) {
-            oops.message.dispatchEvent(AccountEvent.CoinDataChange);
+
+            const coinDataRes = await AccountNetService.getUserCoinData();
+            if (coinDataRes && coinDataRes.userCoin != null) {
+                smc.account.AccountModel.CoinData = coinDataRes.userCoin;
+                oops.message.dispatchEvent(AccountEvent.CoinDataChange);
+            }
+
             oops.message.dispatchEvent(UserHatchEvent.HatchNumChange);
             oops.gui.toast("购买成功");
             return;

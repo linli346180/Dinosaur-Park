@@ -20,9 +20,7 @@ export abstract class ActorState implements IState<StateDefine> {
     onExit(): void { }
     update(deltaTime: number): void { }
     onDestory(): void { }
-    canTransit(to: StateDefine): boolean {
-        return true;
-    }
+    canTransit(to: StateDefine): boolean { return true; }
 }
 
 

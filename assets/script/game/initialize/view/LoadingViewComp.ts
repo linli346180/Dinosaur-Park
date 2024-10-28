@@ -11,7 +11,7 @@ import { CCVMParentComp } from "../../../../../extensions/oops-plugin-framework/
 import { ModuleUtil } from "../../../../../extensions/oops-plugin-framework/assets/module/common/ModuleUtil";
 import { DemoViewComp } from "../../account/view/DemoViewComp";
 import { smc } from "../../common/SingletonModuleComp";
-import { UIID } from "../../common/config/GameUIConfig";
+import { UIConfigData, UIID } from "../../common/config/GameUIConfig";
 import { JsonUtil } from "../../../../../extensions/oops-plugin-framework/assets/core/utils/JsonUtil";
 import { TableItemConfig } from "../../common/table/TableItemConfig";
 import { TablePrimaryDebrisConfig } from "../../common/table/TablePrimaryDebrisConfig";
@@ -19,6 +19,8 @@ import { TableMiddleDebrisConfig } from "../../common/table/TableMiddleDebrisCon
 import { TableSTBConfig } from "../../common/table/TableSTBConfig";
 import { macro } from "cc";
 import { GameEvent } from "../../common/config/GameEvent";
+import { Prefab } from "cc";
+import { UIConfig } from "../../../../../extensions/oops-plugin-framework/assets/core/gui/layer/LayerManager";
 
 const { ccclass, property } = _decorator;
 
@@ -49,7 +51,7 @@ export class LoadingViewComp extends CCVMParentComp {
     private onHandler(event: string, args: any) {
         switch (event) {
             case GameEvent.LoginSuccess:
-                console.log("登录成功 关闭加载界面");
+                // console.log("登录成功 关闭加载界面");
                 this.loginSuccess = true;
                 this.onCompleteCallback();
                 break;
@@ -79,7 +81,13 @@ export class LoadingViewComp extends CCVMParentComp {
 
         this.data.finished = 0;
         this.data.total = 10;
+
+        // 模拟加载进度
         this.schedule(this.updateProgress, 0.1);
+
+        // 优先加载配置的指定资源包中资源
+        oops.gui.preLoad();
+        // 优先加载配置的指定资源包中资源，如果没配置则加载默认资源包资源
         // oops.res.loadDir("animation", this.onProgressCallback.bind(this), this.onCompleteCallback.bind(this));
     }
 

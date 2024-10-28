@@ -266,7 +266,7 @@ export class NetNode {
 
     protected onError(event: any) {
         // error(event);
-        console.error("ScoketError: " + event);
+        console.error("ScoketError连接错误: " + event.toString());
         this.updateNetTips(NetTipsType.Error, true);
     }
 

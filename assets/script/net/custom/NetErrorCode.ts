@@ -15,16 +15,19 @@ export enum NetErrorCode {
 }
 
 export enum NetCmd {
-    UserCoinType   = 100, // 用户货币
-    UserNinstbType = 101, // 无收益星兽
-    UserIncomeType = 102, // 收益星兽
-    UserHatchType  = 103, // 孵蛋
-    InvitedType    = 104, // 邀请
-    UserDebrisType = 105, // 复活
-    UserEmailType  = 106, // 邮箱
-    UserTaskType   = 107, // 任务
-    RankingType    = 108, // 排行
-    WithDrawalType = 109, // 提现
-    StbGurideType  = 110, // 星兽图鉴
-    HeartBeatType  = 150, // 心跳
+    UserCoinType        = 100, // 用户货币
+    UserNinstbType      = 101, // 自动领养1级黄金星兽
+    UserIncomeType      = 102, // 收益星兽
+    UserHatchType       = 103, // 孵蛋
+    InvitedType         = 104, // 邀请
+    UserDebrisType      = 105, // 复活
+    UserEmailType       = 106, // 邮箱
+    UserTaskType        = 107, // 任务
+    RankingType         = 108, // 排行
+    WithDrawalType      = 109, // 提现
+    StbGurideType       = 110, // 星兽图鉴
+    NinstbDeathType     = 111, // 无收益星兽死亡
+    IncomeStbDeathType  = 112, // 收益星兽死亡
+    HeartBeatType       = 150, // 心跳
+    DownLineType        = 151, // 下线通知
 }

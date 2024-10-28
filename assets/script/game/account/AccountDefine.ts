@@ -3,15 +3,15 @@ import { IStartBeastData } from "./model/AccountModelComp";
 
 
 /** 用户货币数据 */
-export interface IUserCoinData {
-    id: number;
+export class UserCoinData {
+    id: number = 0;
     createdAt: string;
     updatedAt: string;
-    userID: number; // 用户ID
-    goldCoin: number; // 金币(金币星兽产出)
-    gemsCoin: number; // 宝石(宝石星兽产出)
-    usdt: number; // USDT(钻石星兽产出)
-    starBeastCoin: number; // 星兽币(sbpc,至尊星兽产出)
+    userID: number = 0; // 用户ID
+    goldCoin: number = 0; // 金币(金币星兽产出)
+    gemsCoin: number = 0; // 宝石(宝石星兽产出)
+    usdt: number = 0; // USDT(钻石星兽产出)
+    starBeastCoin: number = 0; // 星兽币(sbpc,至尊星兽产出)
 }
 
 //收益星兽合成返回
@@ -22,6 +22,14 @@ export interface IMergeResponse {
     userInStb: IStartBeastData
 }
 
+
+// 所需货币类型枚举
+export enum AccountCoinType {
+    Gold = 1,       // 金币
+    Gems,           // 宝石
+    StarBeast,      // 星兽币
+    USDT            // USDT
+}
 
 /** 外部账号类型 */
 export enum AccountType {

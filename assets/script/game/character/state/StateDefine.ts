@@ -1,3 +1,4 @@
+
 export enum StateDefine {
     Idle = 'idle',
     Run = 'walk',

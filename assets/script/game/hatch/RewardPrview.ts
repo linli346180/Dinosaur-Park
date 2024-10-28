@@ -26,7 +26,7 @@ export class RewardPrview extends Component {
 
     start() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.btn_reward?.node.on(Button.EventType.CLICK, this.closeUI, this); 
+        this.btn_reward?.node.on(Button.EventType.CLICK, this.closeUI, this);
     }
 
     async initUI() {
@@ -45,10 +45,9 @@ export class RewardPrview extends Component {
         const filteredRewards = rewardList.filter(reward => reward.level === level);
         if (filteredRewards.length === 0)
             return;
-        
+
         const itemNode = instantiate(this.rewardItem);
-        if(itemNode)
-        {
+        if (itemNode) {
             itemNode.setParent(this.rewardContent);
             const rewardItemComp = itemNode.getComponent(RewardGroup);
             if (rewardItemComp) {

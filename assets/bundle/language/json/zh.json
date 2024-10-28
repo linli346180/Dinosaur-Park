@@ -29,6 +29,7 @@
     "common_minute":"分",
     "common_secnod":"秒",
 
+    "stb_codex":"星兽图鉴",
     "stb_gold":"黄金星兽",
     "stb_gem":"宝石星兽",
     "stb_diamond":"砖石星兽",
@@ -115,6 +116,22 @@
     "invite_tips_pullnew": "拉新排行版",
 
     "adopt_tips_adopt":"领养星兽",
+
+    "hatch_tips_hatch":"孵蛋",
+    "hatch_tips_hatch_times":"孵蛋次数",
+    "hatch_tips_brood_count":"龙蛋数量",
+    "hatch_tips_reward_eachhatchcount":"每孵化{count}次,奖励稀有物品",
+    "hatch_tips_reward_preview":"龙蛋奖励预览",
+    "hatch_tips_hatch_once":"孵蛋 1 次",
+    "hatch_tips_hatch_ten":"孵蛋 10 次",
+    "hatch_tips_purchased":"购买孵蛋次数",
+
+    "reward_tip_preview": "奖励预览",
+    "reward_tip_normal": "普通奖励",
+    "reward_tip_intermediate": "中级奖励",
+    "reward_tip_advanced": "高级奖励",
+    "reward_tip_rare": "稀有奖励",
+    "reward_tip_receive": "领取奖励",
 
     "End":"结束"
 }

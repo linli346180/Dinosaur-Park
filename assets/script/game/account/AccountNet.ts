@@ -8,13 +8,11 @@ import { NetErrorCode } from '../../net/custom/NetErrorCode';
 import { Logger } from '../../Logger';
 
 export namespace AccountNetService {
-
     /** 登录TG账号 */
     export async function LoginTGAcount(data: TGWebAppInitData) {
         const http = new HttpManager();
         http.server = netConfig.Server;
         http.timeout = netConfig.Timeout;
-
         console.log("TG数据:", data);
         const initData = {
             'user': JSON.stringify(data.UserData),
@@ -35,6 +33,8 @@ export namespace AccountNetService {
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("TG登录成功", response.res);
             netConfig.Token = response.res.token;
+
+            getServerTimeDiff(response.res.sTime);
             return response.res;
         } else {
             console.error("TG登录失败", response);
@@ -57,6 +57,8 @@ export namespace AccountNetService {
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             netConfig.Token = response.res.token;
             console.warn("登录成功", http.url + JSON.stringify(response.res));
+
+            getServerTimeDiff(response.res.sTime);
             return response.res;
         } else {
             console.error("登录异常", http.url + JSON.stringify(response));
@@ -73,7 +75,7 @@ export namespace AccountNetService {
 
         const response = await http.getUrl("tgapp/api/stb/cfg/list?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.warn("获取星兽配置请求成功", response.res);
+            console.warn("获取星兽配置请求成功", response.res.userInstbData);
             return response.res;
 
         } else {
@@ -91,7 +93,7 @@ export namespace AccountNetService {
 
         const response = await http.getUrl("tgapp/api/user/stb/data?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.warn("星兽数据请求成功", response.res);
+            console.warn("星兽数据请求成功", JSON.stringify(response.res));
             return response.res;
         } else {
             console.error("星兽数据请求异常", response);
@@ -108,7 +110,7 @@ export namespace AccountNetService {
         const response = await http.getUrl("tgapp/api/user/coin?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success && response.res.userCoin != null) {
             console.warn("货币数据请求成功", response.res);
-            return response.res.userCoin;
+            return response.res;
         } else {
             console.error("货币数据请求异常", response);
             return null;
@@ -171,11 +173,11 @@ export namespace AccountNetService {
         const paramString = new URLSearchParams(params).toString();
         const response = await http.postUrl("tgapp/api/user/stb/synth?token=" + netConfig.Token, paramString);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.warn("收益星兽合成", response.res);
+            console.warn("10级黄金星兽合成:", response.res);
             return response.res;
         } else {
-            console.error("合并失败", response);
-            return response.res;
+            console.error("10级黄金星兽异常:", response);
+            return null;
         }
     }
 
@@ -196,7 +198,7 @@ export namespace AccountNetService {
             console.warn("位置交换成功", response.res);
             return response.res;
         } else {
-            console.error("位置交换请求异常", response.res);
+            console.error("位置交换请求异常", response);
             return null;
         }
     }
@@ -210,11 +212,10 @@ export namespace AccountNetService {
 
         const response = await http.postUrl("tgapp/api/user/goldc/receive?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            Logger.logNet("领取金币:" + response.res);
-            oops.message.dispatchEvent(AccountEvent.CoinDataChange);
+            Logger.logNet("领取金币:" + JSON.stringify(response.res));
             return response.res;
         } else {
-            console.error("领取金币:", response);
+            console.error("领取金币异常:", response);
             return null;
         }
     }
@@ -228,13 +229,33 @@ export namespace AccountNetService {
 
         const response = await http.postUrl("tgapp/api/user/gemsc/receive?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            Logger.logNet("领取宝石:" + response.res);
-            oops.message.dispatchEvent(AccountEvent.CoinDataChange);
+            Logger.logNet("领取宝石:" + JSON.stringify(response.res));
             return response.res;
         } else {
-            console.error("领取宝石", response);
+            console.error("领取宝石异常", response);
             return null;
         }
+    }
+
+    /** 计算了服务器时间和本地时间差 */
+    function getServerTimeDiff(timestamp: number) {
+        if (!timestamp) {
+            console.error("服务器时间为空");
+            return;
+        }
+
+        // 将服务器时间字符串转换为 Date 对象
+        const serverTime = new Date(timestamp * 1000);
+        if (isNaN(serverTime.getTime())) {
+            console.error("无效的服务器时间格式:", timestamp);
+            return;
+        }
+
+        // 计算时间差，单位为毫秒
+        const localTime = new Date();
+        netConfig.timeDifference = localTime.getTime() - serverTime.getTime();
+
+        console.log("服务器时间:", serverTime, "本地时间:", localTime, "时间差:", netConfig.timeDifference);
     }
 
 }

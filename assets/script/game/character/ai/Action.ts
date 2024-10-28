@@ -10,31 +10,31 @@ import { ExecuteResult, markFail, markRunning, markSuccess } from './ExecuteResu
 export class MoveToDest extends bt.Action {
     execute(dt: number, result: ExecuteResult) {
         let actor = result.blackboard.get(BlackboardKey.Actor) as Actor;
-        let moveDest = result.blackboard.get(BlackboardKey.MoveDest) as Vec3;
-        if (!actor || !moveDest) {
-            markFail(result);
-            return;
-        }
+        // let moveDest = result.blackboard.get(BlackboardKey.MoveDest) as Vec3;
+        // if (!actor || !moveDest) {
+        //     markFail(result);
+        //     return;
+        // }
 
         let isDrag = result.blackboard.get(BlackboardKey.Drag) as boolean;
         let dur = result.blackboard.get(BlackboardKey.MoveDestDuration) - dt;
         result.blackboard.set(BlackboardKey.MoveDestDuration, dur);
 
-        let dir = v3();
-        Vec3.subtract(dir, moveDest, actor.node.position);
-        let distance = dir.length();
-        dir.normalize();
+        // let dir = v3();
+        // Vec3.subtract(dir, moveDest, actor.node.position);
+        // let distance = dir.length();
+        // dir.normalize();
 
         // 添加距离阈值检查
         const distanceThreshold = 5.0; // 你可以根据需要调整这个阈值
-        let movedDistance = dir.length();
-        if (isDrag || distance < distanceThreshold || dur < 0) {
+        // let movedDistance = dir.length();
+        if (isDrag || dur < 0) {
             markSuccess(result);
             result.blackboard.delete(BlackboardKey.MoveDest);
             actor.stateMgr.transit(StateDefine.Idle);
             return;
         }
-        actor.input.set(dir.x, dir.y)
+        // actor.input.set(dir.x, dir.y)
         markRunning(result);
         actor.stateMgr.transit(StateDefine.Run);
     }
@@ -47,7 +47,7 @@ export class SetMoveDest extends bt.Action {
         let actor = result.blackboard.get(BlackboardKey.Actor) as Actor;
         let ec = actor.node.getComponent(ActorController);
         if (ec)
-            ec.randomNextMoveDest();
+            ec.randomDirecton();
     }
 }
 

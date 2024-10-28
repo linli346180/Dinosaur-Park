@@ -1,8 +1,11 @@
-import { _decorator, Component, Node, Button, Animation } from 'cc';
+import { _decorator, Component, Node, Button, Animation, tween, UIOpacity, Vec3, easing } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { AccountEvent } from '../account/AccountEvent';
-import { tween } from 'cc';
+import { KnapsackControlle } from './KnapsackControlle';
+import { KnapsackSlot } from './KnapsackSlot';
+import { UserCoinView } from './UserCoinView';
+import { AccountCoinType } from '../account/AccountDefine';
 const { ccclass, property } = _decorator;
 
 @ccclass('HomeView')
@@ -17,7 +20,6 @@ export class HomeView extends Component {
     btn_rank: Button = null!;
     @property(Button)
     btn_book: Button = null!;
-
     @property(Button)
     btn_revivei: Button = null!;
     @property(Button)
@@ -34,26 +36,74 @@ export class HomeView extends Component {
     @property(Node)
     goldAnimBeginNode: Node = null!;
 
+    @property(Node)
+    evolveTips: Node = null!;
+
+    @property(UserCoinView)
+    userCoinView: UserCoinView = null!;
+
+    private buttonMap: { [key: string]: Button } = {};
+
     start() {
         oops.audio.playMusicLoop("audios/nocturne");
-        this.btn_user?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.User) }, this);
-        this.btn_email?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Email) }, this);
-        this.btn_task?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Task) }, this);
-        this.btn_rank?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.RankUI) }, this);
-        this.btn_book?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Book) }, this);
-        this.btn_revivei?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Revive) }, this);
-        this.btn_store?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.STBShop) }, this);
-        this.btn_hatch?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Hatch) }, this);
-        this.btn_invite?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Invite) }, this);
-
+        this.initializeButtonMap();
+        this.addEventListeners();
+        oops.message.on(AccountEvent.EvolveUnIncomeSTB, this.onHandler, this);
         oops.message.on(AccountEvent.UserCollectGold, this.onHandler, this);
+    }
+
+    onDestroy() {
+        this.removeEventListeners();
+        oops.message.off(AccountEvent.EvolveUnIncomeSTB, this.onHandler, this);
+        oops.message.off(AccountEvent.UserCollectGold, this.onHandler, this);
+    }
+
+    private initializeButtonMap() {
+        this.buttonMap = {
+            [UIID.User]: this.btn_user,
+            [UIID.Email]: this.btn_email,
+            [UIID.Task]: this.btn_task,
+            [UIID.RankUI]: this.btn_rank,
+            [UIID.Book]: this.btn_book,
+            [UIID.Revive]: this.btn_revivei,
+            [UIID.STBShop]: this.btn_store,
+            [UIID.Hatch]: this.btn_hatch,
+            [UIID.Invite]: this.btn_invite,
+        };
+    }
+
+    private addEventListeners() {
+        for (const key in this.buttonMap) {
+            const button = this.buttonMap[key];
+            button?.node.on(Button.EventType.CLICK, () => { this.OpenUI(key as unknown as UIID) }, this);
+        }
+    }
+
+    private removeEventListeners() {
+        for (const key in this.buttonMap) {
+            const button = this.buttonMap[key];
+            button?.node.off(Button.EventType.CLICK, () => { this.OpenUI(key as unknown as UIID) }, this);
+        }
+    }
+
+    private OpenUI(uid: UIID) {
+        oops.gui.open(uid);
+        const targetNode = this.buttonMap[uid]?.node;
+        if (!targetNode) return;
+        const redDot = targetNode.getChildByName("reddot");
+        if (redDot) {
+            redDot.active = false;
+        }
     }
 
     private onHandler(event: string, args: any) {
         switch (event) {
             case AccountEvent.UserCollectGold:
                 this.showGoldAnim();
-                break
+                break;
+            case AccountEvent.EvolveUnIncomeSTB:
+                this.EvolveUnIncomeSTB(args);
+                break;
         }
     }
 
@@ -61,11 +111,34 @@ export class HomeView extends Component {
         this.goldAnimNode.active = true;
         this.goldAnimNode.getComponent(Animation)?.play();
         tween(this.goldAnimNode)
-            .delay(0.5)  // 延迟0.5秒
+            .delay(0.5)
             .to(0.5, { worldPosition: this.goldAnimEndNode.worldPosition })
-            .call(() => { 
+            .call(() => {
                 this.goldAnimNode.active = false;
-                this.goldAnimNode.setWorldPosition(this.goldAnimBeginNode.worldPosition); })
+                this.goldAnimNode.setWorldPosition(this.goldAnimBeginNode.worldPosition);
+            })
             .start();
+    }
+
+    private EvolveUnIncomeSTB(stbId: number) {
+        oops.gui.toast("星兽进化成功");
+        const endPos = this.btn_book.node.worldPosition;
+        for (const slotNode of KnapsackControlle.instance.SlotNodes) {
+            const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);
+            if (slotComp && slotComp.STBId == stbId) {
+                slotComp.showLevelUpAnim(true);
+                let uiOpacity = this.evolveTips.getComponent(UIOpacity);
+                this.evolveTips.worldPosition = slotComp.node.worldPosition;
+                tween(this.evolveTips)
+                    .call(() => { uiOpacity.opacity = 0; })
+                    .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 * ratio; } })
+                    .call(() => { oops.message.dispatchEvent(AccountEvent.DelUnIncomeSTB, stbId); })
+                    .to(1.5, { worldPosition: endPos }, { easing: easing.quadIn })
+                    .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 0 * ratio; } })
+                    .call(() => { uiOpacity.opacity = 0; })
+                    .start();
+                return;
+            }
+        }
     }
 }

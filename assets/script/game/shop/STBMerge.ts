@@ -2,6 +2,7 @@ import { Button, Toggle, _decorator, Component, Node } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { smc } from '../common/SingletonModuleComp';
+import { VideoPlayer } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('STBMerge')
@@ -22,14 +23,23 @@ export class STBMerge extends Component {
     failPanel: Node = null!;
     @property(Button)
     btn_close2: Button = null!
+    @property(VideoPlayer)
+    videoPlayer:VideoPlayer = null!;
+    @property(Node)
+    videoMsk:Node = null!;
 
     private stbID1: number = 0;
     private stbID2: number = 0;
+    private isSucc: boolean = false;    //是否合成成功
 
-    onLoad(): void {
+    onEnable(): void {
         this.beforePanel.active = true;
         this.sucessPanel.active = false;
         this.failPanel.active = false;
+
+        this.videoMsk.active = false;
+        this.videoPlayer.node.active = false;
+        this.videoPlayer.stop();
     }
 
     start() {
@@ -37,6 +47,8 @@ export class STBMerge extends Component {
         this.btn_close1?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_close2?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_evolve?.node.on(Button.EventType.CLICK, this.onEvolve, this);
+
+        this.videoPlayer.node.on(VideoPlayer.EventType.COMPLETED, this.OnVideoCompleted, this);
     }
 
 
@@ -47,19 +59,30 @@ export class STBMerge extends Component {
     }
 
     closeUI() {
-        oops.gui.remove(UIID.STBMerge);
+        oops.gui.remove(UIID.STBMerge, false);
     }
 
     async onEvolve() {
+        this.videoMsk.active = true;
+        this.videoPlayer.node.active = true;
+        this.videoPlayer.play();
+
         let isUpProb = this.tog_add.isChecked ? 1 : 2;
         smc.account.mergeIncomeSTBNet(this.stbID1, this.stbID2, isUpProb, (success) => {
-            this.showMergeResult(success);
+            this.isSucc = success;
         });
     }
 
     showMergeResult(isSucc: boolean) {
+        // console.log("showMergeResult", isSucc);
         this.beforePanel.active = false
         this.sucessPanel.active = isSucc ? true : false;
         this.failPanel.active = isSucc ? false : true;
+    }
+
+    OnVideoCompleted() { 
+        this.videoMsk.active = false;
+        this.videoPlayer.node.active = false;
+        this.showMergeResult(this.isSucc);
     }
 }

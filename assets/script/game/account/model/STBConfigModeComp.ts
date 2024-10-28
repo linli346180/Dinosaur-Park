@@ -25,7 +25,7 @@ export interface UserInstbConfigData {
     stbName: string; // 星兽名称
     stbGrade: number; // 星兽等级
     isIncome: IsIncome; // 是否可以收益(1.是,2.否)
-    stbSurvival: number; // 星兽存活时间(秒)
+    stbSurvival: number; // 星兽存活时间(秒) 0表示永久存活
     incomeType: number; // 收益货币的类型(1.金币,2.宝石,3.星兽币,4.USDT)
     incomeCycle: number; // 收益周期(秒)
     incomeNumMin: number; // 最小收益数量

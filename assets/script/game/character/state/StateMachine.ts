@@ -1,6 +1,8 @@
 import { _decorator } from 'cc';
 import { IState, SubMachine } from './State';
 
+
+/** 有限状态机总入口 */
 export class StateMachine<TKey> {
 
     mainMachine: SubMachine<TKey> = new SubMachine();
@@ -15,11 +17,11 @@ export class StateMachine<TKey> {
     }
 
     registState(state: IState<TKey>) {
-        this.mainMachine.add(state);
+        this.mainMachine.addState(state);
     }
 
     deregistState(name: TKey) {
-        this.mainMachine.remove(name);
+        this.mainMachine.removeState(name);
     }
 
     transit(name: TKey) {
@@ -29,6 +31,4 @@ export class StateMachine<TKey> {
     update(dt: number) {
         this.mainMachine.update(dt);
     }
-
 }
-

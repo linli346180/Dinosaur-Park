@@ -63,6 +63,7 @@ export class WebSock implements ISocket {
     send(buffer: NetData): number {
         if (this._ws && this._ws.readyState == WebSocket.OPEN) {
             this._ws.send(buffer);
+            console.warn("WebSock send data: ", buffer);
             return 1;
         }
         return -1;

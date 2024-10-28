@@ -97,7 +97,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 25,
+      "y": 40,
       "z": 0
     },
     "_lrot": {
@@ -571,7 +571,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -32.2,
+      "y": -15.838,
       "z": 0
     },
     "_lrot": {
@@ -612,7 +612,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 120,
-      "height": 67.8
+      "height": 37.8
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -647,7 +647,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "初级至尊星兽",
+    "_string": "初级至尊",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
@@ -757,7 +757,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 100,
-      "height": 150
+      "height": 180
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

@@ -19,7 +19,7 @@ export class KnapsackSlot extends Component {
 
     public slotId: number = 0;  // 插槽ID
     public stbData: IStartBeastData | null = null;
-    private LevelUpComp: ActorAnimComp = null!;     // 升级动画
+    private idleAnim: ActorAnimComp = null!;        // 待机动画
     private landingAnim: Animation = null!;         // 着陆动画
     private levelUpAnim: Animation = null!;         // 升级动画
     private drapTipAnim: Animation = null!;         // 拖拽动画
@@ -43,12 +43,12 @@ export class KnapsackSlot extends Component {
         this.landingNode.active = false;
         this.levelUpNode.active = false;
         this.dragTipNode.active = false;
-        this.LevelUpComp = this.actorDragNode.getComponent(ActorAnimComp)!;
+        this.idleAnim = this.actorDragNode.getComponent(ActorAnimComp)!;
         this.landingAnim = this.landingNode.getComponent(Animation)!;
         this.levelUpAnim = this.levelUpNode.getComponent(Animation)!;
         this.drapTipAnim = this.dragTipNode.getComponent(Animation)!;
-        this.landingAnim?.on(Animation.EventType.FINISHED, this.onLandAnimFinished, this);
-        this.levelUpAnim?.on(Animation.EventType.FINISHED, this.onLevelUpAnimFinished, this);
+        // this.landingAnim?.on(Animation.EventType.FINISHED, this.onLandAnimFinished, this);
+        // this.levelUpAnim?.on(Animation.EventType.FINISHED, this.onLevelUpAnimFinished, this);
     }
 
     InitUI(stbData: IStartBeastData | null, showLand: boolean = false, showLevelUp: boolean = false) {
@@ -59,24 +59,43 @@ export class KnapsackSlot extends Component {
 
         if (this.stbData == null) {
             this.container.active = false;
-            this.LevelUpComp?.InitUI(-1);
+            this.idleAnim?.InitUI(-1);
             return;
         }
         if (showLevelUp) {
-            this.levelUpAnim.play();
+            this.showLevelUpAnim(true);
             return;
         }
         if (showLand) {
-            this.landingAnim.play();
+            this.showLandingAnim(true);
             return;
         }
         this.container.active = true;
-        this.LevelUpComp?.InitUI(this.stbData.stbConfigID);
+        this.idleAnim?.InitUI(this.stbData.stbConfigID);
     }
 
+    /** 显示拖拽提示 */
     public showDragTip(show: boolean) {
         this.dragTipNode.active = show;
         if (show) this.drapTipAnim.play();
+    }
+
+    /** 播放降落动画 */
+    public showLandingAnim(show: boolean) {
+        this.landingNode.active = show;
+        if (show) {
+            this.landingAnim.play();
+            this.landingAnim.once(Animation.EventType.FINISHED, this.onLandAnimFinished, this);
+        }
+    }
+
+    /** 播放升级动画 */
+    public showLevelUpAnim(show: boolean) {
+        this.levelUpNode.active = show;
+        if (show) {
+            this.levelUpAnim.play();
+            this.levelUpAnim.once(Animation.EventType.FINISHED, this.onLevelUpAnimFinished, this);
+        }
     }
 
     /** 判断是否为空 */
@@ -87,12 +106,12 @@ export class KnapsackSlot extends Component {
     private onLandAnimFinished() {
         this.landingNode.active = false;
         this.container.active = true;
-        this.LevelUpComp?.InitUI(this.stbData.stbConfigID);
+        this.idleAnim?.InitUI(this.stbData.stbConfigID);
     }
 
     private onLevelUpAnimFinished() {
         this.levelUpNode.active = false;
         this.container.active = true;
-        this.LevelUpComp?.InitUI(this.stbData.stbConfigID);
+        this.idleAnim?.InitUI(this.stbData.stbConfigID);
     }
 }

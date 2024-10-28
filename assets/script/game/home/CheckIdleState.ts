@@ -8,7 +8,7 @@ const { ccclass, property } = _decorator;
  */
 @ccclass('CheckIdleState')
 export class CheckIdleState extends Component {
-    readonly NO_OPERATION_TIME = 120 * 1000;
+    readonly NO_OPERATION_TIME = 2 * 60 * 1000;
     private lastActivityTime = Date.now();  // 记录最后一次用户操作的时间
     private noOperationTimer: NodeJS.Timeout | null = null;  // 定时器
 
@@ -19,7 +19,12 @@ export class CheckIdleState extends Component {
         this.node.on(Input.EventType.MOUSE_UP, this.resetTimer, this);
         this.node.on(Input.EventType.TOUCH_START, this.resetTimer, this);
         this.node.on(Input.EventType.TOUCH_END, this.resetTimer, this);
+        oops.message.on(AccountEvent.HideUserOperation, this.resetTimer, this);
         this.startNoOperationCheck();
+    }
+
+    onDestory() {
+        oops.message.off(AccountEvent.HideUserOperation, this.resetTimer, this);
     }
 
     private resetTimer() {

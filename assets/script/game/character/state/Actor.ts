@@ -2,26 +2,27 @@ import { _decorator, Component, Node, RigidBody2D, CircleCollider2D, Collider2D,
 import { StateMachine } from './StateMachine';
 import { StateDefine } from './StateDefine';
 import { mathutil } from '../../common/utils/MathUtil';
+import { Contact2DType } from 'cc';
+import { Color } from 'cc';
 const { ccclass, property, requireComponent, disallowMultiple } = _decorator;
 
 @ccclass('Actor')
 @requireComponent(RigidBody2D)
-@requireComponent(CircleCollider2D)
+@requireComponent(Collider2D)
 @disallowMultiple(true)
 export class Actor extends Component {
-    rigidbody: RigidBody2D | null = null;
-    collider: Collider2D | null = null;
-    stateMgr: StateMachine<StateDefine> = new StateMachine();
+    public rigidbody: RigidBody2D | null = null;
+    public collider: Collider2D | null = null;
 
     @property(Animation)
-    animation: Animation = null!;
+    public animation: Animation = null!;
     @property(Sprite)
-    mainRenderer: Sprite = null!;
+    public mainRenderer: Sprite = null!;
     @property(Label)
-    survival: Label = null!;
-
-    @property
-    linearSpeed: number = 3;    // 移动速度
+    public survival: Label = null!;
+    // @property
+    // public linearSpeed: number = 5;    // 移动速度
+    public stateMgr: StateMachine<StateDefine> = new StateMachine();
 
     _input: Vec2 = v2();
     set input(v: Vec2) { this._input.set(v.x, v.y); }
@@ -32,6 +33,7 @@ export class Actor extends Component {
         this.collider = this.node.getComponent(Collider2D);
     }
 
+    /** 图片镜像 */
     update(deltaTime: number) {
         this.stateMgr.update(deltaTime);
         if (this.input.x < 0) {
@@ -40,4 +42,29 @@ export class Actor extends Component {
             this.mainRenderer.node.rotation = mathutil.ROT_Y_180;
         }
     }
+
+    /** 更新存活时间显示 */
+    public updateSurvivalDisplay(survivalSec: number) {
+        this.survival.node.active = true;
+        const hours = Math.floor(survivalSec / 3600);
+        const minutes = Math.floor((survivalSec % 3600) / 60);
+        const seconds = survivalSec % 60;
+
+        let formattedTime = "";
+        if (hours > 0) {
+            formattedTime = `${this.padZero(hours)}:${this.padZero(minutes)}:${this.padZero(seconds)}`;
+        } else {
+            formattedTime = `${this.padZero(minutes)}:${this.padZero(seconds)}`;
+        }
+
+        this.survival.string = formattedTime;
+
+        if (survivalSec <= 3)
+            this.survival.color = Color.RED;
+    }
+
+    private padZero(num: number): string {
+        return num < 10 ? `0${num}` : `${num}`;
+    }
+
 }

@@ -59,15 +59,10 @@ export class STBReportView extends Component {
 
     InitItem(child: Node) {
         const stbId = parseInt(child.name);
-        const num = child.getChildByName("num")?.getComponent(Label);
-        if (num) {
-            num.string = "0";
+        const numLabel = child.getChildByPath("Sprite/num")?.getComponent(Label);
+        if (numLabel) {
             const count = this.codexData[stbId];
-            if (count) {
-                if (num) {
-                    num.string = count.toString();
-                }
-            }
+            if (count) { numLabel.string = count.toString();}
         }
     }
 }

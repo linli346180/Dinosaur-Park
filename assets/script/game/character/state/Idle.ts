@@ -4,7 +4,6 @@ import { StateDefine } from './StateDefine';
 const { ccclass, property } = _decorator;
 
 export class Idle extends ActorState {    
-
     onEnter(): void {      
         if(this.actor.rigidbody){
             this.actor.rigidbody.linearVelocity = Vec2.ZERO;
@@ -14,19 +13,9 @@ export class Idle extends ActorState {
             } 
         }           
     }
-
-    update(deltaTime: number) {
-
-    }
-
-    onExit(): void {
-
-    }
-
-    onDestory(): void {
-
-    }
-
+    update(deltaTime: number) {}
+    onExit(): void {}
+    onDestory(): void {} 
     canTransit(to: StateDefine): boolean {
         if (to == StateDefine.Idle) {
             return false;

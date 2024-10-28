@@ -1,5 +1,5 @@
 import { ecs } from "../../../../../extensions/oops-plugin-framework/assets/libs/ecs/ECS";
-import { AccountType, RegisterType, UserData } from "../AccountDefine";
+import { AccountType, RegisterType, UserCoinData, UserData } from "../AccountDefine";
 
 /** 
  * 游戏账号数据 
@@ -7,6 +7,7 @@ import { AccountType, RegisterType, UserData } from "../AccountDefine";
 @ecs.register('AccountModel')
 export class AccountModelComp extends ecs.Comp {
     user: UserData = new UserData(); // 用户数据
+    CoinData :UserCoinData = new UserCoinData(); // 户货币数据
     UserInstb?: IStartBeastData[];    //用户收益星兽列表
     UserNinstb?: IStartBeastData[];  //用户无收益星兽列表
 
@@ -59,10 +60,10 @@ export class AccountModelComp extends ecs.Comp {
     }
 
     /* 获取用户收益星兽数据 */
-    getUserSTBData(stbId: number): IStartBeastData | null {
-        const foundElement = this.UserInstb.find((element) => element.id === stbId);
-        return foundElement || null;
-    }
+    // getUserSTBData(stbId: number): IStartBeastData | null {
+    //     const foundElement = this.UserInstb.find((element) => element.id === stbId);
+    //     return foundElement || null;
+    // }
 
     /** 更新星兽数据 */
     updateUnIncomeSTBData(STBData: IStartBeastData): boolean {

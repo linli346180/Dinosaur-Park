@@ -55,7 +55,7 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.EmailDetail]: { layer: LayerType.Dialog, prefab: "gui/email/prefab/emailDetailUI", mask: true },
     [UIID.Task]: { layer: LayerType.Dialog, prefab: "gui/task/prefab/task" },
     [UIID.RankUI]: { layer: LayerType.UI, prefab: "gui/rank/prefab/ranklUI", mask: true },
-    [UIID.Book]: { layer: LayerType.UI, prefab: "gui/book/prefab/stbReportUI", mask: true },
+    [UIID.Book]: { layer: LayerType.Dialog, prefab: "gui/book/prefab/stbReportUI", mask: true,vacancy: true },
     [UIID.Revive]: { layer: LayerType.UI, prefab: "gui/debris/prefab/debris", mask: true },
     [UIID.DebrisResult]: { layer: LayerType.Dialog, prefab: "gui/debris/prefab/debrisResult", mask: true },
     [UIID.STBShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/stbShop", mask: true },

@@ -22,15 +22,7 @@ export class AccountEmailSystem extends ecs.ComblockSystem implements ecs.IEntit
 
     entityEnter(e: Account): void {
         let newEmail = e.AccountEmail.email;
-
-        // 数值更新
-        // e.AccountModel.userData.email = newEmail;
-
-        e.stockConfig();
-
-        // 通知视图层逻辑刷新界面效果，实现两层逻辑分离
         oops.message.dispatchEvent(AccountEvent.ChangeEmail, newEmail);
-
         e.remove(AccountEmailComp);
     }
 }

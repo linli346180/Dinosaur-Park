@@ -36,7 +36,7 @@ export namespace EmailNetService {
             console.warn("读取邮件:", response.res);
             return response.res;
         } else {
-            console.error("读取邮件请求异常", response);
+            console.error("读取邮件请求异常"+ mailRecordId, response);
             return null;
         }
     }

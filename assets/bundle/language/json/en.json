@@ -29,6 +29,7 @@
     "common_minute":"minute",
     "common_secnod":"secnod",
 
+    "stb_codex":"Astral Beast Codex",
     "stb_gold":"Golden Star Beast",
     "stb_gem":"Gem Star Beast",
     "stb_diamond":"Diamond Star Beast",
@@ -115,6 +116,22 @@
     "invite_tips_pullnew": "Pull new leaderboard",
 
     "adopt_tips_adopt":"Adopt a dinosaur",
+
+    "hatch_tips_hatch":"Hatch",
+    "hatch_tips_hatch_times":"Hatch Times",
+    "hatch_tips_brood_count":"Brood times",
+    "hatch_tips_reward_eachhatchcount":"Reward rare items for every {count} hatches",
+    "hatch_tips_reward_preview":"Dragon Egg bonus preview",
+    "hatch_tips_hatch_once":"Hatch once",
+    "hatch_tips_hatch_ten":"Hatch ten times",
+    "hatch_tips_purchased":"Hatchings purchased",
+
+    "reward_tip_preview": "Reward Preview",        
+    "reward_tip_normal": "Normal Reward",           
+    "reward_tip_intermediate": "Intermediate Reward", 
+    "reward_tip_advanced": "Advanced Reward",       
+    "reward_tip_rare": "Rare Reward",              
+    "reward_tip_receive": "Claim Reward",           
 
     "111":""
 }

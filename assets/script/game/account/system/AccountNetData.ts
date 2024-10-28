@@ -8,6 +8,7 @@ import { TGNetService } from '../../../telegram/TGNet';
 import { EDITOR } from 'cc/env';
 import { GameEvent } from '../../common/config/GameEvent';
 import { sys } from 'cc';
+import { Logger } from '../../../Logger';
 
 /** 请求玩家游戏数据 */
 @ecs.register('AccountNetData')
@@ -23,8 +24,8 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
     }
 
     async entityEnter(entity: Account): Promise<void> {
-        console.log('当前平台:', sys.platform);
-        if (EDITOR) {
+        Logger.logBusiness('当前平台:', sys.platform);
+        if (true) {
             const response = await AccountNetService.LoginTestAccount();
             if (response) {
                 this.OnLogonResponse(entity, response);
@@ -41,6 +42,12 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
 
     async OnLogonResponse(entity: Account, response: any) {
         entity.AccountModel.user = response.user;
+
+        // 获取用户货币数据
+        const coinDataRes = await AccountNetService.getUserCoinData();
+        if (coinDataRes && coinDataRes.userCoin != null) {
+            entity.AccountModel.CoinData = coinDataRes.userCoin;
+        }
 
         // 获取星兽配置数据
         const configDataRes = await AccountNetService.getStartBeastConfig();

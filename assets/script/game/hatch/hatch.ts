@@ -1,4 +1,3 @@
-
 import { _decorator, Component, Node, Animation, Button, Label } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
@@ -8,6 +7,9 @@ import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets
 import { HatchReward } from './HatchReward';
 import { UserHatchEvent } from './HatchDefine';
 import { NetErrorCode } from '../../net/custom/NetErrorCode';
+import { VideoPlayer } from 'cc';
+import { tween } from 'cc';
+import { UIOpacity } from 'cc';
 const { ccclass, property } = _decorator;
 
 /** 孵蛋视图(抽奖) */
@@ -29,31 +31,31 @@ export class HatchView extends Component {
     label_hatchNum: Label = null!;
     @property(Label)
     label_guaranteedNum: Label = null!;
-    @property(Animation)
-    hatchAnim: Animation = null!;
+
+    // @property(Animation)
+    // hatchAnim: Animation = null!;
+
+    @property(VideoPlayer)
+    videoPlayer: VideoPlayer = null!;
+    @property(Node)
+    videoMask: Node = null!;
 
     private canHatch: boolean = true;
     private hatchResult: any;
     private _userData: UserHatchData = new UserHatchData();
 
-    async onLoad() {
+    start() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_RewardView?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.RewardView) }, this);
         this.btn_HatchOneTime?.node.on(Button.EventType.CLICK, () => { this.userHatch(1) }, this);
         this.btn_HatchTenTimes?.node.on(Button.EventType.CLICK, () => { this.userHatch(10) }, this);
         this.btn_BuyHatchTime?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.HatchShop) }, this);
-        this.hatchAnim.on(Animation.EventType.FINISHED, this.OnAnimFinish, this);
-        oops.message.on(UserHatchEvent.HatchNumChange, this.onHandler, this);
 
-        // 获取孵蛋保底次数
-        const res = await HatchNetService.getHatchMinNum();
-        if (res) {
-            this._userData.guaranteedNum = res.hatchGuaranteedNum.guaranteedNum;
-            this.label_guaranteedNum.string = `Reward rare items for every ${this._userData.guaranteedNum} hatches`;
-        }
+        this.videoPlayer.node.on(VideoPlayer.EventType.COMPLETED, this.OnAnimFinish, this);
+        oops.message.on(UserHatchEvent.HatchNumChange, this.onHandler, this);
     }
 
-    protected onEnable(): void {
+    onEnable() {
         this.initUI();
     }
 
@@ -66,6 +68,15 @@ export class HatchView extends Component {
     }
 
     private async initUI() {
+        HatchNetService.getHatchMinNum().then((res) => {
+            if (res) {
+                this._userData.guaranteedNum = res.hatchGuaranteedNum.guaranteedNum;
+                let desc = oops.language.getLangByID("hatch_tips_reward_eachhatchcount");
+                desc = desc.replace("{count}", this._userData.guaranteedNum.toString());
+                this.label_guaranteedNum.string = desc;
+            }
+        });
+
         const hatchNumData = await HatchNetService.getUserHatchNum();
         if (hatchNumData) {
             this._userData.remainNum = hatchNumData.userHatch.remainNum;
@@ -84,22 +95,50 @@ export class HatchView extends Component {
     }
 
     private async userHatch(num: number) {
+
+        if(this._userData.remainNum < num) { 
+            oops.gui.toast("孵蛋次数不足,请购买");
+            return
+        }
+
         if (!this.canHatch) {
             return;
         }
-        // 播放抽奖动画
+
+        // 播放抽奖视频:
+        this.videoMask.active = true;
+        this.videoPlayer.node.active = true;
+        this.videoPlayer.play();
         this.canHatch = false;
-        this.hatchAnim.node.active = true;
-        this.hatchAnim.play();
         this.hatchResult = await HatchNetService.requestUserHatch(num);
     }
 
     private OnAnimFinish() {
+        console.log("动画播放结束");
+
         this.canHatch = true;
-        this.hatchAnim.node.active = false;
-        this.hatchAnim.stop();
         this.initUI();
 
+        // 视频播放结束后缓慢隐藏
+        this.videoPlayer.stop();
+        this.videoPlayer.node.active = false;
+
+        let uiOpacity = this.videoMask.getComponent(UIOpacity);
+        if (!uiOpacity) {
+            uiOpacity = this.videoMask.addComponent(UIOpacity);
+        }
+
+        tween(this.videoMask)
+            .to(1, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 - (155 * ratio); } }) // 透明度减少到 100
+            .call(() => {
+                this.videoMask.active = false;
+                uiOpacity.opacity = 255;
+                this.showHatchResult();
+            }) 
+            .start();
+    }
+
+    private showHatchResult() {
         if (this.hatchResult && this.hatchResult.resultCode == NetErrorCode.Success) {
             var uic: UICallbacks = {
                 onAdded: (node: Node, params: any) => {
@@ -112,8 +151,7 @@ export class HatchView extends Component {
             let uiArgs: any;
             oops.gui.open(UIID.HatchReward, uiArgs, uic);
         } else {
-            console.error("孵蛋失败:", this.hatchResult.resultMsg);
-            oops.gui.toast(this.hatchResult.resultMsg, false);
+            console.error("孵蛋异常");
         }
     }
 }

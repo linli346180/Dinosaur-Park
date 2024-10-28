@@ -86,7 +86,7 @@
         "_value": true
       },
       "video": {
-        "_value": false
+        "_value": true
       },
       "webview": {
         "_value": true
@@ -147,6 +147,7 @@
       "tiled-map",
       "tween",
       "ui",
+      "video",
       "websocket",
       "webview"
     ],
