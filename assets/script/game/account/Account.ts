@@ -13,6 +13,7 @@ import { NetCmd, NetErrorCode } from "../../net/custom/NetErrorCode";
 import { netChannel } from "../../net/custom/NetChannelManager";
 import { tips } from "../common/tips/TipsManager";
 import { netConfig } from "../../net/custom/NetConfig";
+import { moneyUtil } from "../common/utils/moneyUtil";
 
 /** 账号模块 */
 @ecs.register('Account')
@@ -379,34 +380,52 @@ export class Account extends ecs.Entity {
     }
 
     /** 获取指定类型的星兽数据 */
-    getSTBDataByConfigId(configIds: number[]): IStartBeastData[] {
+    getSTBDataByConfigType(configIds: number[]): IStartBeastData[] {
         let dataList: IStartBeastData[] = [];
         if (this.AccountModel.UserNinstb) {
             this.AccountModel.UserNinstb.forEach((element) => {
-                if (configIds.includes(element.stbConfigID)) {
-                    dataList.push(element);
+                const config = this.getSTBConfigById(element.stbConfigID)
+                if (config) {
+                    const itemID = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+                    if (configIds.includes(itemID)) { 
+                        dataList.push(element);
+                    }
                 }
             });
         }
 
         if (this.AccountModel.UserInstb) {
             this.AccountModel.UserInstb.forEach((element) => {
-                if (configIds.includes(element.stbConfigID)) {
-                    dataList.push(element);
+                const config = this.getSTBConfigById(element.stbConfigID)
+                if (config) {
+                    const itemID = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+                    if (configIds.includes(itemID)) { 
+                        dataList.push(element);
+                    }
                 }
             });
         }
         return dataList;
     }
 
-    /** 获取星兽配置 */
-    getSTBConfig(configId: number): UserInstbConfigData | null {
+    /** 获取星兽配置(ID:1) */
+    getSTBConfigById(configId: number): UserInstbConfigData | null {
         for (const element of this.STBConfigMode.instbConfigData) {
             if (element.id == configId) {
                 return element;
             }
         }
-        console.error("未找到配置:", configId);
+        return null;
+    }
+
+    /** 获取星兽配置(类型101) */
+    getSTBConfigByType(type: number): UserInstbConfigData | null {
+        for (const element of this.STBConfigMode.instbConfigData) {
+            const itemID = moneyUtil.combineNumbers(element.stbKinds, element.stbGrade, 2);
+            if (itemID== type) {
+                return element;
+            }
+        }
         return null;
     }
 }

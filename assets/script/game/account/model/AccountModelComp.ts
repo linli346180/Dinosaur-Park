@@ -77,11 +77,6 @@ export class AccountModelComp extends ecs.Comp {
     }
 }
 
-// export interface IUserInstbData {
-//     UserInstb: IStartBeastData[];
-//     UserNinstb: IStartBeastData[];
-// }
-
 /** 星兽数据 */
 export interface IStartBeastData {
     id: number;             //星兽ID

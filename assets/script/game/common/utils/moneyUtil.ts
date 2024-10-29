@@ -12,11 +12,7 @@ export class moneyUtil {
   }
 
   /** 将两个数字组合成一个新的数字 */
-  static combineNumbers(
-    first: number,
-    second: number,
-    zeroCount: number
-  ): number {
+  static combineNumbers(first: number, second: number, zeroCount: number): number {
     const secondLength = second.toString().length;
     const adjustedZeroCount = Math.max(zeroCount - secondLength, 0);
     const zeros = '0'.repeat(adjustedZeroCount);

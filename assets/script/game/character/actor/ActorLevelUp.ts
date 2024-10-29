@@ -1,6 +1,9 @@
 import { Label } from 'cc';
 import { _decorator, Component, Node, Animation } from 'cc';
 import { TableSTBConfig } from '../../common/table/TableSTBConfig';
+import { smc } from '../../common/SingletonModuleComp';
+import { UserInstbConfigData } from '../../account/model/STBConfigModeComp';
+import { moneyUtil } from '../../common/utils/moneyUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('ActorAnimComp')
@@ -21,13 +24,16 @@ export class ActorAnimComp extends Component {
     }
 
     public InitUI(stbConfigID: number) {
-        if(stbConfigID <= 0){
+        const config: UserInstbConfigData = smc.account.getSTBConfigById(stbConfigID);
+        if (config == null) {
             this.idleAnim.stop();
             return;
         }
-        this.level.string = stbConfigID.toString();
-        this.stbTableConfig.init(stbConfigID);
-        this.idleAnim.play(this.stbTableConfig.animation);
+        this.level.string = config.stbGrade.toString();
+        const itemID = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+        this.stbTableConfig.init(itemID);
+        if(this.stbTableConfig.animation != undefined && this.stbTableConfig.animation != '')
+            this.idleAnim.play(this.stbTableConfig.animation);
     }
 
     private onAnimationFinished() {
@@ -37,5 +43,3 @@ export class ActorAnimComp extends Component {
         }, randomDelay);
     }
 }
-
-

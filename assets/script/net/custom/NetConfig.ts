@@ -2,12 +2,37 @@
 
 /** 网络配置 */
 class NetConfig {
-    // public Server: string = "http://54.169.243.11:10000/";
-    public Server: string = "https://konglong.live/";
-    // public Server: string = "https://yu.sbpc-api.com/";
+    public get Server() {
+        return this.ServerConfigList[this.curEnvironment].Server;
+    }
 
-    public WebSock: string = "konglong.live/wss";
-    // public WebSock: string = "yu.sbpc-api/wss";
+    public get WebSock() {
+        return this.ServerConfigList[this.curEnvironment].WebSock;
+    }
+
+    public get BotToken() {
+        return this.ServerConfigList[this.curEnvironment].BotToken;
+    }
+
+    public curEnvironment: EnvironmentType = EnvironmentType.Development;
+    public ServerConfigList = {
+        [EnvironmentType.Development]: {
+            Server: "https://konglong.live/",
+            WebSock: "konglong.live/wss",
+            BotToken: '7512648791:AAGsR1Qbuh-A-B_l1SrizMdSBIm1MmZLuZQ'
+        },
+        [EnvironmentType.PreRelease]: {
+            Server: "https://yu.sbpc-api.com/",
+            WebSock: "yu.sbpc-api.com/wss",
+            BotToken: '7175903697:AAGqeX_Z5N1GC0HWyGS_WZE8nzzJiTZGwa0'
+        },
+        [EnvironmentType.Production]: {
+            Server: "https://yu.sbpc-api.com/",
+            WebSock: "yu.sbpc-api.com/wss",
+            BotToken: '7175903697:AAGqeX_Z5N1GC0HWyGS_WZE8nzzJiTZGwa0'
+        }
+    };
+
     public API: string = "/tgapp/api";
     public VERSION: string = "/v1";
     public PATH: string = "/login";
@@ -19,6 +44,13 @@ class NetConfig {
     public GetUrl(PATH: string): string {
         return this.Server + this.API + PATH;
     }
+}
+
+/** 网络配置 */
+enum EnvironmentType {
+    Development = '开发环境',   
+    PreRelease = '预售环境',
+    Production = '发布环境'
 }
 
 export var netConfig = new NetConfig();

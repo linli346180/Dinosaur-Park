@@ -19,6 +19,7 @@ export class STBPurItem extends Component {
     stbName: Label = null!;
 
     private configId: number = 0;
+    private STBConfig: TableSTBConfig = new TableSTBConfig();
 
     start() {
         this.btn_buy.node.on(Button.EventType.CLICK, this.onBuy, this);
@@ -28,10 +29,11 @@ export class STBPurItem extends Component {
         this.configId = config.id;
         this.num.string = config.purConCoinNum.toString();
         this.stbName.string = config.stbName;
-        let STBConfig: TableSTBConfig = new TableSTBConfig();
-        STBConfig.init(config.id);
-        if(STBConfig.puricon != undefined && STBConfig.puricon != ''){ 
-            oops.res.loadAsync(STBConfig.puricon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
+
+        const stbType = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+        this.STBConfig.init(stbType);
+        if(this.STBConfig.puricon != undefined && this.STBConfig.puricon != ''){ 
+            oops.res.loadAsync(this.STBConfig.puricon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
                 if(spriteFrame)
                     this.icon.spriteFrame = spriteFrame;
             });

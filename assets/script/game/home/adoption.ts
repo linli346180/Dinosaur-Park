@@ -58,15 +58,15 @@ export class AdoptionView extends Component {
 
     changeSTBConfig() {
         this._index = math.clamp(this._index, 0, this._configDataList.length - 1);
-        this.level.string = this._configDataList[this._index].id.toString();
+        this.level.string = this._configDataList[this._index].stbGrade.toString();
         this.price.string = this._configDataList[this._index].purConCoinNum.toString();
         if (this._spriteFrames.length > this._index) {
             this.beast.spriteFrame = this._spriteFrames[this._index];
         }
-
         oops.storage.set("STBConfigIndex", this._index);
     }
 
+    /** 获取使用金币购买的黄金星兽配置 */
     getSTBConfig_PurGold() {
         this._configDataList = [];
         smc.account.STBConfigMode.instbConfigData.forEach(element => {
@@ -74,6 +74,6 @@ export class AdoptionView extends Component {
                 this._configDataList.push(element);
             }
         });
-        this._configDataList.sort((a, b) => a.id - b.id);
+        this._configDataList.sort((a, b) => a.stbGrade - b.stbGrade);
     }
 }

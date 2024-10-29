@@ -3,6 +3,8 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { UIID } from '../common/config/GameUIConfig';
 import { ReportNetService } from './ReportNet';
 import { Logger } from '../../Logger';
+import { smc } from '../common/SingletonModuleComp';
+import { moneyUtil } from '../common/utils/moneyUtil';
 const { ccclass, property } = _decorator;
 
 interface CodexData {
@@ -22,12 +24,21 @@ export class STBReportView extends Component {
     gamContainer: Node = null!;
     @property(Node)
     diamondContainer: Node = null!;
+
     private codexData: CodexData = {};
 
     onEnable() {
         ReportNetService.getStartBeastStatData().then((res) => {
             if (res && res.codexData != null) {
                 this.codexData = res.codexData;
+                for (const key in res.codexData) {
+                    const element = res.codexData[key];
+                    const config = smc.account.getSTBConfigById(element);
+                    if (config) {
+                        const stbType = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+                        this.codexData[stbType] = element;
+                    }
+                }
                 this.InitUI();
             }
         });
@@ -42,7 +53,6 @@ export class STBReportView extends Component {
     }
 
     InitUI() {
-        console.log("InitUI");
         this.goldCntainer?.children.forEach(child => {
             this.InitItem(child);
         });
@@ -62,7 +72,7 @@ export class STBReportView extends Component {
         const numLabel = child.getChildByPath("Sprite/num")?.getComponent(Label);
         if (numLabel) {
             const count = this.codexData[stbId];
-            if (count) { numLabel.string = count.toString();}
+            if (count) { numLabel.string = count.toString(); }
         }
     }
 }

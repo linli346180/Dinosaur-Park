@@ -5,10 +5,10 @@ import { Account } from '../Account';
 import { oops } from '../../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { AccountNetService } from '../AccountNet';
 import { TGNetService } from '../../../telegram/TGNet';
-import { EDITOR } from 'cc/env';
 import { GameEvent } from '../../common/config/GameEvent';
+import { EDITOR } from 'cc/env';
 import { sys } from 'cc';
-import { Logger } from '../../../Logger';
+
 
 /** 请求玩家游戏数据 */
 @ecs.register('AccountNetData')
@@ -24,13 +24,15 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
     }
 
     async entityEnter(entity: Account): Promise<void> {
-        Logger.logBusiness('当前平台:', sys.platform);
-        if (true) {
+        console.log(`【Editor】${EDITOR} 【当前平台】'+ ${sys.platform}【运行系统】${sys.os} 【浏览器类型】${sys.browserType}`);
+        if (EDITOR) {
+            console.log("使用测试登陆")
             const response = await AccountNetService.LoginTestAccount();
             if (response) {
                 this.OnLogonResponse(entity, response);
             }
         } else {
+            console.log("使用TD登陆")
             const TGAppData = await TGNetService.GetTelegramAPPData();
             const response = await AccountNetService.LoginTGAcount(TGAppData);
             if (response) {

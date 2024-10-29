@@ -22,14 +22,11 @@ export class STBPurShop extends Component {
     @property(Button)
     btn_close: Button = null!;
     private configDataList: UserInstbConfigData[] = [];
-
-    onEnable() {
-        this.initUI();
-    }
-
+    
     start() {
         this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.STBShop, false) }, this);
         oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
+        this.initUI();
     }
 
     onDestroy() {
@@ -48,10 +45,10 @@ export class STBPurShop extends Component {
         this.gemNum.string = Math.floor(smc.account.AccountModel.CoinData.gemsCoin).toString();
     }
 
-    async initUI() {
+    private initUI() {
         this.content.removeAllChildren();
-        this.getSTBConfig_PurGem(smc.account.STBConfigMode.instbConfigData);
-        this.configDataList.sort((a, b) => a.id - b.id);
+        this.getSTBConfig_PurGem();
+
         this.configDataList.forEach(element => {
             let item = instantiate(this.itemPrefab);
             item.parent = this.content;
@@ -61,13 +58,13 @@ export class STBPurShop extends Component {
     }
 
     /** 获取使用宝石购买的星兽配置 */
-    getSTBConfig_PurGem(userInstbConfig: UserInstbConfigData[]) {
+    getSTBConfig_PurGem() {
         this.configDataList = [];
-        userInstbConfig.forEach(element => {
+        smc.account.STBConfigMode.instbConfigData.forEach(element => {
             if (element.isPur === IsPur.Yes && element.purConCoin === PurConCoin.gems) {
-                console.log("getSTBConfig_PurGem", element);
                 this.configDataList.push(element);
             }
         });
+        this.configDataList.sort((a, b) => a.id - b.id);
     }
 }

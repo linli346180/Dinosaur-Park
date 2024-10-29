@@ -28,16 +28,16 @@ export namespace AccountNetService {
             avatarUrl: data.AvatarUrl || '',
             inviteSign: ''
         });
-        console.log("登录参数:" + params);
+        console.log("TG登录参数:" + params);
         const response = await http.postUrlNoHead("tgapp/api/login", params);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.warn("TG登录成功", response.res);
+            console.warn(`TG登录成功${http.url}`, response.res);
             netConfig.Token = response.res.token;
 
             getServerTimeDiff(response.res.sTime);
             return response.res;
         } else {
-            console.error("TG登录失败", response);
+            console.error(`TG登录失败${http.url}`, response);
             return null;
         }
     }
@@ -56,12 +56,11 @@ export namespace AccountNetService {
         const response = await http.postUrlNoHead("tgapp/api/login", JSON.stringify(params));
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             netConfig.Token = response.res.token;
-            console.warn("登录成功", http.url + JSON.stringify(response.res));
-
+            console.warn(`登录成功${http.url}`, response.res);
             getServerTimeDiff(response.res.sTime);
             return response.res;
         } else {
-            console.error("登录异常", http.url + JSON.stringify(response));
+            console.error(`登录失败${http.url}`, response);
             return null;
         }
     }

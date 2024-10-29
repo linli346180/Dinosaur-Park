@@ -11,6 +11,7 @@ import { RvoMgr } from '../../RVO/RvoMgr';
 import { Logger } from '../../Logger';
 import { v3 } from 'cc';
 import { math } from 'cc';
+import { moneyUtil } from '../common/utils/moneyUtil';
 const { ccclass, property } = _decorator;
 
 const tmpP0 = v3();
@@ -23,7 +24,7 @@ export class MapComponent extends Component {
     mapRoot: Node = null!;
     mapNodes: Map<number, Node> = new Map();  // 地图节点 1:Map1 2:Map2
 
-    delList: number[] = [];  // 删除列表
+    private delList: number[] = [];  // 删除列表
 
     onLoad(): void {
         RvoMgr.radius = 90; // 星兽半径
@@ -68,6 +69,7 @@ export class MapComponent extends Component {
             let mapNode = this.mapRoot.getChildByPath(mapConfig.path);
             if (mapNode) this.mapNodes.set(Number(key), mapNode);
         });
+        this.delList = [];
         this.fillUserSTB();
     }
 
@@ -91,7 +93,7 @@ export class MapComponent extends Component {
     private fillUserSTBMap(mapID: MapID, stbConfigIds: number[]) {
         const mapConfig = MapConfigData[mapID];  // 地图配置
         const mapNode = this.mapNodes.get(mapID);  // 地图节点
-        const userInstbData = smc.account.getSTBDataByConfigId(stbConfigIds);
+        const userInstbData = smc.account.getSTBDataByConfigType(stbConfigIds);
 
         const instNum = userInstbData.length;  // 用户星兽数量
         const showNum = this.getChildCount(mapNode);  // 已显示数量
@@ -116,16 +118,22 @@ export class MapComponent extends Component {
     }
 
     /** 创建星兽对象 */
-    private async createSTBItem(stb: number) {
-        const stbData: IStartBeastData | null = smc.account.getUserSTBData(stb);
+    private async createSTBItem(stbId: number) {
+        const stbData: IStartBeastData | null = smc.account.getUserSTBData(stbId);
         if (stbData) {
-            const stbConfigID = stbData.stbConfigID;  // 星兽配置ID
-            const prefabPath = STBConfigData[stbConfigID].perfab; // 预制体路径
-            const mapID = STBConfigData[stbConfigID].mapID; // 地图ID
-            const mapNode = this.mapNodes.get(mapID); // 地图节点
-            const mapConfig = MapConfigData[mapID]; // 地图配置
+            const stbConfig = smc.account.getSTBConfigById(stbData.stbConfigID);
+            if (!stbConfig) {
+                console.error('星兽配置不存在:', stbData.stbConfigID);
+                return;
+            }
+            const stbType = moneyUtil.combineNumbers(stbConfig.stbKinds, stbConfig.stbGrade, 2);
+            const prefabPath = STBConfigData[stbType].perfab; // 预制体路径
+            const mapID = STBConfigData[stbType].mapID; // 地图ID
 
-            if (mapNode.children.length >= mapConfig.ItemLimit) {
+            const mapNode = this.mapNodes.get(mapID); // 地图节点
+            const showNum = this.getChildCount(mapNode);  // 已显示数量
+            const mapConfig = MapConfigData[mapID]; // 地图配置
+            if (showNum >= mapConfig.ItemLimit) {
                 Logger.logBusiness('地图上的星兽数量已经达到上限');
                 return;
             }
@@ -169,7 +177,7 @@ export class MapComponent extends Component {
         let count = 0;
         for (const child of node.children) {
             if (!this.delList.includes(Number(child.name))) {
-                count += this.getChildCount(child);
+                count += 1;
             }
         }
         return count;

@@ -1,6 +1,6 @@
 import { _decorator } from "cc";
 import { smc } from "../../common/SingletonModuleComp";
-import { STBID } from "../../character/STBDefine";
+import { STBTypeID } from "../../character/STBDefine";
 import { oops } from "../../../../../extensions/oops-plugin-framework/assets/core/Oops";
 import { UserInstbConfigData } from "../model/STBConfigModeComp";
 
@@ -36,8 +36,11 @@ export class CoinPoolViewModel {
     /** 金币速度 */
     private gold_speed: number = 0;
     get GoldSpeed(): number {
+        if(!this.goldConfig)
+            return 0;
+
         this.gold_speed = 0;
-        const goldstbList = smc.account.getSTBDataByConfigId([STBID.STB_Gold_Level10]);
+        const goldstbList = smc.account.getSTBDataByConfigType([STBTypeID.STB_Gold_Level10]);
         let surNum = 0;
         goldstbList.forEach((stbData) => {
             if (smc.account.getSTBSurvivalSec(stbData.id) != 0) {
@@ -53,8 +56,11 @@ export class CoinPoolViewModel {
     /** 宝石速度 */
     private gem_speed: number = 0;
     get GemSpeed(): number {
+        if(!this.gemConfig)
+            return 0;
+
         this.gem_speed = 0;
-        const gemstbList = smc.account.getSTBDataByConfigId([STBID.STB_Gem]);
+        const gemstbList = smc.account.getSTBDataByConfigType([STBTypeID.STB_Gem]);
         let surNum = 0;
         gemstbList.forEach((stbData) => {
             if (smc.account.getSTBSurvivalSec(stbData.id) != 0) {
@@ -71,33 +77,16 @@ export class CoinPoolViewModel {
         const pool_gold_num = oops.storage.getNumber("pool_gold_num", 0);
         const pool_gem_num = oops.storage.getNumber("pool_gem_num", 0);
 
-        this.goldConfig = smc.account.getSTBConfig(STBID.STB_Gold_Level10);
-        this.gemConfig = smc.account.getSTBConfig(STBID.STB_Gem);
+        this.goldConfig = smc.account.getSTBConfigByType(STBTypeID.STB_Gold_Level10);
+        this.gemConfig = smc.account.getSTBConfigByType(STBTypeID.STB_Gem);
+
         if (this.goldConfig == null || this.gemConfig == null) {
             console.error("星兽配置为空");
             return;
         }
 
         let godNum = 0;
-        // const goldstbList = smc.account.getSTBDataByConfigId([STBID.STB_Gold_Level10]);
-        // goldstbList.forEach((stbData) => {
-        //     if (smc.account.getSTBSurvivalSec(stbData.id) != 0) {
-        //         const lastTime = new Date(stbData.lastIncomeTime);
-        //         const diffTime = new Date().getTime() - lastTime.getTime();
-        //         const diffMins = Math.floor(diffTime / 60000);
-        //         godNum += this.goldConfig.incomeNumMin * diffMins / this.goldConfig.incomeCycle;
-        //     }
-        // });
-
         let gemNum = 0;
-        // const gemstbList = smc.account.getSTBDataByConfigId([STBID.STB_Gem]);
-        // gemstbList.forEach((stbData) => {
-        //     const lastTime = new Date(stbData.lastIncomeTime);
-        //     const diffTime = new Date().getTime() - lastTime.getTime();
-        //     const diffMins = Math.floor(diffTime / 60000);
-        //     gemNum += this.gemConfig.incomeNumMin * diffMins / this.gemConfig.incomeCycle;
-        // });
-
         this.gold_num = Math.max(pool_gold_num, godNum);
         this.gem_num = Math.max(pool_gem_num, gemNum);
     }

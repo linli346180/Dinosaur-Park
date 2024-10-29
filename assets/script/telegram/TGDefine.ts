@@ -1,8 +1,5 @@
 
 
-/** TG Token */
-export const botToken = '7175903697:AAGqeX_Z5N1GC0HWyGS_WZE8nzzJiTZGwa0'
-
 /**
  * TG传输数据 https://core.telegram.org/bots/webapps#webappinitdata
  */

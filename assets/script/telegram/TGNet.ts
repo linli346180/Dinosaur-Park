@@ -1,5 +1,6 @@
 import { Logger } from "../Logger";
-import { botToken, TGWebAppInitData } from "./TGDefine";
+import { netConfig } from "../net/custom/NetConfig";
+import { TGWebAppInitData } from "./TGDefine";
 
 export namespace TGNetService {
 
@@ -52,7 +53,7 @@ export namespace TGNetService {
 
     /** 获取用户头像 */
     async function getUserProfilePhotos(userId: string) {
-        const url = `https://api.telegram.org/bot${botToken}/getUserProfilePhotos?user_id=${userId}`;
+        const url = `https://api.telegram.org/bot${netConfig.BotToken}/getUserProfilePhotos?user_id=${userId}`;
         try {
             const response = await fetch(url);
             const data = await response.json();
@@ -73,13 +74,13 @@ export namespace TGNetService {
 
     /** 获取头像下载链接 */
     async function getPhotoFile(fileId: string) {
-        const url = `https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`
+        const url = `https://api.telegram.org/bot${netConfig.BotToken}/getFile?file_id=${fileId}`
         try {
             const response = await fetch(url);
             const data = await response.json();
             if (data.ok) {
                 const filePath = data.result.file_path;
-                const fileUrl = `https://api.telegram.org/file/bot${botToken}/${filePath}`;
+                const fileUrl = `https://api.telegram.org/file/bot${netConfig.BotToken}/${filePath}`;
                 console.warn('Photo File path:', fileUrl);
                 return fileUrl;
             } else {

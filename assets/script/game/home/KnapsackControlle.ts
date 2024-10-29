@@ -6,7 +6,7 @@ import { KnapsackSlot } from './KnapsackSlot';
 import { smc } from '../common/SingletonModuleComp';
 import { AccountEvent } from '../account/AccountEvent';
 import { IStartBeastData } from '../account/model/AccountModelComp';
-import { STBID } from '../character/STBDefine';
+import { STBTypeID } from '../character/STBDefine';
 import { tween } from 'cc';
 import { Tween } from 'cc';
 import { EDITOR } from 'cc/env';
@@ -237,7 +237,7 @@ export class KnapsackControlle extends Component {
     private autoAdoptBeast() {
         this.schedule(() => {
             console.log("触发自动领养星兽");
-            this.AdopStartBeast(STBID.STB_Gold_Level1, true)
+            this.AdopStartBeast(STBTypeID.STB_Gold_Level1, true)
         }, this.interval, macro.REPEAT_FOREVER, this.interval);
     };
 

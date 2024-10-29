@@ -23,14 +23,6 @@ export class TableSTBConfig {
     get icon(): string {
         return this.data.icon;
     }
-    /** 预制体 */
-    get perfab(): string {
-        return this.data.perfab;
-    }
-    /** 地图 */
-    get map(): number {
-        return this.data.map;
-    }
     /** 动画 */
     get animation(): string {
         return this.data.animation;
@@ -38,6 +30,14 @@ export class TableSTBConfig {
     /** 购买图标 */
     get puricon(): string {
         return this.data.puricon;
+    }
+    /** 地图 */
+    get map(): number {
+        return this.data.map;
+    }
+    /** 预制体 */
+    get perfab(): string {
+        return this.data.perfab;
     }
 }
     
