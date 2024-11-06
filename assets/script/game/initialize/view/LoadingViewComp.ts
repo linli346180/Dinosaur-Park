@@ -44,14 +44,13 @@ export class LoadingViewComp extends CCVMParentComp {
     private loginSuccess: boolean = false;
 
     start() {
-        oops.message.on(GameEvent.LoginSuccess, this.onHandler, this);
+        oops.message.on(GameEvent.CloseLoadingUI, this.onHandler, this);
         this.loadRes();
     }
 
     private onHandler(event: string, args: any) {
         switch (event) {
-            case GameEvent.LoginSuccess:
-                // console.log("登录成功 关闭加载界面");
+            case GameEvent.CloseLoadingUI:
                 this.loginSuccess = true;
                 this.onCompleteCallback();
                 break;
@@ -86,7 +85,7 @@ export class LoadingViewComp extends CCVMParentComp {
         this.schedule(this.updateProgress, 0.1);
 
         // 优先加载配置的指定资源包中资源
-        oops.gui.preLoad();
+        oops.gui.PreLoadUIAsset();
         // 优先加载配置的指定资源包中资源，如果没配置则加载默认资源包资源
         // oops.res.loadDir("animation", this.onProgressCallback.bind(this), this.onCompleteCallback.bind(this));
     }

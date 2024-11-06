@@ -29,7 +29,6 @@ export class PzzleItem extends Component {
         this.label_num.string = value.toString();
         this.label_emptyNum.string = value.toString();
         this.btn_item.interactable = value > 0 ? true : false;
-
         this.empty_panel.active = value == 0 ? true : false;
         this.icon_mask.active = value > 0 ? false : true;
     }
@@ -44,7 +43,7 @@ export class PzzleItem extends Component {
         this.icon.spriteFrame = value;
     }
 
-    initItem(debrisID: number, debrisDetailsID: number, position: number, count: number) {
+    initItem(debrisType: number, debrisID: number, debrisDetailsID: number, position: number, count: number) {
         this.debrisID = debrisID;
         this.debrisDetailsID = debrisDetailsID;
         this.position = position;
@@ -56,8 +55,8 @@ export class PzzleItem extends Component {
         this.empty_panel.active = count == 0 ? true : false;
         this.icon_mask.active = count > 0 ? false : true;
 
-        let itemConfig;
-        if (debrisID == 1)
+        let itemConfig : any;
+        if (debrisType == 301)
             itemConfig = new TablePrimaryDebrisConfig();
         else
             itemConfig = new TableMiddleDebrisConfig();

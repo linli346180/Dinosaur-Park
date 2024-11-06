@@ -20,6 +20,8 @@ export namespace TGNetService {
                         reject(initData);
                     }
 
+                    console.log('TG数据:', WebApp.initData);
+
                     const parsedData = JSON.parse(initData);
                     if (parsedData) {
                         const TGAppData = new TGWebAppInitData();
@@ -29,6 +31,15 @@ export namespace TGNetService {
                         TGAppData.chat_type = parsedData.chat_type;
                         TGAppData.chat_instance = parsedData.chat_instance;
 
+                        // 邀请码数据
+                        const paramsString = decodeURIComponent(WebApp.initData);
+                        const params = new URLSearchParams(paramsString);
+                        let start_param = params.get("start_param") || '';
+                        const parts = start_param.split('_');
+                        TGAppData.inviteSigin = parts.length > 0 ? parts[0]:'';
+                        TGAppData.inviteType = parts.length > 1 ? parseInt(parts[1]):0;
+
+                        // 获取用户头像下载地址
                         const userId: string = TGAppData.UserData.id.toString();
                         let fileId = await getUserProfilePhotos(userId);
                         let fileUrl = await getPhotoFile(fileId);
@@ -39,7 +50,7 @@ export namespace TGNetService {
                         reject(initData);
                     }
                 } catch (error) {
-                    Logger.logNet('Error during TG login:', error.toString());
+                    // Logger.logNet('Error during TG login:', error.toString());
                     reject(error);
                 }
             };
@@ -67,7 +78,7 @@ export namespace TGNetService {
                 return '';
             }
         } catch (error) {
-            Logger.logNet('Error:', error);
+            // Logger.logNet('Error:', error);
             return '';
         }
     }
@@ -88,7 +99,7 @@ export namespace TGNetService {
                 return '';
             }
         } catch (error) {
-            Logger.logNet('Error:', error.toString());
+            // Logger.logNet('Error:', error.toString());
             return '';
         }
     }

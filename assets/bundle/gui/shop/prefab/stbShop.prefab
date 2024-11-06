@@ -136,8 +136,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 961,
-      "height": 1258
+      "width": 900,
+      "height": 1200
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -281,7 +281,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 634.5,
+      "y": 605.5,
       "z": 0
     },
     "_lrot": {
@@ -334,7 +334,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -7.969,
+      "y": 0,
       "z": 0
     },
     "_lrot": {
@@ -374,7 +374,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 400,
+      "width": 200,
       "height": 63
     },
     "_anchorPoint": {
@@ -413,11 +413,11 @@
     "_string": "领养星兽",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 40,
-    "_fontSize": 40,
+    "_actualFontSize": 50,
+    "_fontSize": 50,
     "_fontFamily": "Arial",
     "_lineHeight": 50,
-    "_overflow": 3,
+    "_overflow": 0,
     "_enableWrapText": true,
     "_font": null,
     "_isSystemFontUsed": true,
@@ -2055,7 +2055,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 462.6,
+      "y": 433.6,
       "z": 0
     },
     "_lrot": {
@@ -2155,8 +2155,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 761,
-      "height": 925.2
+      "width": 757.9,
+      "height": 867.2
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2365,7 +2365,7 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": -205.5,
+      "x": -203.95,
       "y": -200,
       "z": 0
     }
@@ -2496,7 +2496,7 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": 204.5,
+      "x": 196.05,
       "y": -200,
       "z": 0
     }
@@ -2627,8 +2627,8 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": -205.5,
-      "y": -660,
+      "x": -203.95,
+      "y": -650,
       "z": 0
     }
   },
@@ -2758,8 +2758,8 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": 204.5,
-      "y": -660,
+      "x": 196.05,
+      "y": -650,
       "z": 0
     }
   },
@@ -2824,8 +2824,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 761,
-      "height": 860
+      "width": 757.9,
+      "height": 850
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2898,8 +2898,8 @@
     "_paddingRight": 0,
     "_paddingTop": 0,
     "_paddingBottom": 0,
-    "_spacingX": 60,
-    "_spacingY": 60,
+    "_spacingX": 50,
+    "_spacingY": 50,
     "_verticalDirection": 1,
     "_horizontalDirection": 0,
     "_constraint": 0,
@@ -2952,8 +2952,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 761,
-      "height": 925.2
+      "width": 757.9,
+      "height": 867.2
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3025,8 +3025,8 @@
     },
     "_alignFlags": 45,
     "_target": null,
-    "_left": 100,
-    "_right": 100,
+    "_left": 71.05000000000001,
+    "_right": 71.05000000000001,
     "_top": 232.8,
     "_bottom": 100,
     "_horizontalCenter": 0,
@@ -3074,8 +3074,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 961,
-      "height": 1258
+      "width": 900,
+      "height": 1200
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

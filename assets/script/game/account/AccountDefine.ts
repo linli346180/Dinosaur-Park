@@ -5,8 +5,6 @@ import { IStartBeastData } from "./model/AccountModelComp";
 /** 用户货币数据 */
 export class UserCoinData {
     id: number = 0;
-    createdAt: string;
-    updatedAt: string;
     userID: number = 0; // 用户ID
     goldCoin: number = 0; // 金币(金币星兽产出)
     gemsCoin: number = 0; // 宝石(宝石星兽产出)
@@ -16,7 +14,7 @@ export class UserCoinData {
 
 //收益星兽合成返回
 export interface IMergeResponse {
-    isSucc:boolean;
+    isSucc: boolean;
     resultCode: NetErrorCode;
     resultMsg: string;
     userInStb: IStartBeastData
@@ -63,4 +61,23 @@ export class UserData {
     state: number = 0; // 用户状态
     prohibitionState: number = 0; // 用户封禁状态
     releaseAt: string | null = null; // 解禁时间
+}
+
+/** 货币池数量 */
+export class UserCoinIncome {
+    goldCoin: number = 0; // 金币
+    gemsCoin: number = 0; // 宝石数量
+}
+
+export enum AwardType {
+    Unknow = 0,         // 未知
+    Coin = 1,           // 货币
+    StarBeast = 2,      // 星兽
+    StarBeastDebris = 3 // 星兽碎片
+}
+
+export interface UserConfigData {
+    typeKey: string,
+    languageKey: string,
+    description: string,
 }

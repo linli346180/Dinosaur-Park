@@ -39,6 +39,6 @@ export enum EmailRewardState {
 }
 
 
-export enum  EmailEvent {
-    EmailUpdate = 'EmailUpdate',
+export enum EmailEvent {
+    receiveEmailReward = 'receiveEmailReward',  // 领取邮件奖励
 }

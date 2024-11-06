@@ -10,10 +10,11 @@ import { AccountNetDataComp } from "./system/AccountNetData";
 import { AccountEmailComp } from "./system/ChangeEmail";
 import { AccountNickNameComp } from "./system/ChangeNickName";
 import { NetCmd, NetErrorCode } from "../../net/custom/NetErrorCode";
-import { netChannel } from "../../net/custom/NetChannelManager";
 import { tips } from "../common/tips/TipsManager";
 import { netConfig } from "../../net/custom/NetConfig";
 import { moneyUtil } from "../common/utils/moneyUtil";
+import { AwardType } from "./AccountDefine";
+import { AccountLoginComp } from "./system/AccountLogin";
 
 /** 账号模块 */
 @ecs.register('Account')
@@ -26,6 +27,7 @@ export class Account extends ecs.Entity {
     AccountNickName !: AccountNickNameComp;
     AccountEmail !: AccountEmailComp;
     AccountNetData !: AccountNetDataComp;
+    AccountLogin !: AccountLoginComp;
 
     // 使用 MaxSlotNum 类型定义最大槽位数量
     maxslotNum: number = 12;
@@ -36,79 +38,77 @@ export class Account extends ecs.Entity {
         this.addComponents<ecs.Comp>(STBConfigModeComp);
         oops.message.on(GameEvent.APPInitialized, this.onHandler, this);
         oops.message.on(GameEvent.LoginSuccess, this.onHandler, this);
-        oops.message.on(GameEvent.GameServerConnected, this.onHandler, this);
+        oops.message.on(GameEvent.DataInitialized, this.onHandler, this);
+        oops.message.on(GameEvent.GuideFinish, this.onHandler, this);
+        oops.message.on(GameEvent.WebSocketConnected, this.onHandler, this);
     }
 
     destroy(): void {
         oops.message.off(GameEvent.APPInitialized, this.onHandler, this);
         oops.message.off(GameEvent.LoginSuccess, this.onHandler, this);
-        oops.message.off(GameEvent.GameServerConnected, this.onHandler, this);
+        oops.message.off(GameEvent.DataInitialized, this.onHandler, this);
+        oops.message.off(GameEvent.GuideFinish, this.onHandler, this);
+        oops.message.off(GameEvent.WebSocketConnected, this.onHandler, this);
         super.destroy();
     }
 
-    private onHandler(event: string, args: any) {
+    private async onHandler(event: string, args: any) {
         switch (event) {
+            // 1. 应用初始化成功
             case GameEvent.APPInitialized:
-                this.add(AccountNetDataComp);
+                console.log("1.应用初始化成功");
+                this.add(AccountLoginComp);
                 break;
 
+            // 2. 登陆成功
             case GameEvent.LoginSuccess:
+                console.log("2.登陆成功");
                 oops.storage.setUser(this.AccountModel.user.id.toString());
                 oops.audio.load();
                 this.loadUserLanguage();
+
+                // 检查是否已完成新手引导
+                if (!await this.isGuideFinish()) {
+                    oops.message.dispatchEvent(GameEvent.CloseLoadingUI);
+                    oops.gui.open(UIID.Guide);
+                    return;
+                }
+
+                console.log("3.新手教程完成");
+                this.add(AccountNetDataComp);
+                break;
+
+            // 3. 新手教程完成
+            case GameEvent.GuideFinish:
+                console.log("3.新手教程完成");
+                this.add(AccountNetDataComp);
+                break
+
+            // 4. 数据初始化完成
+            case GameEvent.DataInitialized:
+                console.log("4.数据初始化完成");
                 oops.gui.open(UIID.Map);
                 oops.gui.open(UIID.Main);
-
-                // WebSocket连接
-                try {
-                    netChannel.gameCreate();
-                    netChannel.gameConnect();
-                    netChannel.game.on(NetCmd.UserNinstbType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.UserNinstbType, data);
-                    });
-                    netChannel.game.on(NetCmd.DownLineType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.DownLineType, data);
-                    });
-                    netChannel.game.on(NetCmd.NinstbDeathType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.NinstbDeathType, data);
-                    });
-                    netChannel.game.on(NetCmd.IncomeStbDeathType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.IncomeStbDeathType, data);
-                    });
-
-                    netChannel.game.on(NetCmd.UserHatchType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.UserHatchType, data);
-                    });
-                    netChannel.game.on(NetCmd.InvitedType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.InvitedType, data);
-                    });
-                    netChannel.game.on(NetCmd.UserDebrisType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.UserDebrisType, data);
-                    });
-                    netChannel.game.on(NetCmd.UserEmailType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.UserEmailType, data);
-                    });
-                    netChannel.game.on(NetCmd.UserTaskType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.UserTaskType, data);
-                    });
-                    netChannel.game.on(NetCmd.RankingType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.RankingType, data);
-                    });
-                    netChannel.game.on(NetCmd.WithDrawalType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.WithDrawalType, data);
-                    });
-                    netChannel.game.on(NetCmd.StbGurideType, '', (data) => {
-                        this.OnRecevieMessage(NetCmd.StbGurideType, data);
-                    });
-
-                } catch (error) {
-                    console.error("WebSocket连接失败:", error);
-                }
+                AccountNetService.createWebSocket();
                 break;
 
-            case GameEvent.GameServerConnected:
+            // 5. WebSocket连接成功
+            case GameEvent.WebSocketConnected:
+                console.log("5.WebSocket连接成功");
+                oops.message.dispatchEvent(GameEvent.CloseLoadingUI);
                 break;
         }
+    }
+
+    /** 新手引导是否已完成 */
+    private async isGuideFinish(): Promise<boolean> {
+        const res = await AccountNetService.getUserOfficial();
+        if (res) {
+            const isFinish = res.joinOfficialChannel == 1 && res.joinOfficialGroup == 1 && res.joinX == 1;
+            console.warn("新手引导是否已完成:", isFinish);
+            return isFinish;
+        }
+        return false;
     }
 
     /** 加载化语言包（可选） */
@@ -140,6 +140,59 @@ export class Account extends ecs.Entity {
         comp.email = email;
     }
 
+    /** 领取奖励 */
+    public OnClaimAward(awardType: AwardType) {
+        switch (awardType) {
+            case AwardType.Coin:
+                this.updateCoinData();
+                break;
+            case AwardType.StarBeast:
+                this.updateInstbData();
+                break;
+        }
+    }
+
+    async updateCoinData() {
+        const coinDataRes = await AccountNetService.getUserCoinData();
+        if (coinDataRes && coinDataRes.userCoin != null) {
+            this.AccountModel.CoinData = coinDataRes.userCoin;
+            oops.message.dispatchEvent(AccountEvent.CoinDataChange);
+        }
+    }
+
+    async updateInstbData() {
+        const res = await AccountNetService.GetUserSTBData();
+        let idList: number[] = [];
+        if (res && res.userInstbData.UserInstb != null) {
+            // 添加新的星兽
+            for (const stbItem of res.userInstbData.UserInstb) {
+                const stbId = stbItem.id;
+                const stbConfigID = stbItem.stbConfigID;
+
+                if (stbConfigID == null || stbConfigID == undefined || stbConfigID == 0)
+                    continue;
+
+                idList.push(stbId);
+                if (this.getUserSTBData(stbId) == null) {
+                    this.AccountModel.addInComeSTBData(stbItem);
+                    oops.message.dispatchEvent(AccountEvent.AddInComeSTB, stbId);
+                }
+            }
+
+            // 删除已经不存在的星兽
+            let delList: number[] = [];
+            for (const stbItem of this.AccountModel.UserInstb) {
+                if (!idList.includes(stbItem.id)) {
+                    delList.push(stbItem.id);
+                }
+            }
+            for (const delId of delList) {
+                this.delUserSTBData(delId);
+            }
+        }
+    }
+
+
     /**
      *  领养星兽
      * @param stbConfigId - 星兽配置ID
@@ -150,11 +203,7 @@ export class Account extends ecs.Entity {
         const res = await AccountNetService.adopStartBeast(stbConfigId);
         if (res.resultCode == NetErrorCode.Success) {
             if (!autoAdop) {
-                const coinDataRes = await AccountNetService.getUserCoinData();
-                if (coinDataRes && coinDataRes.userCoin != null) {
-                    this.AccountModel.CoinData = coinDataRes.userCoin;
-                    oops.message.dispatchEvent(AccountEvent.CoinDataChange);
-                }
+                this.updateCoinData();
             }
 
             const STBData: IStartBeastData = res.userInstbSynthReData;
@@ -177,7 +226,7 @@ export class Account extends ecs.Entity {
         callback(false, res.resultMsg);
     }
 
-    private OnRecevieMessage(cmd: number, data: any) {
+    public OnRecevieMessage(cmd: number, data: any) {
         switch (cmd) {
             case NetCmd.UserNinstbType:
                 console.log("自动领养1级黄金星兽");
@@ -191,9 +240,10 @@ export class Account extends ecs.Entity {
 
             case NetCmd.DownLineType:
                 console.error("用户下线通知");
-                tips.alert("异地登录退出应用", () => {
-                    (window as any).Telegram.WebApp.close();
-                }, "确认");
+                // oops.gui.toast("用户下线通知");
+                // tips.alert("异地登录退出应用", () => {
+                //     (window as any).Telegram.WebApp.close();
+                // }, "确认");
                 break;
 
             case NetCmd.NinstbDeathType:
@@ -214,6 +264,10 @@ export class Account extends ecs.Entity {
             case NetCmd.RankingType:
             case NetCmd.StbGurideType:
                 oops.message.dispatchEvent(AccountEvent.RedDotCmd, cmd);
+                break;
+            case NetCmd.UserBounsType:
+                console.log("USDT奖励:", data.bounsID, data.amount);
+                oops.message.dispatchEvent(AccountEvent.UserBounsUSTD, data.amount);
                 break;
         }
     }
@@ -237,11 +291,8 @@ export class Account extends ecs.Entity {
                     this.AccountModel.delUserUnIncomeSTB(stbID_to);
                     this.AccountModel.delUserUnIncomeSTB(stbID_del);
                     oops.message.dispatchEvent(AccountEvent.DelUnIncomeSTB, stbID_del);
+                    oops.message.dispatchEvent(AccountEvent.AddInComeSTB, STBData.id);
                     oops.message.dispatchEvent(AccountEvent.EvolveUnIncomeSTB, stbID_to);
-                    setTimeout(() => {
-                        oops.message.dispatchEvent(AccountEvent.AddInComeSTB, STBData.id);
-                    }, 3000);
-
                 }
                 else {
                     console.log("升级星兽:", STBData.id);
@@ -277,11 +328,7 @@ export class Account extends ecs.Entity {
 
             // 更新宝石数量
             if (isUpProb == 1) {
-                const coinDataRes = await AccountNetService.getUserCoinData();
-                if (coinDataRes && coinDataRes.userCoin != null) {
-                    this.AccountModel.CoinData = coinDataRes.userCoin;
-                    oops.message.dispatchEvent(AccountEvent.CoinDataChange);
-                }
+                this.updateCoinData();
             }
 
             //合成是否成功，false：合成失败，true：合成成功，并且userInStb会返回新星兽数据
@@ -340,7 +387,7 @@ export class Account extends ecs.Entity {
     }
 
     /**
-     * 获取指定类型的星兽数据
+     * 获取星兽数据
      * @param stbId - 星兽ID
      * @param isIncome - 是否为收益星兽
      * @returns 返回星兽数据
@@ -359,6 +406,7 @@ export class Account extends ecs.Entity {
         }
 
         // 如果都未找到，返回 null
+        console.log("未找到星兽数据:", stbId);
         return null;
     }
 
@@ -387,7 +435,7 @@ export class Account extends ecs.Entity {
                 const config = this.getSTBConfigById(element.stbConfigID)
                 if (config) {
                     const itemID = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
-                    if (configIds.includes(itemID)) { 
+                    if (configIds.includes(itemID)) {
                         dataList.push(element);
                     }
                 }
@@ -399,7 +447,7 @@ export class Account extends ecs.Entity {
                 const config = this.getSTBConfigById(element.stbConfigID)
                 if (config) {
                     const itemID = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
-                    if (configIds.includes(itemID)) { 
+                    if (configIds.includes(itemID)) {
                         dataList.push(element);
                     }
                 }
@@ -415,6 +463,7 @@ export class Account extends ecs.Entity {
                 return element;
             }
         }
+        console.log("未找到星兽配置:", configId);
         return null;
     }
 
@@ -422,7 +471,7 @@ export class Account extends ecs.Entity {
     getSTBConfigByType(type: number): UserInstbConfigData | null {
         for (const element of this.STBConfigMode.instbConfigData) {
             const itemID = moneyUtil.combineNumbers(element.stbKinds, element.stbGrade, 2);
-            if (itemID== type) {
+            if (itemID == type) {
                 return element;
             }
         }

@@ -43,6 +43,4 @@ export namespace TaskNetService {
             return null;
         }
     }
-
 }
-

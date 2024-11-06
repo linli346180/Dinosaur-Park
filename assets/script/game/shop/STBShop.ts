@@ -6,6 +6,10 @@ import { IsPur, PurConCoin, UserInstbConfigData } from '../account/model/STBConf
 import { STBPurItem } from './STBPurItem';
 import { smc } from '../common/SingletonModuleComp';
 import { AccountEvent } from '../account/AccountEvent';
+import { tween } from 'cc';
+import { v3 } from 'cc';
+import { Vec3 } from 'cc';
+import { AnimUtil } from '../common/utils/AnimUtil';
 const { ccclass, property } = _decorator;
 
 /** 
@@ -22,10 +26,11 @@ export class STBPurShop extends Component {
     @property(Button)
     btn_close: Button = null!;
     private configDataList: UserInstbConfigData[] = [];
-    
+
     start() {
-        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.STBShop, false) }, this);
+        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.STBShop) }, this);
         oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
+        AnimUtil.playAnim_Scale(this.node);
         this.initUI();
     }
 
@@ -48,7 +53,6 @@ export class STBPurShop extends Component {
     private initUI() {
         this.content.removeAllChildren();
         this.getSTBConfig_PurGem();
-
         this.configDataList.forEach(element => {
             let item = instantiate(this.itemPrefab);
             item.parent = this.content;

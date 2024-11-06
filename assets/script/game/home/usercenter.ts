@@ -2,7 +2,13 @@ import { _decorator, Component, Node, Button, Label, Toggle, Sprite, assetManage
 import { smc } from '../common/SingletonModuleComp';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { AccountEvent } from '../account/AccountEvent';
+import { UserConfigData } from '../account/AccountDefine';
 import { UIID } from '../common/config/GameUIConfig';
+import { tween } from 'cc';
+import { v3 } from 'cc';
+import { Vec3 } from 'cc';
+import { AccountNetService } from '../account/AccountNet';
+import { AnimUtil } from '../common/utils/AnimUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('usercenter')
@@ -44,6 +50,16 @@ export class usercenter extends Component {
     @property(Button)
     btn_cs02: Button = null!;
 
+    private configData: UserConfigData[] = [];
+
+    async onEnable() {
+        AnimUtil.playAnim_Scale(this.node);
+
+        // 获取客服链接
+        const res = await AccountNetService.getUserConfig('external_link');
+        if (res && res.languageConfigArr) { this.configData = res.languageConfigArr; }
+    }
+
     start() {
         this.initUI();
 
@@ -51,8 +67,8 @@ export class usercenter extends Component {
         this.btn_nickname.node.on(Button.EventType.CLICK, this.ChangeNickNameClicked, this);
         this.btn_email.node.on(Button.EventType.CLICK, this.ChangeEmailClicked, this);
         this.btn_language.node.on(Button.EventType.CLICK, this.ChangeLanguageClicked, this);
-        this.btn_cs01.node.on(Button.EventType.CLICK, this.customerService, this);
-        this.btn_cs02.node.on(Button.EventType.CLICK, this.customerService, this);
+        this.btn_cs01.node.on(Button.EventType.CLICK, () => this.customerService('customer_service1'), this);
+        this.btn_cs02.node.on(Button.EventType.CLICK, () => this.customerService('customer_service2'), this);
 
         this.toggle_music.node.on(Toggle.EventType.TOGGLE, this.onToggleMusic, this);
         this.toggle_sound.node.on(Toggle.EventType.TOGGLE, this.onToggleSound, this);
@@ -146,9 +162,13 @@ export class usercenter extends Component {
         oops.gui.remove(UIID.User, false);
     }
 
-    private customerService() {
-        const tips = oops.language.getLangByID("common_tips_Not_Enabled");
-        oops.gui.toast(tips);
+    private customerService(kye: string) {
+        for(const item of this.configData) {
+            if(item.languageKey === kye) { 
+                const WebApp = (window as any).Telegram.WebApp;
+                WebApp.openLink(item.description);
+            }
+        }
     }
 
 }

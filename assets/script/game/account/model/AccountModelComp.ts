@@ -1,5 +1,5 @@
 import { ecs } from "../../../../../extensions/oops-plugin-framework/assets/libs/ecs/ECS";
-import { AccountType, RegisterType, UserCoinData, UserData } from "../AccountDefine";
+import { AccountType, RegisterType, UserCoinData, UserCoinIncome, UserData } from "../AccountDefine";
 
 /** 
  * 游戏账号数据 
@@ -7,24 +7,13 @@ import { AccountType, RegisterType, UserCoinData, UserData } from "../AccountDef
 @ecs.register('AccountModel')
 export class AccountModelComp extends ecs.Comp {
     user: UserData = new UserData(); // 用户数据
-    CoinData :UserCoinData = new UserCoinData(); // 户货币数据
-    UserInstb?: IStartBeastData[];    //用户收益星兽列表
-    UserNinstb?: IStartBeastData[];  //用户无收益星兽列表
+    coinPoolData: UserCoinIncome = new UserCoinIncome(); // 户货币数据(待领取)
+    CoinData: UserCoinData = new UserCoinData(); // 户货币数据
+    UserInstb: IStartBeastData[] = [];    //用户收益星兽列表
+    UserNinstb: IStartBeastData[] = [];  //用户无收益星兽列表
 
     reset() {
         this.user = new UserData();
-    }
-
-    /** 添加无收益星兽 */
-    addUserUnInComeSTB(STBData: IStartBeastData): boolean {
-        let stbId = STBData.id;
-        const index = this.UserNinstb.findIndex((element) => element.id === stbId);
-        if (index == -1) {
-            this.UserNinstb.push(STBData);
-            return true
-        }
-        console.error("添加无收益星兽失败:", stbId);
-        return false;
     }
 
     /** 添加有收益星兽 */
@@ -39,7 +28,7 @@ export class AccountModelComp extends ecs.Comp {
         return false;
     }
 
-    /** 删除收益星兽(地图上) */
+    /** 删除收益星兽 */
     delUserInComeSTB(stbId: number): boolean {
         const index = this.UserInstb.findIndex((element) => element.id === stbId);
         if (index !== -1) {
@@ -49,7 +38,19 @@ export class AccountModelComp extends ecs.Comp {
         return false;
     }
 
-    /** 删除星兽(背包) */
+    /** 添加无收益星兽 */
+    addUserUnInComeSTB(STBData: IStartBeastData): boolean {
+        let stbId = STBData.id;
+        const index = this.UserNinstb.findIndex((element) => element.id === stbId);
+        if (index == -1) {
+            this.UserNinstb.push(STBData);
+            return true
+        }
+        console.error("添加无收益星兽失败:", stbId);
+        return false;
+    }
+
+    /** 删除无收益星兽 */
     delUserUnIncomeSTB(stbId: number): boolean {
         const index = this.UserNinstb.findIndex((element) => element.id === stbId);
         if (index !== -1) {
@@ -58,12 +59,6 @@ export class AccountModelComp extends ecs.Comp {
         }
         return false;
     }
-
-    /* 获取用户收益星兽数据 */
-    // getUserSTBData(stbId: number): IStartBeastData | null {
-    //     const foundElement = this.UserInstb.find((element) => element.id === stbId);
-    //     return foundElement || null;
-    // }
 
     /** 更新星兽数据 */
     updateUnIncomeSTBData(STBData: IStartBeastData): boolean {

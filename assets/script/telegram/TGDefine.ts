@@ -4,6 +4,7 @@
  * TG传输数据 https://core.telegram.org/bots/webapps#webappinitdata
  */
 export class TGWebAppInitData {
+    // TG参数
     UserData: TGWebAppUser;  // 用户数据
     Auth_date: number;       // 授权时间
     Hash: string;            // 哈希值
@@ -11,22 +12,20 @@ export class TGWebAppInitData {
     AvatarUrl: string;       // 头像地址
     chat_instance: string;  // 聊天实例
     chat_type: string;      // 聊天类型
-    constructor(
-        userData: TGWebAppUser = new TGWebAppUser(),
-        auth_date: number = Date.now(),
-        hash: string = '',
-        inviteCode: string = '',
-        avatarUrl: string = '',
-        chat_instance: string = '',
-        chat_type: string = ''
-    ) {
-        this.UserData = userData;
-        this.Auth_date = auth_date;
-        this.Hash = hash;
-        this.InviteCode = inviteCode;
-        this.AvatarUrl = avatarUrl;
-        this.chat_instance = chat_instance;
-        this.chat_type = chat_type;
+    // 邀请参数
+    inviteSigin: string;     // 邀请签名
+    inviteType: number;       // 邀请类型
+
+    constructor() {
+        this.UserData = new TGWebAppUser();
+        this.Auth_date = Date.now(),
+        this.Hash = '';
+        this.InviteCode = '';
+        this.AvatarUrl = '';
+        this.chat_instance = '';
+        this.chat_type = '';
+        this.inviteSigin = '';
+        this.inviteType = 0;
     }
 }
 

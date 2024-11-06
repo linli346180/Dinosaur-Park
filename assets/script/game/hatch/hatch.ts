@@ -32,6 +32,9 @@ export class HatchView extends Component {
     @property(Label)
     label_guaranteedNum: Label = null!;
 
+    @property(HatchReward)
+    hatchReward: HatchReward = null!;
+
     // @property(Animation)
     // hatchAnim: Animation = null!;
 
@@ -40,47 +43,51 @@ export class HatchView extends Component {
     @property(Node)
     videoMask: Node = null!;
 
+    private isInit = false;
     private canHatch: boolean = true;
-    private hatchResult: any;
     private _userData: UserHatchData = new UserHatchData();
 
+    onEnable() {
+        if (!this.isInit) {
+            this.getHatchMinNum();
+        }
+        this.getUserHatchNum();
+    }
+
     start() {
-        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
+        this.isInit = true;
+        this.btn_close?.node.on(Button.EventType.CLICK, () => oops.gui.remove(UIID.Hatch, false), this);
         this.btn_RewardView?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.RewardView) }, this);
         this.btn_HatchOneTime?.node.on(Button.EventType.CLICK, () => { this.userHatch(1) }, this);
         this.btn_HatchTenTimes?.node.on(Button.EventType.CLICK, () => { this.userHatch(10) }, this);
         this.btn_BuyHatchTime?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.HatchShop) }, this);
 
         this.videoPlayer.node.on(VideoPlayer.EventType.COMPLETED, this.OnAnimFinish, this);
-        oops.message.on(UserHatchEvent.HatchNumChange, this.onHandler, this);
-    }
-
-    onEnable() {
-        this.initUI();
+        oops.message.on(UserHatchEvent.HatchRemailChange, this.onHandler, this);
     }
 
     onDestroy() {
-        oops.message.off(UserHatchEvent.HatchNumChange, this.onHandler, this);
+        oops.message.off(UserHatchEvent.HatchRemailChange, this.onHandler, this);
     }
 
-    private closeUI() {
-        oops.gui.remove(UIID.Hatch, false);
+    /* 获取孵蛋保底次数*/
+    private async getHatchMinNum() {
+        const res = await HatchNetService.getHatchMinNum();
+        if (res && res.hatchGuaranteedNum != null) {
+            this._userData.guaranteedNum = res.hatchGuaranteedNum.guaranteedNum;
+            let desc = oops.language.getLangByID("hatch_tips_reward_eachhatchcount");
+            desc = desc.replace("{count}", this._userData.guaranteedNum.toString());
+            this.label_guaranteedNum.string = desc;
+        }
     }
 
-    private async initUI() {
-        HatchNetService.getHatchMinNum().then((res) => {
-            if (res) {
-                this._userData.guaranteedNum = res.hatchGuaranteedNum.guaranteedNum;
-                let desc = oops.language.getLangByID("hatch_tips_reward_eachhatchcount");
-                desc = desc.replace("{count}", this._userData.guaranteedNum.toString());
-                this.label_guaranteedNum.string = desc;
-            }
-        });
-
-        const hatchNumData = await HatchNetService.getUserHatchNum();
-        if (hatchNumData) {
-            this._userData.remainNum = hatchNumData.userHatch.remainNum;
-            this._userData.hatchNum = hatchNumData.userHatch.hatchNum;
+    /* 获取用户孵化次数 */
+    private async getUserHatchNum() {
+        this.canHatch = true;
+        const res = await HatchNetService.getUserHatchNum();
+        if (res && res.userHatch != null) {
+            this._userData.remainNum = res.userHatch.remainNum;
+            this._userData.hatchNum = res.userHatch.hatchNum;
         }
         this.label_hatchNum.string = `${this._userData.hatchNum} / ${this._userData.guaranteedNum}`
         this.label_remainNum.string = this._userData.remainNum.toString();
@@ -88,15 +95,15 @@ export class HatchView extends Component {
 
     private onHandler(event: string, args: any) {
         switch (event) {
-            case UserHatchEvent.HatchNumChange:
-                this.initUI();
+            case UserHatchEvent.HatchRemailChange:
+                this._userData.remainNum = args;
+                this.label_remainNum.string = this._userData.remainNum.toString();
                 break;
-        }
+        }   
     }
 
     private async userHatch(num: number) {
-
-        if(this._userData.remainNum < num) { 
+        if (this._userData.remainNum < num) {
             oops.gui.toast("孵蛋次数不足,请购买");
             return
         }
@@ -110,48 +117,33 @@ export class HatchView extends Component {
         this.videoPlayer.node.active = true;
         this.videoPlayer.play();
         this.canHatch = false;
-        this.hatchResult = await HatchNetService.requestUserHatch(num);
-    }
 
-    private OnAnimFinish() {
-        console.log("动画播放结束");
-
-        this.canHatch = true;
-        this.initUI();
-
-        // 视频播放结束后缓慢隐藏
-        this.videoPlayer.stop();
-        this.videoPlayer.node.active = false;
-
-        let uiOpacity = this.videoMask.getComponent(UIOpacity);
-        if (!uiOpacity) {
-            uiOpacity = this.videoMask.addComponent(UIOpacity);
-        }
-
-        tween(this.videoMask)
-            .to(1, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 - (155 * ratio); } }) // 透明度减少到 100
-            .call(() => {
-                this.videoMask.active = false;
-                uiOpacity.opacity = 255;
-                this.showHatchResult();
-            }) 
-            .start();
-    }
-
-    private showHatchResult() {
-        if (this.hatchResult && this.hatchResult.resultCode == NetErrorCode.Success) {
-            var uic: UICallbacks = {
-                onAdded: (node: Node, params: any) => {
-                    const hatchReward = node.getComponent(HatchReward);
-                    if (hatchReward) {
-                        hatchReward.InitUI(this.hatchResult.userHatch);
-                    }
-                }
-            };
-            let uiArgs: any;
-            oops.gui.open(UIID.HatchReward, uiArgs, uic);
+        const res = await HatchNetService.requestUserHatch(num);
+        if (res && res.userHatch != null) {
+            this.hatchReward.InitUI(res.userHatch);
         } else {
             console.error("孵蛋异常");
         }
+    }
+
+    private OnAnimFinish() {
+        this.canHatch = true;
+        this.videoPlayer.stop();
+        this.videoPlayer.node.active = false;
+        this.getUserHatchNum();
+
+        let uiOpacity = this.videoMask.getComponent(UIOpacity);
+        if (!uiOpacity) return
+
+        tween(this.videoMask)
+            .call(() => {
+                uiOpacity.opacity = 255;
+            })
+            .to(0.8, {}, { onUpdate: (target, ratio) => { if (ratio) uiOpacity.opacity = 255 - (255 - 155 * ratio); } }) // 透明度减少到 100
+            .call(() => {
+                this.videoMask.active = false;
+                this.hatchReward.node.active = true;
+            })
+            .start();
     }
 }

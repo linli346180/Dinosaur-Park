@@ -5,6 +5,10 @@ import { ReportNetService } from './ReportNet';
 import { Logger } from '../../Logger';
 import { smc } from '../common/SingletonModuleComp';
 import { moneyUtil } from '../common/utils/moneyUtil';
+import { tween } from 'cc';
+import { v3 } from 'cc';
+import { Vec3 } from 'cc';
+import { AnimUtil } from '../common/utils/AnimUtil';
 const { ccclass, property } = _decorator;
 
 interface CodexData {
@@ -25,23 +29,26 @@ export class STBReportView extends Component {
     @property(Node)
     diamondContainer: Node = null!;
 
-    private codexData: CodexData = {};
+    private stbData: CodexData = {};
 
     onEnable() {
+        this.stbData = {};
         ReportNetService.getStartBeastStatData().then((res) => {
             if (res && res.codexData != null) {
-                this.codexData = res.codexData;
                 for (const key in res.codexData) {
-                    const element = res.codexData[key];
-                    const config = smc.account.getSTBConfigById(element);
+                    const num = res.codexData[key];
+                    const config = smc.account.getSTBConfigById(Number(key));
                     if (config) {
                         const stbType = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
-                        this.codexData[stbType] = element;
+                        this.stbData[stbType] = num;
                     }
                 }
                 this.InitUI();
+                console.log("图鉴数据", this.stbData);
             }
         });
+
+        AnimUtil.playAnim_Scale(this.node);
     }
 
     start() {
@@ -71,7 +78,7 @@ export class STBReportView extends Component {
         const stbId = parseInt(child.name);
         const numLabel = child.getChildByPath("Sprite/num")?.getComponent(Label);
         if (numLabel) {
-            const count = this.codexData[stbId];
+            const count = this.stbData[stbId];
             if (count) { numLabel.string = count.toString(); }
         }
     }

@@ -7,6 +7,9 @@ import { HatchPriceItem } from './HatchPriceItem';
 import { moneyUtil } from '../common/utils/moneyUtil';
 import { AccountEvent } from '../account/AccountEvent';
 import { smc } from '../common/SingletonModuleComp';
+import { tween } from 'cc';
+import { v3 } from 'cc';
+import { Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 /** 孵化商店:
@@ -22,24 +25,23 @@ export class HatchShop extends Component {
     @property(Label)
     gemNum: Label = null!;
 
-    async onLoad() {
-        this.content.removeAllChildren();
-        const priceDataList = await HatchNetService.getHatchPrice();
-        if (priceDataList) {
-            priceDataList.sort((a: HatchPriceConfig, b: HatchPriceConfig) => a.id - b.id);
-            priceDataList.forEach((priceData: HatchPriceConfig) => {
-                this.createItem(priceData);
-            });
-        }
-        this.initCoinData();
-    }
+    private isInit = false;
 
     protected onEnable(): void {
+        tween()
+        .target(this.node)
+        .to(0.15, { scale: v3(1.1, 1.1, 1), }, { easing: 'fade' })
+        .to(0.15, { scale: Vec3.ONE, }, { easing: 'fade' })
+        .start()
+
         this.initCoinData();
+        if (!this.isInit)
+            this.initPriceItem();
     }
 
     start() {
-        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
+        this.isInit = true;
+        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.HatchShop, false); }, this);
         oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
     }
 
@@ -47,6 +49,7 @@ export class HatchShop extends Component {
         oops.message.off(AccountEvent.CoinDataChange, this.onHandler, this);
     }
 
+    
     private onHandler(event: string, args: any) {
         switch (event) {
             case AccountEvent.CoinDataChange:
@@ -55,20 +58,28 @@ export class HatchShop extends Component {
         }
     }
 
-    initCoinData() {
-        let coinData = smc.account.AccountModel.CoinData;
-        this.gemNum.string = moneyUtil.formatMoney(coinData.gemsCoin);
+    /** 获取孵蛋次数价格 */
+    private async initPriceItem() { 
+        this.content.removeAllChildren();
+        const priceDataList = await HatchNetService.getHatchPrice();
+        if (priceDataList) {
+            priceDataList.sort((a: HatchPriceConfig, b: HatchPriceConfig) => a.id - b.id);
+            priceDataList.forEach((priceData: HatchPriceConfig) => {
+                this.createPriceItem(priceData);
+            });
+        }
     }
 
-    closeUI() {
-        oops.gui.remove(UIID.HatchShop, false);
-    }
-
-    createItem(priceData: HatchPriceConfig) {
+    private createPriceItem(priceData: HatchPriceConfig) {
         const item = instantiate(this.hatchPriceItem);
         if (item) {
             item.parent = this.content;
             item.getComponent<HatchPriceItem>(HatchPriceItem)?.initItem(priceData);
         }
     }
+
+    initCoinData() {
+        let coinData = smc.account.AccountModel.CoinData;
+        this.gemNum.string = Math.floor(coinData.gemsCoin).toString();
+    } 
 }

@@ -32,9 +32,9 @@ export class STBPurItem extends Component {
 
         const stbType = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
         this.STBConfig.init(stbType);
-        if(this.STBConfig.puricon != undefined && this.STBConfig.puricon != ''){ 
+        if (this.STBConfig.puricon != undefined && this.STBConfig.puricon != '') {
             oops.res.loadAsync(this.STBConfig.puricon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
-                if(spriteFrame)
+                if (spriteFrame)
                     this.icon.spriteFrame = spriteFrame;
             });
         }

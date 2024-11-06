@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, Label } from 'cc';
-import { RankData } from './RankDefine';
+import { RankData, RankGroup } from './RankDefine';
 const { ccclass, property } = _decorator;
 
 @ccclass('RankItem')
@@ -17,7 +17,12 @@ export class RankItem extends Component {
     @property(Label)
     inviteCount: Label = null!;
 
-    initItem(data: RankData) {
+    @property(Node)
+    inviteIcon: Node = null!;
+    @property(Node)
+    richIcon: Node = null!;
+
+    initItem(data: RankData, rankGroup: RankGroup) {
         if (data == null)
             return;
         this.userName.string = data.userName;
@@ -31,6 +36,8 @@ export class RankItem extends Component {
         if (data.ranking > 3) {
             this.ranking.string = data.ranking.toString();
         }
+        this.inviteIcon.active = rankGroup == RankGroup.Invite;
+        this.richIcon.active = rankGroup == RankGroup.Rich;
     }
 }
 

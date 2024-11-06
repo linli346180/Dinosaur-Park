@@ -29,6 +29,8 @@ export enum AccountEvent {
   DelIncomeSTB = "DelIncomeSTB",  // 删除收益星兽
 
   UserCollectGold = "UserCollectCoin",  // 用户收集金币
+  UserBounsUSTD = "UserBounsSTD",  // stb奖励
+
   CoinDataChange = "CoinDataChange",  // 货币数据变化
 
   UserNoOperation = "UserNoOperation",  // 长时间无操作

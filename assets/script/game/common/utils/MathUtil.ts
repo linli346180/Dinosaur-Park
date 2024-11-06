@@ -1,7 +1,6 @@
 import { IVec3Like, math, Quat, v3, Vec3 } from "cc";
 
-export namespace mathutil {
-
+export namespace MathUtil {
     let tempVec: Vec3 = v3()
     let tempVec2: Vec3 = v3()
     let tempVec3: Vec3 = v3()

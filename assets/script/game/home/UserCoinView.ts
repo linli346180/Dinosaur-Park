@@ -33,26 +33,26 @@ export class UserCoinView extends Component {
     private coinData: UserCoinData = new UserCoinData();
 
     start() {
-        this.status_gold.getChildByName("btn_show").getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
+        this.status_gold.getChildByName("btn_show")?.getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
             this.playCoinAnim(AccountCoinType.Gold, 0, 1.5);
         });
-        this.status_gem.getChildByName("btn_show").getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
-            this.playCoinAnim(AccountCoinType.Gems, 0, 1.5);
+        this.status_gem.getChildByName("btn_show")?.getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
+            this.playCoinAnim(AccountCoinType.Gems, 0, 0.5);
         });
-        this.status_dinosaur.getChildByName("btn_show").getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
+        this.status_dinosaur.getChildByName("btn_show")?.getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
             this.playCoinAnim(AccountCoinType.StarBeast, 0, 1.5);
         });
-        this.status_usdt.getChildByName("btn_show").getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
+        this.status_usdt.getChildByName("btn_show")?.getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
             this.playCoinAnim(AccountCoinType.USDT, 0, 1.5);
         });
 
-        this.goldCoin = this.status_gold.getChildByName("num").getComponent(Label)!;
-        this.gemsCoin = this.status_gem.getChildByName("num").getComponent(Label)!;
-        this.starBeastCoin = this.status_dinosaur.getChildByName("num").getComponent(Label)!;
-        this.usdtCoin = this.status_usdt.getChildByName("num").getComponent(Label)!;
+        this.goldCoin = this.status_gold.getChildByName("num")?.getComponent(Label)!;
+        this.gemsCoin = this.status_gem.getChildByName("num")?.getComponent(Label)!;
+        this.starBeastCoin = this.status_dinosaur.getChildByName("num")?.getComponent(Label)!;
+        this.usdtCoin = this.status_usdt.getChildByName("num")?.getComponent(Label)!;
 
-        this.btn_buygem = this.status_gem.getChildByName("btn_buy").getComponent(Button)!;
-        this.btn_buyusdt = this.status_usdt.getChildByName("btn_buy").getComponent(Button)!;
+        this.btn_buygem = this.status_gem.getChildByName("btn_buy")?.getComponent(Button)!;
+        this.btn_buyusdt = this.status_usdt.getChildByName("btn_buy")?.getComponent(Button)!;
         this.btn_buygem?.node.on(Button.EventType.CLICK, this.buyGem, this);
         this.btn_buyusdt?.node.on(Button.EventType.CLICK, this.buyUsdt, this);
 
@@ -103,7 +103,7 @@ export class UserCoinView extends Component {
 
     // 播放金币增加动画
     playCoinAnim(coinType: AccountCoinType, delaySec: number = 0, holdSec: number = 1) {
-        let label: Label = null;
+        let label: Label = null!;
         let startNum: number = 0;
         let endNum: number = 0;
         switch (coinType) {
@@ -131,11 +131,11 @@ export class UserCoinView extends Component {
         if (label == null) return;
 
         const targetScale = new Vec3(1.2, 1.2, 1.2);
-        if(!label.node.scale.equals(Vec3.ONE)) {
-            console.log("playCoinAnim: label.node.scale != Vec3.ONE", label.node.scale );
+        if (!label.node.scale.equals(Vec3.ONE)) {
+            console.log("playCoinAnim: label.node.scale != Vec3.ONE", label.node.scale);
             return;
         }
-         
+
         tween(label.node)
             .delay(delaySec)
             .to(0.1, { scale: Vec3.ZERO })
@@ -143,7 +143,8 @@ export class UserCoinView extends Component {
             .to(0.1, { scale: targetScale })
             .to(holdSec, {}, {
                 onUpdate: (target, ratio) => {
-                    const currentNum = Math.floor(startNum + (endNum - startNum) * ratio);
+                    if(ratio == undefined) return;
+                    const currentNum =  Math.floor(startNum + (endNum - startNum) * ratio);
                     label.string = currentNum.toString();
                 }
             })

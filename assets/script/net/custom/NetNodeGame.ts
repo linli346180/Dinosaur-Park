@@ -8,12 +8,18 @@
 import { Logger } from "../../Logger";
 import { CallbackObject, IRequestProtocol, IResponseProtocol, NetCallFunc } from "../NetInterface";
 import { NetNode, WebSocketReturn } from "../NetNode";
+import { NetProtocolJson } from "../protocol/NetProtocolJson";
 import { WebSock } from "../WebSock";
-import { NetErrorCode } from "./NetErrorCode";
-import { GameJson } from "./NetGameProtocol";
+import { netChannel } from "./NetChannelManager";
+import { NetCmd, NetErrorCode } from "./NetErrorCode";
 import { NetGameTips } from "./NetGameTips";
 
-
+/** 自定义Json通讯协议 */
+export class GameJson extends NetProtocolJson {
+    async onHearbeat() {
+        netChannel.game.req(NetCmd.HeartBeatType, "GameHeartReq", "GameHeartResp");
+    }
+}
 
 /** 网络节点扩展 */
 export class NetNodeGame extends NetNode {

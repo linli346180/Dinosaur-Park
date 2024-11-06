@@ -93,6 +93,8 @@ export class MapComponent extends Component {
     private fillUserSTBMap(mapID: MapID, stbConfigIds: number[]) {
         const mapConfig = MapConfigData[mapID];  // 地图配置
         const mapNode = this.mapNodes.get(mapID);  // 地图节点
+        if(mapNode == undefined) return;
+
         const userInstbData = smc.account.getSTBDataByConfigType(stbConfigIds);
 
         const instNum = userInstbData.length;  // 用户星兽数量
@@ -131,6 +133,8 @@ export class MapComponent extends Component {
             const mapID = STBConfigData[stbType].mapID; // 地图ID
 
             const mapNode = this.mapNodes.get(mapID); // 地图节点
+            if(mapNode == undefined) return;
+
             const showNum = this.getChildCount(mapNode);  // 已显示数量
             const mapConfig = MapConfigData[mapID]; // 地图配置
             if (showNum >= mapConfig.ItemLimit) {
@@ -148,10 +152,12 @@ export class MapComponent extends Component {
                 itemNode.setPosition(tmpP0);
 
                 const cmp = itemNode.getComponent(ActorController);
-                cmp.stbId = stbData.id;
-                cmp.widthLimit = mapConfig.widthLimit;
-                cmp.heightLimit = mapConfig.heightLimit;
-                cmp.init(tmpP0, Vec3.ZERO);
+                if (cmp) { 
+                    cmp.stbId = stbData.id;
+                    cmp.widthLimit = mapConfig.widthLimit;
+                    cmp.heightLimit = mapConfig.heightLimit;
+                    cmp.init(tmpP0, Vec3.ZERO);
+                }
                 return;
             }
         }

@@ -115,4 +115,28 @@ export namespace HatchNetService {
             return response.res;
         }
     }
+
+    /** 孵蛋次数的购买情况 */
+    export async function getHatchPurNum(id: number) {
+        const http = new HttpManager();
+        http.server = netConfig.Server;
+        http.token = netConfig.Token;
+        http.timeout = netConfig.Timeout;
+
+        console.log(id)
+
+        const params = {
+            'id': id.toString()
+        };
+
+        const newParams = new URLSearchParams(params).toString();
+        const response = await http.getUrl("tgapp/api/user/hatch/pur/num?token=" + netConfig.Token, newParams);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
+            console.warn("孵蛋购买情况:", response.res);
+            return response.res;
+        } else {
+            console.error("孵蛋购买情况异常", response.res);
+            return null;
+        }
+    }
 }

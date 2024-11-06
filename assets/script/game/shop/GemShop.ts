@@ -5,6 +5,10 @@ import { AccountNetService } from '../account/AccountNet';
 import { moneyUtil } from '../common/utils/moneyUtil';
 import { smc } from '../common/SingletonModuleComp';
 import { AccountEvent } from '../account/AccountEvent';
+import { tween } from 'cc';
+import { v3 } from 'cc';
+import { Vec3 } from 'cc';
+import { AnimUtil } from '../common/utils/AnimUtil';
 const { ccclass, property } = _decorator;
 
 /** 宝石商店 */
@@ -24,6 +28,7 @@ export class GemShop extends Component {
     btn_buy_lv4: Button = null!;
 
     onEnable() {
+        AnimUtil.playAnim_Scale(this.node);
         this.initCoinData();
     }
 
@@ -49,10 +54,7 @@ export class GemShop extends Component {
     }
 
     private initCoinData() {
-        let coinData = smc.account.AccountModel.CoinData;
-        if (coinData) {
-            this.gemNum.string = moneyUtil.formatMoney(coinData.gemsCoin);
-        }
+        this.gemNum.string = Math.floor(smc.account.AccountModel.CoinData.gemsCoin).toString();
     }
 
     private closeUI() {

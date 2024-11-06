@@ -3,6 +3,10 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { UIID } from '../common/config/GameUIConfig';
 import { smc } from '../common/SingletonModuleComp';
 import { VideoPlayer } from 'cc';
+import { AccountNetService } from '../account/AccountNet';
+import { Label } from 'cc';
+import { STBSynthConfig } from './MergeDefine';
+import { AnimUtil } from '../common/utils/AnimUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('STBMerge')
@@ -24,22 +28,59 @@ export class STBMerge extends Component {
     @property(Button)
     btn_close2: Button = null!
     @property(VideoPlayer)
-    videoPlayer:VideoPlayer = null!;
+    videoPlayer: VideoPlayer = null!;
     @property(Node)
-    videoMsk:Node = null!;
+    videoMsk: Node = null!;
+
+    @property(Label)
+    baseProbLabel: Label = null!;
+    @property(Label)
+    upProbLabel: Label = null!;
 
     private stbID1: number = 0;
     private stbID2: number = 0;
-    private isSucc: boolean = false;    //是否合成成功
+    private isSucc: boolean = false;
+    private synthConfig: STBSynthConfig = new STBSynthConfig();
 
-    onEnable(): void {
-        this.beforePanel.active = true;
-        this.sucessPanel.active = false;
-        this.failPanel.active = false;
+    async onLoad() {
+        let res = await AccountNetService.getSynthProb();
+        if (res && res.synthProb != null) {
+            this.synthConfig.baseProb = res.synthProb.baseProb;
+            this.synthConfig.upProb = res.synthProb.upProb;
+        }
 
-        this.videoMsk.active = false;
-        this.videoPlayer.node.active = false;
-        this.videoPlayer.stop();
+        res = await AccountNetService.getSynthProbconfig();
+        if (res && res.synthCon != null) {
+            this.synthConfig.conCoinNum = res.synthProb.conCoinNum;
+            this.synthConfig.conCoinType = res.synthProb.conCoinType;
+        }
+    }
+
+    // 刷新多语言
+    protected onEnable(): void {
+        this.baseProbLabel.string = `${this.synthConfig.baseProb}%`;
+        let desc = oops.language.getLangByID("debris_tips_increase_probability");
+        desc = desc.replace('{coinNum}', this.synthConfig.conCoinNum.toString());
+        desc = desc.replace('{upProb}', this.synthConfig.upProb.toString());
+        switch (this.synthConfig.conCoinType) { 
+            case 1:
+                desc = desc.replace('{coinType}', oops.language.getLangByID("coin_gold"));
+                break;
+            case 2:
+                desc = desc.replace('{coinType}', oops.language.getLangByID("coin_gems"));
+                break;
+            case 3:
+                desc = desc.replace('{coinType}', oops.language.getLangByID("coin_starbeast"));
+                break;
+            case 4:
+                desc = desc.replace('{coinType}', oops.language.getLangByID("coin_usdt"));
+                break;
+            default:
+                break;
+        }
+        this.upProbLabel.string = desc;
+
+        AnimUtil.playAnim_Scale(this.node);
     }
 
     start() {
@@ -47,15 +88,21 @@ export class STBMerge extends Component {
         this.btn_close1?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_close2?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_evolve?.node.on(Button.EventType.CLICK, this.onEvolve, this);
-
         this.videoPlayer.node.on(VideoPlayer.EventType.COMPLETED, this.OnVideoCompleted, this);
     }
 
-
     public InitUI(firstStbID: number, twoStbID: number,) {
+        this.beforePanel.active = true;
+        this.sucessPanel.active = false;
+        this.failPanel.active = false;
+
+        this.videoMsk.active = false;
+        this.videoPlayer.node.active = false;
+        this.videoPlayer.stop();
+
         this.stbID1 = firstStbID;
         this.stbID2 = twoStbID;
-        console.log("InitUI", firstStbID, twoStbID);
+        console.log("合成星兽:", firstStbID, twoStbID);
     }
 
     closeUI() {
@@ -80,7 +127,7 @@ export class STBMerge extends Component {
         this.failPanel.active = isSucc ? false : true;
     }
 
-    OnVideoCompleted() { 
+    OnVideoCompleted() {
         this.videoMsk.active = false;
         this.videoPlayer.node.active = false;
         this.showMergeResult(this.isSucc);

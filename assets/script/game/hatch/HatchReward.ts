@@ -6,6 +6,9 @@ import { UIID } from '../common/config/GameUIConfig';
 import { RewardConfig } from './HatchDefine';
 import { instantiate } from 'cc';
 import { RewardItem } from './RewardItem';
+import { tween } from 'cc';
+import { v3 } from 'cc';
+import { Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('HatchReward')
@@ -24,8 +27,17 @@ export class HatchReward extends Component {
         this.btn_reward?.node.on(Button.EventType.CLICK, this.closeUI, this);
     }
 
+    protected onEnable(): void {
+        tween()
+            .target(this.node)
+            .to(0.15, { scale: v3(1.1, 1.1, 1), }, { easing: 'fade' })
+            .to(0.15, { scale: Vec3.ONE, }, { easing: 'fade' })
+            .start()
+    }
+
     closeUI() {
-        oops.gui.remove(UIID.HatchReward);
+        this.container.removeAllChildren();
+        this.node.active = false;
     }
 
     InitUI(rewardList: RewardConfig[]) {

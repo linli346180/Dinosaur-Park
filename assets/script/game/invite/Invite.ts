@@ -70,7 +70,9 @@ export class InviteVeiw extends Component {
 
     private openInviteLink() {
         let url = 'https://t.me/share/url?url=' + this.inviteLink;
-        window.open(url);
+        // window.open(url);
+        const WebApp = (window as any).Telegram.WebApp;
+        WebApp.openLink(url);
     }
 
     private copyInviteLink() {

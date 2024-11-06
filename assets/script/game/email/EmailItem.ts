@@ -22,6 +22,9 @@ export class EmailItem extends Component {
     btn_unclaimed: Button = null!;
     @property(Button)
     btn_claimed: Button = null!;
+    @property(Button)
+    btn_detail: Button = null!;
+
     @property(Label)
     mailTitle: Label = null!;
     @property(Label)
@@ -29,21 +32,16 @@ export class EmailItem extends Component {
     @property(Label)
     mailTime: Label = null!;
 
-    private mailRecord: MailRecord = null!;
+    mailRecord: MailRecord = null!;
 
     start() {
-        this.btn_claimed?.node.on(Button.EventType.CLICK, this.onClaimed, this);
-        this.btn_unclaimed?.node.on(Button.EventType.CLICK, this.onClaimed, this);
+        this.btn_detail?.node.on(Button.EventType.CLICK, this.shwoDetail, this);
     }
 
-    onClaimed() {
-        // console.log("查看邮件")
+    shwoDetail() {
         var uic: UICallbacks = {
             onAdded: (node: Node, params: any) => {
-                const emailDetail = node.getComponent(EmailDetail);
-                if (emailDetail) {
-                    emailDetail.initUI(this.mailRecord);
-                }
+                node.getComponent(EmailDetail)?.initUI(this.mailRecord);
             }
         };
         let uiArgs: any;
@@ -52,12 +50,18 @@ export class EmailItem extends Component {
 
     initItem(mailRecord: MailRecord) {
         this.mailRecord = mailRecord;
-        if (this.mailRecord.awardState == EmailRewardState.received) {
-            this.bg_unclaimed.active = false;
-            this.btn_unclaimed.node.active = false;
-            this.icon_unclaimed.active = false;
+
+        this.bg_claimed.active = mailRecord.awardState == EmailRewardState.received;
+        this.icon_claimed.active = mailRecord.awardState == EmailRewardState.received;
+        this.btn_claimed.node.active = mailRecord.awardState == EmailRewardState.received;
+        this.bg_unclaimed.active = mailRecord.awardState == EmailRewardState.unreceived;
+        this.btn_unclaimed.node.active = mailRecord.awardState == EmailRewardState.unreceived;
+        this.icon_unclaimed.active = mailRecord.awardState == EmailRewardState.unreceived;
+
+        if (this.mailRecord.rewards != null && this.mailRecord.rewards.length > 0) {
+            this.num.string = 'X' + this.mailRecord.rewards.length.toString();
         }
-        this.num.string = 'X' + this.mailRecord.rewards.length.toString();
+
         this.mailTitle.string = this.mailRecord.mailTitle;
         this.mailContent.string = this.checkLabelMaxLength(this.mailRecord.mailContent, 19);
         const date = new Date(this.mailRecord.mailTime * 1000);

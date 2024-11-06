@@ -1,7 +1,7 @@
 import { _decorator, Component, Node, RigidBody2D, CircleCollider2D, Collider2D, Animation, v2, Vec2, Sprite, Quat, Label } from 'cc';
 import { StateMachine } from './StateMachine';
 import { StateDefine } from './StateDefine';
-import { mathutil } from '../../common/utils/MathUtil';
+import { MathUtil } from '../../common/utils/MathUtil';
 import { Contact2DType } from 'cc';
 import { Color } from 'cc';
 const { ccclass, property, requireComponent, disallowMultiple } = _decorator;
@@ -39,7 +39,7 @@ export class Actor extends Component {
         if (this.input.x < 0) {
             this.mainRenderer.node.rotation = Quat.IDENTITY;
         } else if (this.input.x > 0) {
-            this.mainRenderer.node.rotation = mathutil.ROT_Y_180;
+            this.mainRenderer.node.rotation = MathUtil.ROT_Y_180;
         }
     }
 

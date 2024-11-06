@@ -19,6 +19,9 @@
     "loading_load_player": "Get user information",
     "common_btn_edit": "Edit",
     "common_tips_Not_Enabled":"Feature Not Enabled",
+    "common_tips_done":"完成",
+    "common_tips_go":"前往",
+    "common_tips_continue":"继续",
 
     "common_validity":"validity",
     "common_time":"time",
@@ -35,6 +38,11 @@
     "stb_diamond":"Diamond Star Beast",
     "stb_super":"Supreme Star Beast",
 
+    "coin_gold":"Gold",
+    "coin_gems":"Gems",
+    "coin_starbeast":"Star Beast",
+    "coin_usdt":"USDT",
+
     "main_btn_user":"User",
     "main_btn_email":"Mail",
     "main_btn_task":"Tasks",
@@ -46,6 +54,7 @@
     "main_btn_adopt_one":"Adopt",
     "main_btn_hatch":"Hatch",
     "main_btn_invite":"Invite",
+    "main_btn_usdt_activity":"USDT activity",
 
     "tips_buy_sucess":"Purchase Successful",
     "tips_buy_fail":"Purchase Failed",
@@ -75,11 +84,11 @@
     "mail_tips_claimfull": "Claim all",
 
     "task_center": "Task Center",
-    "task_type_daily": "Daily Task",
-    "task_type_base": "Basic Task",
-    "task_type_achievement": "Achievement Task",
-    "task_type_timed": "Timed Task",
-    "task_type_guid": "Newbie Task",
+    "task_type_daily": "Daily",
+    "task_type_base": "Basic",
+    "task_type_achievement": "Achievement",
+    "task_type_timed": "Timed",
+    "task_type_guid": "Tutorial",
     "task_tips_go": "Go",
     "task_tips_claim": "Claim",
     "task_tips_claimed": "Claimed",
@@ -93,11 +102,12 @@
 
     "debris_tips_evolve":"Evolve",
     "debris_tips_merge":"Synthetic evolution",
-    "debris_tips_success_rate":"10% probability of success",
-    "debris_tips_increase_probability":"Spend 200 gems to increase probability by 10%",
-    "debris_tips_evolve_secuss":"Congratulations! /n Evolutionary success!",
+    "debris_tips_success_rate":"probability of success",
+    
+    "debris_tips_increase_probability":"Spend {coinNum} {coinType} increase probability by {upProb}%",
+    "debris_tips_evolve_secuss":"Congratulations! \n Evolutionary success!",
     "debris_tips_evolve_secuss_reward":"Primary ore Dinosaur x1",
-    "debris_tips_evolve_fail":"What a pity! /n Evolution has failed!",
+    "debris_tips_evolve_fail":"What a pity! \nEvolution has failed!",
     "debris_tips_evolve_fail_reward":"Dragon egg hatching times x1",
 
     "invite_reward":"Reward",
@@ -114,6 +124,10 @@
     "invite_tips_start_invite":"Invite a friend",
     "invite_tips_invite300": "(First 300 invitees)",
     "invite_tips_pullnew": "Pull new leaderboard",
+    "invite_tips_rick": "Rick leaderboard",
+    "invite_tips_day": "Daily",
+    "invite_tips_week": "Weekly",
+    "invite_tips_month": "Monthly",
 
     "adopt_tips_adopt":"Adopt a dinosaur",
 
@@ -131,7 +145,20 @@
     "reward_tip_intermediate": "Intermediate Reward", 
     "reward_tip_advanced": "Advanced Reward",       
     "reward_tip_rare": "Rare Reward",              
-    "reward_tip_receive": "Claim Reward",           
+    "reward_tip_receive": "Claim Reward",         
+    
+    "activity_usdt_title": "USDT Activity",
+    "activity_usdt_incomedetail": "Income Details",
+    "activity_usdt_total": "Total USDT",
+    "activity_usdt_remain": "USDT Remaining",
+    "activity_redpacket_total": "Total Red Pkt",
+    "activity_redpacket_remain": "Red Pkt Remaining",
 
-    "111":""
+    "guide_join_channel":"加入频道",
+    "guide_join_group":"加入频道",
+    "guide_join_x":"加入推特",
+    "guide_reward":"完成以上所有任务领取",
+    "guide_update":"完成任务后点击验证按钮",
+
+     "End":"结束"
 }

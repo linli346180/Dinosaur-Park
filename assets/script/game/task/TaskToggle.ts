@@ -20,7 +20,7 @@ export class TaskToggle extends Component {
             this.UnCheckLabel.node.active = false;
     }
 
-    onToggle(toggle: Toggle) {
+    private onToggle(toggle: Toggle) {
         if (toggle.isChecked) {
             oops.message.dispatchEvent(TaskEvent.TaskUpdate, this.taskType);
             this.UnCheckLabel.node.active = false;

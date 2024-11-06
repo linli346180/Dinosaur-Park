@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "924db842-6aa7-4dec-9c2c-f6f0930f6d28",
+  "uuid": "a195435f-a349-4edb-b914-ad86000cd23a",
   "files": [
     ".json",
     ".png"
@@ -10,7 +10,7 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "924db842-6aa7-4dec-9c2c-f6f0930f6d28@6c48a",
+      "uuid": "a195435f-a349-4edb-b914-ad86000cd23a@6c48a",
       "displayName": "场景合成失败",
       "id": "6c48a",
       "name": "texture",
@@ -22,7 +22,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "924db842-6aa7-4dec-9c2c-f6f0930f6d28",
+        "imageUuidOrDatabaseUri": "a195435f-a349-4edb-b914-ad86000cd23a",
         "visible": false
       },
       "ver": "1.0.22",
@@ -34,7 +34,7 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "924db842-6aa7-4dec-9c2c-f6f0930f6d28@f9941",
+      "uuid": "a195435f-a349-4edb-b914-ad86000cd23a@f9941",
       "displayName": "场景合成失败",
       "id": "f9941",
       "name": "spriteFrame",
@@ -114,7 +114,7 @@
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "924db842-6aa7-4dec-9c2c-f6f0930f6d28@6c48a",
+        "imageUuidOrDatabaseUri": "a195435f-a349-4edb-b914-ad86000cd23a@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.12",
@@ -129,6 +129,6 @@
     "hasAlpha": true,
     "type": "sprite-frame",
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "924db842-6aa7-4dec-9c2c-f6f0930f6d28@6c48a"
+    "redirect": "a195435f-a349-4edb-b914-ad86000cd23a@6c48a"
   }
 }

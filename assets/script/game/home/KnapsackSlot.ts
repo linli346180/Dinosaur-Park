@@ -90,11 +90,14 @@ export class KnapsackSlot extends Component {
     }
 
     /** 播放升级动画 */
-    public showLevelUpAnim(show: boolean) {
+    public showLevelUpAnim(show: boolean, callback?: Function) {
         this.levelUpNode.active = show;
         if (show) {
             this.levelUpAnim.play();
-            this.levelUpAnim.once(Animation.EventType.FINISHED, this.onLevelUpAnimFinished, this);
+            this.levelUpAnim.once(Animation.EventType.FINISHED, ()=>{
+                this.onLevelUpAnimFinished();
+                if(callback) callback();
+            }, this);
         }
     }
 
@@ -106,12 +109,12 @@ export class KnapsackSlot extends Component {
     private onLandAnimFinished() {
         this.landingNode.active = false;
         this.container.active = true;
-        this.idleAnim?.InitUI(this.stbData.stbConfigID);
+        this.idleAnim?.InitUI(this.stbData?.stbConfigID||-1);
     }
 
     private onLevelUpAnimFinished() {
         this.levelUpNode.active = false;
         this.container.active = true;
-        this.idleAnim?.InitUI(this.stbData.stbConfigID);
+        this.idleAnim?.InitUI(this.stbData?.stbConfigID||-1);
     }
 }

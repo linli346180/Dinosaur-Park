@@ -1,6 +1,7 @@
 
 
 export enum RedDotCmd {
+    default             = 0,
     userCenter          = 100, // 用户中心
     userShop            = 101, // 商店
     UserHatchType       = 103, // 孵蛋
@@ -10,5 +11,6 @@ export enum RedDotCmd {
     UserTaskType        = 107, // 任务
     RankingType         = 108, // 排行
     WithDrawalType      = 109, // 提现
-    StbGurideType       = 110, // 星兽图鉴
+    StbBookType         = 110, // 星兽图鉴
+    USDTActivity        = 111, // 星兽活动
 }

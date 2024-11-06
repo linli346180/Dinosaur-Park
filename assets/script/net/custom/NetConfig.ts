@@ -14,7 +14,7 @@ class NetConfig {
         return this.ServerConfigList[this.curEnvironment].BotToken;
     }
 
-    public curEnvironment: EnvironmentType = EnvironmentType.Development;
+    public curEnvironment: EnvironmentType = EnvironmentType.PreRelease;
     public ServerConfigList = {
         [EnvironmentType.Development]: {
             Server: "https://konglong.live/",
@@ -22,8 +22,8 @@ class NetConfig {
             BotToken: '7512648791:AAGsR1Qbuh-A-B_l1SrizMdSBIm1MmZLuZQ'
         },
         [EnvironmentType.PreRelease]: {
-            Server: "https://yu.sbpc-api.com/",
-            WebSock: "yu.sbpc-api.com/wss",
+            Server: "https://kong-long.cyou/",
+            WebSock: "kong-long.cyou/wss",
             BotToken: '7175903697:AAGqeX_Z5N1GC0HWyGS_WZE8nzzJiTZGwa0'
         },
         [EnvironmentType.Production]: {
@@ -49,7 +49,7 @@ class NetConfig {
 /** 网络配置 */
 enum EnvironmentType {
     Development = '开发环境',   
-    PreRelease = '预售环境',
+    PreRelease = '测试环境',
     Production = '发布环境'
 }
 

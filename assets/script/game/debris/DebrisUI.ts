@@ -3,13 +3,16 @@ import { UIID } from '../common/config/GameUIConfig';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { PzzleItem } from './PzzleItem';
 import { ReviveNetService } from './ReviveNet';
-import { DebrisConfigData, DebrisDetail, PuzzleID, UserDebrisData } from './DebrisData';
+import { DebrisConfig, DebrisDetail, PuzzleID, UserDebris } from './DebrisData';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { DebrisResult } from './DebrisResult';
 import { NetErrorCode } from '../../net/custom/NetErrorCode';
 import { IStartBeastData } from '../account/model/AccountModelComp';
 import { smc } from '../common/SingletonModuleComp';
 import { AccountEvent } from '../account/AccountEvent';
+import { moneyUtil } from '../common/utils/moneyUtil';
+import { tween } from 'cc';
+import { Vec3 } from 'cc';
 
 const { ccclass, property } = _decorator;
 
@@ -22,140 +25,179 @@ export class DebrisView extends Component {
     btn_close: Button = null!;
 
     @property(Node)
-    level_1: Node = null!;
-    @property(Node)
-    level_2: Node = null!;
+    debrisViewPanel: Node = null!;   // 碎片预览界面
     @property(Button)
     btn_left: Button = null!;
     @property(Button)
     btn_right: Button = null!;
+    @property(Label)
+    debrisName: Label = null!;
 
     @property(Button)
     btn_onekey: Button = null!;
     @property(Node)
-    pieces_panel: Node = null!;
+    debrisPiecesPanel: Node = null!;
 
-    @property(Label)
-    label_level: Label = null!;
-    @property(Label)
-    label_name: Label = null!;
+    private isInit = false;
 
-    private _index: PuzzleID = PuzzleID.Primary;
-    private debrisData: UserDebrisData = new UserDebrisData();
-    private configData: DebrisConfigData = new DebrisConfigData();
+    // 碎片配置数据
+    private curDebris: number = 301;
+    private DebrisType: { [key: number]: { debrisNode: Node | null, config: DebrisConfig | null } } = {
+        301: { debrisNode: null, config: null },
+        302: { debrisNode: null, config: null },
+    }
 
-    protected onLoad(): void {
-        this.pieces_panel.removeAllChildren();
+    // 用户碎片数据
+    private userDebrisData: UserDebris[] = [];
+
+    async onEnable(): Promise<void> {
+        await this.initDebrisView(!this.isInit);
+        this.initUserDebrisData(true);
     }
 
     start() {
-        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.btn_left?.node.on(Button.EventType.CLICK, this.onLeft, this);
-        this.btn_right?.node.on(Button.EventType.CLICK, this.onRight, this);
+        this.isInit = true;
+        this.btn_close?.node.on(Button.EventType.CLICK, () => oops.gui.remove(UIID.Revive, false), this);
+        this.btn_left?.node.on(Button.EventType.CLICK, () => this.changeDebris(-1), this);
+        this.btn_right?.node.on(Button.EventType.CLICK, () => this.changeDebris(1), this);
         this.btn_onekey?.node.on(Button.EventType.CLICK, this.onOneKey, this);
-        this.initUI();
+        this.breathingTween(this.btn_right.node);
+        this.breathingTween(this.btn_left.node);
     }
 
-    closeUI() {
-        oops.gui.remove(UIID.Revive);
-    }
-
-    onLeft() {
-        const index = math.clamp(this._index - 1, PuzzleID.Primary, PuzzleID.Intermediate);
-        this.updateUI(index);
-    }
-
-    onRight() {
-        const index = math.clamp(this._index + 1, PuzzleID.Primary, PuzzleID.Intermediate);
-        this.updateUI(index);
-    }
-
-    async initUI() {
-        this.configData.debrisConfigList = await ReviveNetService.getDebrisConfig();
-        this.pieces_panel.removeAllChildren();
-        this.configData.debrisConfigList.forEach((config) => {
-            if (config.id == this._index) {
-                config.debrisDetailsArr.forEach((detail) => {
-                    this.createItem(detail);
-                });
+    /** 初始化拼图面板 */
+    private async initDebrisView(foceUpdate: boolean = false): Promise<void> {
+        Object.entries(this.DebrisType).forEach(([key, item]) => {
+            const chileNode = this.debrisViewPanel.getChildByName(key);
+            if (chileNode) {
+                item.debrisNode = chileNode;
+                item.debrisNode.active = chileNode.name == this.curDebris.toString();
+                item.debrisNode.children.forEach((child) => { child.active = true; });
             }
         });
 
-        this.updateUI(this._index);
+        // 获取拼图配置
+        if (foceUpdate) {
+            const res = await ReviveNetService.getDebrisConfig();
+            if (res && res.debrisArr != null) {
+                if (res.debrisArr.length == 0) return;
+                for (let i = 0; i < res.debrisArr.length; i++) {
+                    const debrisConfig = res.debrisArr[i];
+                    const stbConfigID = debrisConfig.stbConfigID;
+                    const stbConfig = smc.account.getSTBConfigById(stbConfigID);
+                    if (stbConfig == null) {
+                        console.error("stbConfig is null", stbConfigID);
+                        return;
+                    }
+                    const stbConfigType = moneyUtil.combineNumbers(stbConfig.stbKinds, stbConfig.stbGrade, 2);
+                    this.DebrisType[stbConfigType].config = debrisConfig;
+                }
+                return this.updateDebrisView(this.curDebris);
+            }
+        } else {
+            return this.updateDebrisView(this.curDebris);
+        }
     }
 
-    createItem(config: DebrisDetail) {
+    private updateDebrisView(index: number): void {
+        const debrisType = this.DebrisType[index];
+        this.debrisPiecesPanel.removeAllChildren();
+        if (debrisType && debrisType.debrisNode && debrisType.config) {
+            this.curDebris = index;
+            this.debrisName.string = debrisType.config.name;
+            debrisType.config.debrisDetailsArr.forEach((debrisDetail) => { this.createDebrisItem(debrisDetail); });
+        } else {
+            console.error("debrisType is null", index);
+        }
+    }
+
+    private createDebrisItem(debrisDetail: DebrisDetail) {
         const item = instantiate(this.itemPrefab);
-        this.pieces_panel.addChild(item);
+        this.debrisPiecesPanel.addChild(item);
         const pzzleItem = item.getComponent<PzzleItem>(PzzleItem);
         if (pzzleItem) {
-            pzzleItem.initItem(config.debrisID, config.id, config.position, 0);
+            pzzleItem.initItem(this.curDebris, debrisDetail.debrisID, debrisDetail.id, debrisDetail.position, 0);
             pzzleItem.OnClick = this.onItemClicked.bind(this);
         }
     }
 
-    async updateUI(index: number) {
-        if (this._index != index) {
-            this.pieces_panel.removeAllChildren();
-            this.configData.debrisConfigList.forEach((config) => {
-                if (config.id == index) {
-                    config.debrisDetailsArr.forEach((detail) => {
-                        this.createItem(detail);
-                    });
-                }
-            });
+    /** 获取用户拼图碎片数据 */
+    private async initUserDebrisData(foceUpdate: boolean = false) {
+        if (foceUpdate) {
+            const res = await ReviveNetService.getUserDebrisData();
+            if (res && res.userDebrisArr != null) {
+                this.userDebrisData = res.userDebrisArr;
+                this.setUserDebrisNum();
+            }
+        } else {
+            this.setUserDebrisNum();
         }
+    }
 
-        this._index = index;
-        this.btn_left.node.active = this._index > PuzzleID.Primary;
-        this.btn_right.node.active = this._index < PuzzleID.Intermediate;
-        this.level_1.active = this._index == PuzzleID.Primary;
-        this.level_2.active = this._index == PuzzleID.Intermediate;
-        this.level_1.children.forEach((child) => { child.active = true; });
-        this.level_2.children.forEach((child) => { child.active = true; });
-
-        // 获取用户碎片数据
-        this.debrisData.userDebrisList = await ReviveNetService.getUserDebrisData();
-        this.pieces_panel.children.forEach((child) => {
-            let pzzleItem = child.getComponent<PzzleItem>(PzzleItem);
-            if (pzzleItem) {
-                let debrisNum = this.getUserDebrisData(pzzleItem.debrisID, pzzleItem.debrisDetailsID);
-                pzzleItem.Count = debrisNum;
+    private setUserDebrisNum() {
+        this.debrisPiecesPanel.children.forEach((child) => {
+            let comp = child.getComponent(PzzleItem);
+            if (comp) {
+                let debrisNum = this.getUserDebrisNum(comp.debrisID, comp.debrisDetailsID);
+                comp.Count = debrisNum;
             }
         });
     }
 
-    /** 获取用户碎片数量 */
-    getUserDebrisData(debrisID: number, debrisDetailsID: number): number {
+    getUserDebrisNum(debrisID: number, debrisDetailsID: number): number {
         let num = 0;
-        this.debrisData.userDebrisList.forEach((userDebris) => {
-            if (userDebris.debrisID == debrisID && userDebris.debrisDetailsID == debrisDetailsID) {
-                num = userDebris.debrisNum;
+        for (const debris of this.userDebrisData) {
+            if (debris.debrisID == debrisID && debris.debrisDetailsID == debrisDetailsID) {
+                return debris.debrisNum;
             }
-        });
+        }
         return num;
     }
 
-    onItemClicked(index: number) {
-        if (this._index == PuzzleID.Primary) {
-            let childNode = this.level_1.getChildByName(index.toString());
-            if (childNode)
-                childNode.active = false;
-            this.checkAddDebris(this.level_1);
-        } else {
-            let childNode = this.level_2.getChildByName(index.toString());
-            if (childNode)
-                childNode.active = false;
-            this.checkAddDebris(this.level_2);
+    /** 切换拼图 */
+    private changeDebris(direction: number) {
+        const keys = Object.keys(this.DebrisType).map(Number);
+        const currentIndex = keys.indexOf(this.curDebris);
+        let newIndex = currentIndex + direction;
+        if (newIndex >= keys.length) {
+            newIndex = 0;
+        } else if (newIndex < 0) {
+            newIndex = keys.length - 1;
         }
+
+        this.curDebris = keys[newIndex];
+        this.initDebrisView(!this.isInit).then(() => {
+            this.initUserDebrisData(true);
+        });
+    }
+
+    private breathingTween(targetNode: Node) {
+        if (targetNode) {
+            const originalPosition = targetNode.position.clone();
+            let breathingTween = tween(targetNode)
+                .to(1, { position: new Vec3(originalPosition.x, originalPosition.y + 15, originalPosition.z) }, { easing: 'sineInOut' })
+                .to(1, { position: originalPosition }, { easing: 'sineInOut' })
+                .delay(1)
+                .union()
+                .repeatForever()
+                .start();
+        }
+    }
+
+    onItemClicked(index: number) {
+        console.log("激活碎片拼图", index);
+        this.DebrisType[this.curDebris].debrisNode?.children.forEach((child) => {
+            if (child.name == index.toString())
+                child.active = false;
+        });
+        this.checkAddDebris(this.DebrisType[this.curDebris].debrisNode!);
     }
 
     /** 检测拼图是否完整 */
     checkAddDebris(root: Node) {
         let isComplete = true;
         root.children.forEach((child) => {
-            console.log("child.active", child.active, child.name);
-            if (child.active && child.name != 'level') {
+            if (child.active) {
                 isComplete = false;
                 return;
             }
@@ -167,46 +209,49 @@ export class DebrisView extends Component {
         }
     }
 
-    onOneKey() {
+    private onOneKey() {
         console.log("一键拼图");
-        let debrisConfig = this.configData.debrisConfigList.find((config) => {
-            return config.id == this._index;
-        });
-
-        if (debrisConfig) {
-            let rootNode = this._index == PuzzleID.Primary ? this.level_1 : this.level_2;
+        const debrisConfig = this.DebrisType[this.curDebris].config;
+        const debrisNode = this.DebrisType[this.curDebris].debrisNode;
+        if (debrisNode && debrisConfig) {
             debrisConfig.debrisDetailsArr.forEach((detail) => {
-                let count = this.getUserDebrisData(detail.debrisID, detail.id);
+                let count = this.getUserDebrisNum(detail.debrisID, detail.id);
                 if (count > 0) {
-                    let childNode = rootNode.getChildByName(detail.position.toString());
-                    if (childNode)
-                        childNode.active = false;
+                    const chileNode = debrisNode.getChildByName(detail.position.toString());
+                    if (chileNode) chileNode.active = false;
                 }
-            });
-            this.checkAddDebris(rootNode);
+            })
+            this.checkAddDebris(debrisNode!);
         }
     }
 
     /** 合成碎片 */
-    async requestDebrisData() {
-        let res = await ReviveNetService.clampDebris(this._index);
-        if (res.resultCode == NetErrorCode.Success && res.userInstb != null) {
+    private async requestDebrisData() {
+        const debrisConfig = this.DebrisType[this.curDebris].config;
+        if (debrisConfig == null) {
+            console.error("debrisConfig is null");
+            return;
+        }
 
-            // 合成成功
+        setTimeout(() => {
+            this.initDebrisView(false);
+            this.initUserDebrisData(true);
+        }, 1000);
+
+        let debrisIndex = this.curDebris;
+        let res = await ReviveNetService.clampDebris(debrisConfig.id);
+        if (res && res.userInstb != null) {
             smc.account.AccountModel.addInComeSTBData(res.userInstb);
             oops.message.dispatchEvent(AccountEvent.AddInComeSTB, res.userInstb.id);
 
             var uic: UICallbacks = {
                 onAdded: (node: Node, params: any) => {
                     const widget = node.getComponent(DebrisResult);
-                    widget?.initUI(res.userInstb.stbConfigID, 1);
+                    widget?.initUI(debrisIndex, 1);
                 }
             };
             let uiArgs: any;
             oops.gui.open(UIID.DebrisResult, uiArgs, uic);
-            this.updateUI(this._index);
-        }else {
-            oops.gui.toast(res.resultMsg, false);
         }
     }
 }

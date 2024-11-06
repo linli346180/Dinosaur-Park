@@ -28,6 +28,7 @@ export enum NetCmd {
     StbGurideType       = 110, // 星兽图鉴
     NinstbDeathType     = 111, // 无收益星兽死亡
     IncomeStbDeathType  = 112, // 收益星兽死亡
+    UserBounsType       = 114, // USDT奖励
     HeartBeatType       = 150, // 心跳
     DownLineType        = 151, // 下线通知
 }

@@ -1,6 +1,6 @@
 import { _decorator } from 'cc';
 import { ecs } from '../../../../../extensions/oops-plugin-framework/assets/libs/ecs/ECS';
-import { AccountModelComp } from '../model/AccountModelComp';
+import { AccountModelComp, IStartBeastData } from '../model/AccountModelComp';
 import { Account } from '../Account';
 import { oops } from '../../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { AccountNetService } from '../AccountNet';
@@ -24,27 +24,6 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
     }
 
     async entityEnter(entity: Account): Promise<void> {
-        console.log(`【Editor】${EDITOR} 【当前平台】'+ ${sys.platform}【运行系统】${sys.os} 【浏览器类型】${sys.browserType}`);
-        if (EDITOR) {
-            console.log("使用测试登陆")
-            const response = await AccountNetService.LoginTestAccount();
-            if (response) {
-                this.OnLogonResponse(entity, response);
-            }
-        } else {
-            console.log("使用TD登陆")
-            const TGAppData = await TGNetService.GetTelegramAPPData();
-            const response = await AccountNetService.LoginTGAcount(TGAppData);
-            if (response) {
-                this.OnLogonResponse(entity, response);
-            }
-        }
-        entity.remove(AccountNetDataComp);
-    }
-
-    async OnLogonResponse(entity: Account, response: any) {
-        entity.AccountModel.user = response.user;
-
         // 获取用户货币数据
         const coinDataRes = await AccountNetService.getUserCoinData();
         if (coinDataRes && coinDataRes.userCoin != null) {
@@ -60,26 +39,29 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
         // 获取用户星兽数据
         const res = await AccountNetService.GetUserSTBData();
         if (res && res.userInstbData != null) {
-            const instbData = res.userInstbData;
-
-            const UserInstb = instbData.UserInstb;
-            if (UserInstb != null) {
-                entity.AccountModel.UserInstb = UserInstb;
+           
+            // 收益星兽
+            if (res.userInstbData.UserInstb != null) {
+                entity.AccountModel.UserInstb = res.userInstbData.UserInstb;
             } else {
-                entity.AccountModel.UserInstb = [];
                 console.log("收益星兽为空");
             }
 
-            const UserNinstb = instbData.UserNinstb;
-            if (UserNinstb != null) {
-                entity.AccountModel.UserNinstb = UserNinstb;
+            // TODO  无收益星守过滤配置为空的星兽
+            if (res.userInstbData.UserNinstb != null) {
+                for (const stbItem of res.userInstbData.UserNinstb) {
+                    if (stbItem.stbConfigID > 0) {
+                        entity.AccountModel.UserNinstb.push(stbItem);
+                    } else {
+                        console.log("星兽配置ID为空");
+                    }
+                }
             }
             else {
-                entity.AccountModel.UserNinstb = [];
                 console.log("无收益星兽为空");
             }
         }
-
-        oops.message.dispatchEvent(GameEvent.LoginSuccess);
+        oops.message.dispatchEvent(GameEvent.DataInitialized);
+        entity.remove(AccountNetDataComp);
     }
 }

@@ -51,7 +51,7 @@ export class ActorDrag extends Component {
   onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
     if (this.IsDragging) {
       console.log('碰撞到了', otherCollider.node.name);
-      let stbID1 = this.actorCtrl.stbId;
+      let stbID1 = this.actorCtrl?.stbId ?? 0;
       let stbID2 = otherCollider.node.getComponent(ActorController)?.stbId ?? 0;
       if (stbID1 === 0 || stbID2 === 0) return;
       var uic: UICallbacks = {
@@ -72,7 +72,7 @@ export class ActorDrag extends Component {
   private onNodeTouchStart(event: EventTouch) {
     console.log('onNodeTouchStart');  
     this.IsDragging = true;
-    this.actorCtrl.setDrag(true);
+    this.actorCtrl?.setDrag(true);
     this.calculateOffset(event);
     this.setNodeToTop(this.node);
   }
@@ -86,11 +86,11 @@ export class ActorDrag extends Component {
   private onNodeTouchEnd() {
     console.log('onNodeTouchStart'); 
     this.IsDragging = false;
-    this.actorCtrl.setDrag(false);
+    this.actorCtrl?.setDrag(false);
   }
 
   private calculateOffset(event: EventTouch) {
-    const uiTransform = this.node.parent.getComponent(UITransform);
+    const uiTransform = this.node.parent?.getComponent(UITransform);
     if (uiTransform) {
       // 获取触摸点的世界坐标
       const touchLocation = event.getUILocation();
@@ -107,7 +107,7 @@ export class ActorDrag extends Component {
   private updateNodePosition(event: EventTouch) {
     if (!this.IsDragging) return;
 
-    const uiTransform = this.node.parent.getComponent(UITransform);
+    const uiTransform = this.node.parent?.getComponent(UITransform);
     if (uiTransform) {
       // 获取拖动中的世界坐标
       const touchLocation = event.getUILocation();

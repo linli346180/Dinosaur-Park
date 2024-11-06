@@ -7,19 +7,32 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { AccountEvent } from '../account/AccountEvent';
 const { ccclass, property } = _decorator;
 
+const RedDotCmdEnum = Enum({
+    默认: RedDotCmd.default, // 默认
+    用户中心: RedDotCmd.userCenter, // 用户中心
+    商店: RedDotCmd.userShop, // 商店
+    孵蛋: RedDotCmd.UserHatchType, // 孵蛋
+    邀请: RedDotCmd.InvitedType, // 邀请
+    复活: RedDotCmd.UserDebrisType, // 复活
+    邮箱: RedDotCmd.UserEmailType, // 邮箱
+    任务: RedDotCmd.UserTaskType, // 任务
+    排行: RedDotCmd.RankingType, // 排行
+    提现: RedDotCmd.WithDrawalType, // 提现
+    星兽图鉴: RedDotCmd.StbBookType, // 星兽图鉴
+    星兽活动: RedDotCmd.USDTActivity, // 星兽活动
+});
+
 @ccclass('ReddotComp')
 export class ReddotComp extends Component {
-    @property({ type: Enum(RedDotCmd) })
-    cmd: RedDotCmd;
+    @property({ type: RedDotCmdEnum })
+    cmd: RedDotCmd = RedDotCmd.default;
 
     onLoad() {
         const isRead = oops.storage.getBoolean(this.cmd.toString());
-        // console.log("是否已读", this.cmd.toString(), isRead);
         this.node.active = !isRead;
     }
 
     onDisable() {
-        // console.log("设置已读", this.cmd.toString());
         oops.storage.set(this.cmd.toString(), true);
     }
 

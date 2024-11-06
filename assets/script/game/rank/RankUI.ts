@@ -1,14 +1,16 @@
 import { _decorator, Component, Node, Button, Prefab, instantiate } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
-import { Leaderboard, RankData, RankType } from './RankDefine';
+import { UserRankData, RankData, RankGroup, RankType } from './RankDefine';
 import { RankNetService } from './RankNet';
 import { RankItem } from './RankItem';
 import { smc } from '../common/SingletonModuleComp';
+import { RankToggle } from './RankToggle';
+import { Label } from 'cc';
 const { ccclass, property } = _decorator;
 
-@ccclass('RankUI')
-export class RankUI extends Component {
+@ccclass('RankView')
+export class RankView extends Component {
     @property(Prefab)
     itemPerfab: Prefab = null!;
     @property(Button)
@@ -17,45 +19,104 @@ export class RankUI extends Component {
     container: Node = null!;
     @property(RankItem)
     selfRankItem: RankItem = null!;
-    private leaderboard: Leaderboard = new Leaderboard();
+    @property(Node)
+    toggleGroup: Node = null!;
 
-    start() {
-        this.selfRankItem.node.active = false;
+    @property(Button)
+    btn_left: Button = null!;
+    @property(Button)
+    btn_right: Button = null!;
+
+    @property(Label)
+    title: Label = null!;
+
+    @property(Node)
+    emptyNode: Node = null!;
+
+
+    private curRankGroup = RankGroup.Invite;
+    private curRankType = RankType.day;
+    private rankData: UserRankData | null = null;
+
+    protected onLoad(): void {
+        this.container.removeAllChildren();
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
+        this.btn_left?.node.on(Button.EventType.CLICK, this.onLeftClicked, this);
+        this.btn_right?.node.on(Button.EventType.CLICK, this.onRightClicked, this);
+        this.toggleGroup.children.forEach((childNode, index) => {
+            let comp = childNode.getComponent(RankToggle);
+            if (comp) {
+                comp.onToggleSelcted = this.onToggleSelcted.bind(this);
+            }
+        });
     }
 
     onEnable() {
+        this.title.string = this.getRankGroupTitle(this.curRankGroup);
         this.initUI();
     }
 
-    closeUI() {
+    private closeUI() {
         oops.gui.remove(UIID.RankUI, false);
     }
 
-    initUI() {
+    private onToggleSelcted(index: number) {
+        this.curRankType = index;
+        this.initUI();
+    }
+
+    private async initUI() {
         this.container.removeAllChildren();
-        RankNetService.getRankData(RankType.day).then((res) => {
-            if (res && res.leaderboard != null) {
+        this.emptyNode.active = true
 
-                this.leaderboard = res.leaderboard;
-                this.selfRankItem.node.active = true;
-                let userRank : RankData = {
-                    ranking: this.leaderboard.userRank.ranking,
-                    userID: this.leaderboard.userRank.userID,
-                    userName: smc.account.AccountModel.user.name,
-                    inviteCount: this.leaderboard.userRank.inviteCount
-                }
-                this.selfRankItem.initItem(userRank);
+        if (this.curRankGroup == RankGroup.Invite) {
+            this.rankData = await RankNetService.getInviteRankData(this.curRankType);
+        }
+        if (this.curRankGroup == RankGroup.Rich) {
+            this.rankData = await RankNetService.getCoinRankData();
+        }
 
-                this.leaderboard.rankList.sort((a, b) => { return a.ranking - b.ranking; });
-                for (const rankItem of this.leaderboard.rankList) {
-                    let item = instantiate(this.itemPerfab);
-                    if (item) {
-                        item.getComponent(RankItem)?.initItem(rankItem);
-                        this.container.addChild(item);
-                    }
-                }
+        this.toggleGroup.active = this.curRankGroup == RankGroup.Invite;
+        if (!this.rankData) return;
+
+        this.selfRankItem.initItem(this.rankData.userRank, this.curRankGroup);
+        this.emptyNode.active = this.rankData.rankList.length == 0;
+        this.rankData.rankList.sort((a, b) => { return a.ranking - b.ranking; });
+        for (const rankItem of this.rankData.rankList) {
+            let item = instantiate(this.itemPerfab);
+            if (item) {
+                item.getComponent(RankItem)?.initItem(rankItem, this.curRankGroup);
+                this.container.addChild(item);
             }
-        });
+        }
+    }
+
+    private onLeftClicked() {
+        this.setRankGroup(-1);
+    }
+
+    private onRightClicked() {
+        this.setRankGroup(1);
+    }
+
+    private setRankGroup(direction: number) {
+        const rankGroups = Object.values(RankGroup).filter(value => typeof value === 'number') as number[];
+        const currentIndex = rankGroups.indexOf(this.curRankGroup);
+        const nextIndex = (currentIndex + direction + rankGroups.length) % rankGroups.length;
+        this.curRankGroup = rankGroups[nextIndex];
+        this.title.string = this.getRankGroupTitle(this.curRankGroup);
+        this.initUI();
+    }
+
+    private getRankGroupTitle(rankGroup: RankGroup): string {
+        switch (rankGroup) {
+            case RankGroup.Invite:
+                return oops.language.getLangByID("invite_tips_pullnew");
+            case RankGroup.Rich:
+                return oops.language.getLangByID("invite_tips_rick");
+            // 添加其他 RankGroup 的标题
+            default:
+                return "未知榜";
+        }
     }
 }

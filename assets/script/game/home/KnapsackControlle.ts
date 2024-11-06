@@ -18,7 +18,7 @@ const { ccclass, property } = _decorator;
 
 @ccclass('KnapsackControlle')
 export class KnapsackControlle extends Component {
-    public static instance: KnapsackControlle | null = null;
+    public static instance: KnapsackControlle = null!;
     @property(Prefab)
     slotPrefab: Prefab = null!;
     @property(Node)
@@ -215,15 +215,16 @@ export class KnapsackControlle extends Component {
 
     private moveToDest(tipsNode: Node, startNode: Node, endNode: Node) {
         let uiOpacity = tipsNode.getComponent(UIOpacity);
+        if(!uiOpacity) return;
         const moveAction = tween(tipsNode)
             .call(() => {
                 uiOpacity.opacity = 0; // 初始透明度为 0
                 tipsNode.setWorldPosition(startNode.getWorldPosition());
             })
-            .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 * ratio; } }) // 透明度增加到 255
+            .to(0.5, {}, { onUpdate: (target, ratio) => { if(ratio != undefined) uiOpacity.opacity = 255 * ratio; } }) // 透明度增加到 255
             .delay(1)
             .to(1.5, { worldPosition: endNode.getWorldPosition() })
-            .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 * (1 - ratio); } }) // 透明度减少到 0
+            .to(0.5, {}, { onUpdate: (target, ratio) => { if(ratio != undefined) uiOpacity.opacity = 255 * (1 - ratio); } }) // 透明度减少到 0
             .delay(1);
 
         const repeatAction = tween(tipsNode)
@@ -288,8 +289,8 @@ export class KnapsackControlle extends Component {
 
         this.fromSTBID = this.fromSlot.STBId;
         this.toSTBID = this.toSlot.STBId;
-        console.log("移动前 星兽ID:" + this.fromSTBID + " 槽位:" + fromslotId);
-        console.log("移动后 星兽ID:" + this.toSTBID + " 槽位:" + toslotId);
+        // console.log("移动前 星兽ID:" + this.fromSTBID + " 槽位:" + fromslotId);
+        // console.log("移动后 星兽ID:" + this.toSTBID + " 槽位:" + toslotId);
 
         // 移动到空槽位
         if (this.toSTBID == -1) {
@@ -319,11 +320,6 @@ export class KnapsackControlle extends Component {
         // 交换位置
         if (this.fromSlot.STBConfigId != this.toSlot.STBConfigId) {
             console.log("交换位置A:" + this.fromSTBID + " B:" + this.toSTBID);
-            // smc.account.changeSTBSlotIdNet(this.toSTBID, fromslotId, (success) => {
-            //     if (!success) {
-            //         this.recoverSlot();
-            //     }
-            // });
             smc.account.changeSTBSlotIdNet(this.fromSTBID, toslotId, (success) => {
                 if (!success)
                     this.recoverSlot();

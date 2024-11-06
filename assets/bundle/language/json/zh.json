@@ -19,12 +19,15 @@
     "loading_load_player": "获取用户信息",
     "common_btn_edit": "设置",
     "common_tips_Not_Enabled":"功能未开放",
+    "common_tips_done":"完成",
+    "common_tips_go":"前往",
+    "common_tips_continue":"继续",
 
     "common_validity":"有效期",
     "common_time":"时间",
     "common_year":"年",
     "common_month":"月",
-    "common_day":"日天",
+    "common_day":"日",
     "common_hour":"时",
     "common_minute":"分",
     "common_secnod":"秒",
@@ -34,6 +37,11 @@
     "stb_gem":"宝石星兽",
     "stb_diamond":"砖石星兽",
     "stb_super":"至尊星兽",
+
+    "coin_gold":"金币",
+    "coin_gems":"宝石",
+    "coin_starbeast":"星兽币",
+    "coin_usdt":"USDT",
 
     "main_btn_user":"个人中心",
     "main_btn_email":"邮件",
@@ -46,6 +54,7 @@
     "main_btn_adopt_one":"领养",
     "main_btn_hatch":"孵蛋",
     "main_btn_invite":"邀请",
+    "main_btn_usdt_activity":"USDT活动",
 
     "tips_buy_sucess":"购买成功",
     "tips_buy_fail":"购买失败",
@@ -93,8 +102,8 @@
 
     "debris_tips_evolve":"进化",
     "debris_tips_merge":"合成进化",
-    "debris_tips_success_rate": "10% 成功概率",
-    "debris_tips_increase_probability": "花费 200 宝石增加 10% 概率",
+    "debris_tips_success_rate": "成功概率",
+    "debris_tips_increase_probability": "花费 {coinNum}{coinType} 增加 {upProb}% 概率",
     "debris_tips_evolve_secuss": "恭喜你！\n进化成功！",
     "debris_tips_evolve_secuss_reward": "初级矿石恐龙 x1",
     "debris_tips_evolve_fail": "真可惜！\n进化失败！",
@@ -114,6 +123,10 @@
     "invite_tips_start_invite": "邀请好友",
     "invite_tips_invite300": "(前300位受邀者)",
     "invite_tips_pullnew": "拉新排行版",
+    "invite_tips_rick": "富豪排行版",
+    "invite_tips_day": "日榜",
+    "invite_tips_week": "周榜",
+    "invite_tips_month": "月榜",
 
     "adopt_tips_adopt":"领养星兽",
 
@@ -132,6 +145,19 @@
     "reward_tip_advanced": "高级奖励",
     "reward_tip_rare": "稀有奖励",
     "reward_tip_receive": "领取奖励",
+
+    "activity_usdt_title":"USDT活动",
+    "activity_usdt_incomedetail":"收获明细",
+    "activity_usdt_total":"USDT总量",
+    "activity_usdt_remain":"USDT剩余",
+    "activity_redpacket_total":"红包总量",
+    "activity_redpacket_remain":"红包剩余",
+
+    "guide_join_channel":"加入频道",
+    "guide_join_group":"加入频道",
+    "guide_join_x":"加入推特",
+    "guide_reward":"完成以上所有任务领取",
+    "guide_update":"完成任务后点击验证按钮",
 
     "End":"结束"
 }

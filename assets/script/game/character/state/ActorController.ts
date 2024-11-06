@@ -3,7 +3,7 @@ import { IStartBeastData } from '../../account/model/AccountModelComp';
 import { RvoCollider } from '../../../RVO/RvoCollider';
 import { GridCollider } from '../../../RVO/Collision/GridCollider';
 import { GridGroup } from '../../../RVO/Collision/GridColliderMgr';
-import { mathutil } from '../../common/utils/MathUtil';
+import { MathUtil } from '../../common/utils/MathUtil';
 import { Actor } from './Actor';
 import { StateDefine } from './StateDefine';
 import { Idle } from './Idle';

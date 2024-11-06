@@ -7,7 +7,6 @@ import { UserInstbConfigData } from "../model/STBConfigModeComp";
 /** 视图层对象 - 支持 MVVM 框架的数据绑定 */
 /** 用户金币池 */
 export class CoinPoolViewModel {
-
     private goldConfig: UserInstbConfigData;
     private gemConfig: UserInstbConfigData;
 
@@ -19,7 +18,6 @@ export class CoinPoolViewModel {
 
     set GoldNum(value: number) {
         this.gold_num = value;
-        oops.storage.set("pool_gold_num", this.gold_num);
     }
 
     /** 宝石数量 */
@@ -30,13 +28,12 @@ export class CoinPoolViewModel {
 
     set GemNum(value: number) {
         this.gem_num = value;
-        oops.storage.set("pool_gem_num", this.gem_num);
     }
 
     /** 金币速度 */
     private gold_speed: number = 0;
     get GoldSpeed(): number {
-        if(!this.goldConfig)
+        if (!this.goldConfig)
             return 0;
 
         this.gold_speed = 0;
@@ -44,7 +41,7 @@ export class CoinPoolViewModel {
         let surNum = 0;
         goldstbList.forEach((stbData) => {
             if (smc.account.getSTBSurvivalSec(stbData.id) != 0) {
-                surNum ++;
+                surNum++;
                 this.gold_speed += Number(this.goldConfig.incomeNumMin);
             }
         });
@@ -56,7 +53,7 @@ export class CoinPoolViewModel {
     /** 宝石速度 */
     private gem_speed: number = 0;
     get GemSpeed(): number {
-        if(!this.gemConfig)
+        if (!this.gemConfig)
             return 0;
 
         this.gem_speed = 0;
@@ -64,7 +61,7 @@ export class CoinPoolViewModel {
         let surNum = 0;
         gemstbList.forEach((stbData) => {
             if (smc.account.getSTBSurvivalSec(stbData.id) != 0) {
-                surNum ++;
+                surNum++;
                 this.gem_speed += Number(this.gemConfig.incomeNumMin);
             }
         });
@@ -74,21 +71,15 @@ export class CoinPoolViewModel {
     }
 
     Init() {
-        const pool_gold_num = oops.storage.getNumber("pool_gold_num", 0);
-        const pool_gem_num = oops.storage.getNumber("pool_gem_num", 0);
+        this.gold_num = smc.account.AccountModel.coinPoolData.goldCoin;
+        this.gem_num = smc.account.AccountModel.coinPoolData.gemsCoin;
 
         this.goldConfig = smc.account.getSTBConfigByType(STBTypeID.STB_Gold_Level10);
         this.gemConfig = smc.account.getSTBConfigByType(STBTypeID.STB_Gem);
-
         if (this.goldConfig == null || this.gemConfig == null) {
             console.error("星兽配置为空");
             return;
         }
-
-        let godNum = 0;
-        let gemNum = 0;
-        this.gold_num = Math.max(pool_gold_num, godNum);
-        this.gem_num = Math.max(pool_gem_num, gemNum);
     }
 }
 

@@ -14,10 +14,10 @@ export namespace ReviveNetService {
 
         const response = await http.getUrl("tgapp/api/debris?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.log("获取拼图配置请求成功:", JSON.stringify(response.res));
-            return response.res.debrisArr;
+            console.warn("拼图配置请求成功:", response.res);
+            return response.res;
         } else {
-            console.error("获取拼图配置请求异常", response);
+            console.error("拼图配置请求异常", response);
             return null;
         }
     }
@@ -31,10 +31,10 @@ export namespace ReviveNetService {
 
         const response = await http.getUrl("tgapp/api/user/debris?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.log("拼图碎片数据:", JSON.stringify(response.res));
-            return response.res.userDebrisArr;
+            console.warn("用户拼图碎片数据请求成功:", response.res);
+            return response.res;
         } else {
-            console.error("拼图碎片数据请求异常", response);
+            console.error("用户拼图碎片数据请求异常", response);
             return null;
         }
     }
@@ -52,11 +52,11 @@ export namespace ReviveNetService {
         const newParams = new URLSearchParams(params).toString();
         const response = await http.postUrl("tgapp/api/user/debris/synth?token=" + netConfig.Token, newParams);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.log("拼图碎片合成:", response.res);
+            console.warn("拼图碎片合成请求成功:", response.res);
             return response.res;
         } else {
             console.error("拼图碎片合成", response);
-            return response.res;
+            return null;
         }
     }
 

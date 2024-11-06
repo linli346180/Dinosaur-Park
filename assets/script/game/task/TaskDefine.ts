@@ -1,5 +1,5 @@
 
-export class TaskList {
+export class TaskDataList {
     dailyTask: TaskData[] = [];
     basicTask: TaskData[] = [];
     achievementTask: TaskData[] = [];
@@ -14,7 +14,7 @@ export class TaskList {
         this.timedTask = [];
     }
 
-    fillData(taskType:TaskType, data: TaskData[]) { 
+    fillData(taskType: TaskType, data: TaskData[]) {
         switch (taskType) {
             case TaskType.daily:
                 this.dailyTask = data;
@@ -41,22 +41,24 @@ export interface TaskData {
     taskProgressId: number;                  // 任务进度表id
     taskLevel: number;                       // 任务等级
     taskName: string;                        // 任务名称
+    requiredQuantity: number;                // 任务要求数量
+    completedQuantity: number;               // 任务完成数量
     taskState: TaskStatus;                   // 任务状态：0-未知 1-未完成 2-可领取 3-已领取
     rewards: Reward[];                       // 任务奖励列表
 }
 
 export interface Reward {
-    awardType: number;           // 奖品类型：0-未知 1-非物资 2-货币 3-星兽 4-星兽碎片
+    awardType: number;           // 奖品类型： 0-未知 1-货币 2-星兽 3-星兽碎片
     awardResourceId: number;     // 奖品资源表id
     awardResourceName: string;   // 奖品资源名称
     awardQuantity: number;       // 奖品数量
 }
 
 export enum TaskStatus {
-    Unknown = 0,
-    Incomplete = 1,
-    Available = 2,
-    Claimed = 3
+    Unknown = 0,        // 0-未知
+    Incomplete = 1,     // 1-未完成
+    Available = 2,      // 2-可领取
+    Claimed = 3         // 3-已领取
 }
 
 // 任务类型:0-未知 1-日常任务 2-基础任务 3-成就任务 4-新手任务 5-限时任务

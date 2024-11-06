@@ -14,12 +14,11 @@ interface UserHatchData {
 // 孵蛋价格配置
 export interface HatchPriceConfig {
     id: number;                 // ID
-    // createdAt: string;          // 创建时间
-    // updatedAt: string;          // 更新时间
     hatchNum: number;           // 购买次数
-    conCoinType: CoinType;        // 所需货币类型(1.金币,2.宝石,3.星兽币,4.USDT)
+    conCoinType: CoinType;      // 所需货币类型(1.金币,2.宝石,3.星兽币,4.USDT)
     purNeedCoinNum: number;     // 购买价格
     limitedNum: number;         // 限购次数，当限购次数为0时，表示不限购
+    purNum:number;              // 已经购买次数
     desc: string;               // 描述
 }
 
@@ -58,5 +57,5 @@ export enum RewardType {
 
 
 export enum UserHatchEvent {
-    HatchNumChange = "HatchNumChange", // 孵蛋次数变化
+    HatchRemailChange = "HatchRemailChange", // 孵蛋次数变化
 }

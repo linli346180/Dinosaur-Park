@@ -14,10 +14,3 @@ export class GameProtocol extends NetProtocolProtobuf {
     }
 }
 
-/** 自定义Json通讯协议 */
-export class GameJson extends NetProtocolJson {
-    async onHearbeat() {
-        // Logger.logNet("发送心跳包");
-        netChannel.game.req(NetCmd.HeartBeatType, "GameHeartReq", "GameHeartResp");
-    }
-}
