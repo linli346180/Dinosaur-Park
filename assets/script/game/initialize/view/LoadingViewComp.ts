@@ -41,18 +41,21 @@ export class LoadingViewComp extends CCVMParentComp {
     };
 
     private progress: number = 0;
-    private loginSuccess: boolean = false;
 
     start() {
         oops.message.on(GameEvent.CloseLoadingUI, this.onHandler, this);
         this.loadRes();
     }
 
+    onDestroy() {
+        oops.message.off(GameEvent.CloseLoadingUI, this.onHandler, this);
+    }
+
     private onHandler(event: string, args: any) {
         switch (event) {
             case GameEvent.CloseLoadingUI:
-                this.loginSuccess = true;
-                this.onCompleteCallback();
+                console.log("关闭加载界面");
+                this.CloseUI();
                 break;
         }
     }
@@ -105,10 +108,17 @@ export class LoadingViewComp extends CCVMParentComp {
     /** 加载完成事件 */
     private async onCompleteCallback() {
         // 获取用户信息的多语言提示文本
-        this.data.prompt = oops.language.getLangByID("loading_load_player");
+        // this.data.prompt = oops.language.getLangByID("loading_load_player");
+        console.log("进度条加载完成");
+    }
 
-        if (this.loginSuccess == true && this.progress >= 1) {
+    private CloseUI() {
+        if (this.progress >= 1) {
             ModuleUtil.removeViewUi(this.ent, LoadingViewComp, UIID.Loading);
+        } else {
+            setTimeout(() => {
+                ModuleUtil.removeViewUi(this.ent, LoadingViewComp, UIID.Loading);
+            }, Math.abs(1 - this.progress) * 1000);
         }
     }
 

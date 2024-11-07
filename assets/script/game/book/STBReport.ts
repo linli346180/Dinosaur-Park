@@ -4,7 +4,7 @@ import { UIID } from '../common/config/GameUIConfig';
 import { ReportNetService } from './ReportNet';
 import { Logger } from '../../Logger';
 import { smc } from '../common/SingletonModuleComp';
-import { moneyUtil } from '../common/utils/moneyUtil';
+import { StringUtil } from '../common/utils/StringUtil';
 import { tween } from 'cc';
 import { v3 } from 'cc';
 import { Vec3 } from 'cc';
@@ -39,7 +39,7 @@ export class STBReportView extends Component {
                     const num = res.codexData[key];
                     const config = smc.account.getSTBConfigById(Number(key));
                     if (config) {
-                        const stbType = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+                        const stbType = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
                         this.stbData[stbType] = num;
                     }
                 }

@@ -12,7 +12,7 @@ import { AccountNickNameComp } from "./system/ChangeNickName";
 import { NetCmd, NetErrorCode } from "../../net/custom/NetErrorCode";
 import { tips } from "../common/tips/TipsManager";
 import { netConfig } from "../../net/custom/NetConfig";
-import { moneyUtil } from "../common/utils/moneyUtil";
+import { StringUtil } from "../common/utils/StringUtil";
 import { AwardType } from "./AccountDefine";
 import { AccountLoginComp } from "./system/AccountLogin";
 
@@ -434,7 +434,7 @@ export class Account extends ecs.Entity {
             this.AccountModel.UserNinstb.forEach((element) => {
                 const config = this.getSTBConfigById(element.stbConfigID)
                 if (config) {
-                    const itemID = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+                    const itemID = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
                     if (configIds.includes(itemID)) {
                         dataList.push(element);
                     }
@@ -446,7 +446,7 @@ export class Account extends ecs.Entity {
             this.AccountModel.UserInstb.forEach((element) => {
                 const config = this.getSTBConfigById(element.stbConfigID)
                 if (config) {
-                    const itemID = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+                    const itemID = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
                     if (configIds.includes(itemID)) {
                         dataList.push(element);
                     }
@@ -470,7 +470,7 @@ export class Account extends ecs.Entity {
     /** 获取星兽配置(类型101) */
     getSTBConfigByType(type: number): UserInstbConfigData | null {
         for (const element of this.STBConfigMode.instbConfigData) {
-            const itemID = moneyUtil.combineNumbers(element.stbKinds, element.stbGrade, 2);
+            const itemID = StringUtil.combineNumbers(element.stbKinds, element.stbGrade, 2);
             if (itemID == type) {
                 return element;
             }

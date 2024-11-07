@@ -3,7 +3,7 @@ import { UserInstbConfigData } from '../account/model/STBConfigModeComp';
 import { TableSTBConfig } from '../common/table/TableSTBConfig';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { SpriteFrame } from 'cc';
-import { moneyUtil } from '../common/utils/moneyUtil';
+import { StringUtil } from '../common/utils/StringUtil';
 import { smc } from '../common/SingletonModuleComp';
 const { ccclass, property } = _decorator;
 
@@ -30,7 +30,7 @@ export class STBPurItem extends Component {
         this.num.string = config.purConCoinNum.toString();
         this.stbName.string = config.stbName;
 
-        const stbType = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+        const stbType = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
         this.STBConfig.init(stbType);
         if (this.STBConfig.puricon != undefined && this.STBConfig.puricon != '') {
             oops.res.loadAsync(this.STBConfig.puricon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {

@@ -3,7 +3,7 @@ import { Sprite } from 'cc';
 import { _decorator, Component, Node } from 'cc';
 import { EmailReward } from './EmailDefine';
 import { TableItemConfig } from '../common/table/TableItemConfig';
-import { moneyUtil } from '../common/utils/moneyUtil';
+import { StringUtil } from '../common/utils/StringUtil';
 import { SpriteFrame } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 const { ccclass, property } = _decorator;
@@ -16,9 +16,9 @@ export class EmailRewardItem extends Component {
     num: Label = null!;
 
     initItem(rewardConfig: EmailReward) {
-        this.num.string = 'x' + moneyUtil.formatMoney(rewardConfig.awardQuantity);
+        this.num.string = 'x' + StringUtil.formatMoney(rewardConfig.awardQuantity);
         let itemConfig = new TableItemConfig();
-        let itemId = moneyUtil.combineNumbers(rewardConfig.awardType, rewardConfig.awardResourceId, 2);
+        let itemId = StringUtil.combineNumbers(rewardConfig.awardType, rewardConfig.awardResourceId, 2);
         itemConfig.init(itemId);
         oops.res.loadAsync(itemConfig.icon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
             if (spriteFrame)

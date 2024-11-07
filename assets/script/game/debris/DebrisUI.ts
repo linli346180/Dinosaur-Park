@@ -10,7 +10,7 @@ import { NetErrorCode } from '../../net/custom/NetErrorCode';
 import { IStartBeastData } from '../account/model/AccountModelComp';
 import { smc } from '../common/SingletonModuleComp';
 import { AccountEvent } from '../account/AccountEvent';
-import { moneyUtil } from '../common/utils/moneyUtil';
+import { StringUtil } from '../common/utils/StringUtil';
 import { tween } from 'cc';
 import { Vec3 } from 'cc';
 
@@ -89,7 +89,7 @@ export class DebrisView extends Component {
                         console.error("stbConfig is null", stbConfigID);
                         return;
                     }
-                    const stbConfigType = moneyUtil.combineNumbers(stbConfig.stbKinds, stbConfig.stbGrade, 2);
+                    const stbConfigType = StringUtil.combineNumbers(stbConfig.stbKinds, stbConfig.stbGrade, 2);
                     this.DebrisType[stbConfigType].config = debrisConfig;
                 }
                 return this.updateDebrisView(this.curDebris);

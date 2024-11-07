@@ -3,7 +3,7 @@ import { _decorator, Component, Node, Animation } from 'cc';
 import { TableSTBConfig } from '../../common/table/TableSTBConfig';
 import { smc } from '../../common/SingletonModuleComp';
 import { UserInstbConfigData } from '../../account/model/STBConfigModeComp';
-import { moneyUtil } from '../../common/utils/moneyUtil';
+import { StringUtil } from '../../common/utils/StringUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('ActorAnimComp')
@@ -30,7 +30,7 @@ export class ActorAnimComp extends Component {
             return;
         }
         this.level.string = config.stbGrade.toString();
-        const itemID = moneyUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+        const itemID = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
         this.stbTableConfig.init(itemID);
         if(this.stbTableConfig.animation != undefined && this.stbTableConfig.animation != '')
             this.idleAnim.play(this.stbTableConfig.animation);

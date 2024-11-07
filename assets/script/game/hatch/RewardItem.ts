@@ -2,7 +2,7 @@ import { _decorator, Component, Label, Sprite,SpriteFrame } from 'cc';
 import { RewardConfig, RewardType } from './HatchDefine';
 import { TableItemConfig } from '../common/table/TableItemConfig';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
-import { moneyUtil } from '../common/utils/moneyUtil';
+import { StringUtil } from '../common/utils/StringUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('RewardItem')
@@ -17,7 +17,7 @@ export class RewardItem extends Component {
     private itemConfig: TableItemConfig = new TableItemConfig();
 
     async initItem(rewardConfig: RewardConfig) {
-        let itemId = moneyUtil.combineNumbers(rewardConfig.rewardType, rewardConfig.rewardGoodsID, 2);
+        let itemId = StringUtil.combineNumbers(rewardConfig.rewardType, rewardConfig.rewardGoodsID, 2);
         this.itemConfig.init(itemId);
         this.goodName.string = rewardConfig.goodName;
         if (rewardConfig.rewardNum > 1)

@@ -1,7 +1,7 @@
 import { _decorator, Component, Node, Button, Label, Prefab, instantiate } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
-import { moneyUtil } from '../common/utils/moneyUtil';
+import { StringUtil } from '../common/utils/StringUtil';
 import { IsPur, PurConCoin, UserInstbConfigData } from '../account/model/STBConfigModeComp';
 import { STBPurItem } from './STBPurItem';
 import { smc } from '../common/SingletonModuleComp';

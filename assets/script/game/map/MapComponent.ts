@@ -11,7 +11,7 @@ import { RvoMgr } from '../../RVO/RvoMgr';
 import { Logger } from '../../Logger';
 import { v3 } from 'cc';
 import { math } from 'cc';
-import { moneyUtil } from '../common/utils/moneyUtil';
+import { StringUtil } from '../common/utils/StringUtil';
 const { ccclass, property } = _decorator;
 
 const tmpP0 = v3();
@@ -128,7 +128,7 @@ export class MapComponent extends Component {
                 console.error('星兽配置不存在:', stbData.stbConfigID);
                 return;
             }
-            const stbType = moneyUtil.combineNumbers(stbConfig.stbKinds, stbConfig.stbGrade, 2);
+            const stbType = StringUtil.combineNumbers(stbConfig.stbKinds, stbConfig.stbGrade, 2);
             const prefabPath = STBConfigData[stbType].perfab; // 预制体路径
             const mapID = STBConfigData[stbType].mapID; // 地图ID
 

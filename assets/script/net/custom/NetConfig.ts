@@ -14,8 +14,8 @@ class NetConfig {
         return this.ServerConfigList[this.curEnvironment].BotToken;
     }
 
-    public curEnvironment: EnvironmentType = EnvironmentType.PreRelease;
-    public ServerConfigList = {
+    private curEnvironment: EnvironmentType = EnvironmentType.Development;
+    private ServerConfigList = {
         [EnvironmentType.Development]: {
             Server: "https://konglong.live/",
             WebSock: "konglong.live/wss",

@@ -196,8 +196,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
-      "height": 50.4
+      "width": 200,
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -232,13 +232,13 @@
       "b": 255,
       "a": 255
     },
-    "_string": "标题",
+    "_string": "系统提示",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
     "_fontSize": 50,
     "_fontFamily": "Arial",
-    "_lineHeight": 40,
+    "_lineHeight": 50,
     "_overflow": 0,
     "_enableWrapText": true,
     "_font": null,
@@ -291,7 +291,7 @@
       "__id__": 9
     },
     "_params": [],
-    "_dataID": "",
+    "_dataID": "common_prompt_title",
     "_id": ""
   },
   {
@@ -500,7 +500,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 567.5,
+      "width": 664.6,
       "height": 63
     },
     "_anchorPoint": {
@@ -536,11 +536,11 @@
       "b": 5,
       "a": 255
     },
-    "_string": "内容",
+    "_string": "content",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 50,
-    "_fontSize": 50,
+    "_actualFontSize": 40,
+    "_fontSize": 40,
     "_fontFamily": "Arial",
     "_lineHeight": 50,
     "_overflow": 3,
@@ -590,7 +590,7 @@
     "node": {
       "__id__": 18
     },
-    "_enabled": true,
+    "_enabled": false,
     "__prefab": {
       "__id__": 24
     },
@@ -649,7 +649,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -119.577,
+      "y": -140,
       "z": 0
     },
     "_lrot": {
@@ -743,7 +743,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 80,
-      "height": 50.4
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -784,7 +784,7 @@
     "_actualFontSize": 40,
     "_fontSize": 40,
     "_fontFamily": "Arial",
-    "_lineHeight": 40,
+    "_lineHeight": 50,
     "_overflow": 0,
     "_enableWrapText": false,
     "_font": null,
@@ -837,7 +837,7 @@
       "__id__": 33
     },
     "_params": [],
-    "_dataID": "",
+    "_dataID": "common_prompt_ok",
     "_id": ""
   },
   {
@@ -1019,7 +1019,7 @@
     "_left": 139,
     "_right": 0,
     "_top": 0,
-    "_bottom": 70.423,
+    "_bottom": 50,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
     "_isAbsLeft": true,

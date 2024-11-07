@@ -4,7 +4,7 @@ import { UIID } from '../common/config/GameUIConfig';
 import { HatchNetService } from './HatchNet';
 import { HatchPriceConfig } from './HatchDefine';
 import { HatchPriceItem } from './HatchPriceItem';
-import { moneyUtil } from '../common/utils/moneyUtil';
+import { StringUtil } from '../common/utils/StringUtil';
 import { AccountEvent } from '../account/AccountEvent';
 import { smc } from '../common/SingletonModuleComp';
 import { tween } from 'cc';

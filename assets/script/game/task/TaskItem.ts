@@ -3,7 +3,7 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { TaskNetService } from './TaskNet';
 import { TaskData, TaskEvent, TaskStatus } from './TaskDefine';
 import { TableItemConfig } from '../common/table/TableItemConfig';
-import { moneyUtil } from '../common/utils/moneyUtil';
+import { StringUtil } from '../common/utils/StringUtil';
 import { UIID } from '../common/config/GameUIConfig';
 import { smc } from '../common/SingletonModuleComp';
 const { ccclass, property } = _decorator;
@@ -49,7 +49,7 @@ export class TaskItem extends Component {
             this.rewardNum.string = this.taskData.rewards[0].awardQuantity.toString();
 
             let itemConfig = new TableItemConfig();
-            let itemId = moneyUtil.combineNumbers(rewardConfig.awardType, rewardConfig.awardResourceId, 2);
+            let itemId = StringUtil.combineNumbers(rewardConfig.awardType, rewardConfig.awardResourceId, 2);
             itemConfig.init(itemId);
             if (itemConfig.icon != undefined && itemConfig.icon != null && itemConfig.icon != '') {
                 oops.res.loadAsync(itemConfig.icon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {

@@ -1,5 +1,5 @@
 import { _decorator, Component, Button, Label } from 'cc';
-import { moneyUtil } from '../common/utils/moneyUtil';
+import { StringUtil } from '../common/utils/StringUtil';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { AccountEvent } from '../account/AccountEvent';
@@ -86,10 +86,10 @@ export class UserCoinView extends Component {
             Object.assign(this.coinData, smc.account.AccountModel.CoinData);
         } else {
             Object.assign(this.coinData, smc.account.AccountModel.CoinData);
-            this.goldCoin.string = moneyUtil.formatMoney(this.coinData.goldCoin);
-            this.gemsCoin.string = moneyUtil.formatMoney(this.coinData.gemsCoin);
-            this.starBeastCoin.string = moneyUtil.formatMoney(this.coinData.starBeastCoin);
-            this.usdtCoin.string = moneyUtil.formatMoney(this.coinData.usdt);
+            this.goldCoin.string = StringUtil.formatMoney(this.coinData.goldCoin);
+            this.gemsCoin.string = StringUtil.formatMoney(this.coinData.gemsCoin);
+            this.starBeastCoin.string = StringUtil.formatMoney(this.coinData.starBeastCoin);
+            this.usdtCoin.string = StringUtil.formatMoney(this.coinData.usdt);
         }
     }
 
@@ -150,7 +150,7 @@ export class UserCoinView extends Component {
             })
             .to(0.1, { scale: Vec3.ZERO })
             .call(() => {
-                label.string = moneyUtil.formatMoney(endNum);;
+                label.string = StringUtil.formatMoney(endNum);;
             })
             .to(0.1, { scale: Vec3.ONE })
             .start();

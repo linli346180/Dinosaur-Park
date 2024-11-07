@@ -30,15 +30,16 @@ export class ReddotComp extends Component {
     onLoad() {
         const isRead = oops.storage.getBoolean(this.cmd.toString());
         this.node.active = !isRead;
+        oops.message.on(AccountEvent.RedDotCmd, this.onHandler, this);
+    }
+
+    onEnable() {
+        this.playScaleAnimation(this.node);
     }
 
     onDisable() {
+        // 设置红点为已读
         oops.storage.set(this.cmd.toString(), true);
-    }
-
-    start() {
-        this.playScaleAnimation(this.node);
-        oops.message.on(AccountEvent.RedDotCmd, this.onHandler, this);
     }
 
     onDestroy() {
@@ -51,15 +52,16 @@ export class ReddotComp extends Component {
         }
     }
 
+    // 缩放动画
     playScaleAnimation(targetNode: Node) {
         const initialScale = Vec3.ONE;
         const targetScale = new Vec3(1.2, 1.2, 1.2);
         tween(targetNode)
-            .to(0.5, { scale: targetScale }) // 放大到目标比例
-            .to(0.5, { scale: initialScale }) // 缩小回初始比例
-            .delay(2) // 延迟0.5秒
-            .union() // 将两个动画组合成一个序列
-            .repeatForever() // 不断循环
+            .to(0.5, { scale: targetScale })
+            .to(0.5, { scale: initialScale })
+            .delay(2)
+            .union()
+            .repeatForever()
             .start();
     }
 }

@@ -130,14 +130,16 @@ export class HomeView extends Component {
     }
 
     private showGoldAnim() {
-        this.goldAnimNode.active = true;
+        this.goldAnimNode.active = true; 
         this.goldAnimNode.getComponent(Animation)?.play();
         tween(this.goldAnimNode)
+            .call(() => { 
+                this.goldAnimNode.setWorldPosition(this.goldAnimBeginNode.worldPosition);
+            })
             .delay(0.5)
             .to(0.5, { worldPosition: this.goldAnimEndNode.worldPosition })
             .call(() => {
                 this.goldAnimNode.active = false;
-                this.goldAnimNode.setWorldPosition(this.goldAnimBeginNode.worldPosition);
             })
             .start();
     }
@@ -161,6 +163,7 @@ export class HomeView extends Component {
                 });
                 this.evolveTips.worldPosition = slotComp.node.worldPosition;
                 AnimUtil.playAnim_Move_Opacity(this.evolveTips, endPos, () => {
+                    console.log("播放完毕", RedDotCmd.StbBookType);
                     oops.message.dispatchEvent(AccountEvent.RedDotCmd, RedDotCmd.StbBookType);
                 });
                 return;
