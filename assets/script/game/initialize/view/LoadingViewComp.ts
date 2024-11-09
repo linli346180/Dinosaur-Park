@@ -89,6 +89,7 @@ export class LoadingViewComp extends CCVMParentComp {
 
         // 优先加载配置的指定资源包中资源
         oops.gui.PreLoadUIAsset();
+        
         // 优先加载配置的指定资源包中资源，如果没配置则加载默认资源包资源
         // oops.res.loadDir("animation", this.onProgressCallback.bind(this), this.onCompleteCallback.bind(this));
     }

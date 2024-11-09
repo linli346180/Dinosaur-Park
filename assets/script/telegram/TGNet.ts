@@ -36,7 +36,8 @@ export namespace TGNetService {
                         const params = new URLSearchParams(paramsString);
                         let start_param = params.get("start_param") || '';
                         const parts = start_param.split('_');
-                        TGAppData.inviteSigin = parts.length > 0 ? parts[0]:'';
+                        TGAppData.start_param = start_param;
+                        TGAppData.inviteSign = parts.length > 0 ? parts[0]:'';
                         TGAppData.inviteType = parts.length > 1 ? parseInt(parts[1]):0;
 
                         // 获取用户头像下载地址

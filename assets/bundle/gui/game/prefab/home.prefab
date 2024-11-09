@@ -3847,7 +3847,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 89.875,
+      "x": 94.875,
       "y": 0,
       "z": 0
     },
@@ -4179,7 +4179,7 @@
     "_alignFlags": 32,
     "_target": null,
     "_left": 0,
-    "_right": -5,
+    "_right": -10,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -11406,7 +11406,7 @@
       "__id__": 469
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 477

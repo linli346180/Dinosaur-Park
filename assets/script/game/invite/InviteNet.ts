@@ -1,3 +1,4 @@
+import { log } from 'console';
 import { Logger } from '../../Logger';
 import { HttpManager } from '../../net/HttpManager';
 import { netConfig } from '../../net/custom/NetConfig';
@@ -14,7 +15,7 @@ export namespace InviteNetService {
 
         const response = await http.getUrl("tgapp/api/user/invite/copyLink?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            Logger.logNet("邀请链接:", response.res);
+            console.warn("邀请链接:", response.res);
             return response.res;
         } else {
             console.error("邀请链接请求异常", response);
@@ -31,7 +32,7 @@ export namespace InviteNetService {
 
         const response = await http.getUrl("tgapp/api/user/invite/getRewardConfig?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            Logger.logNet("邀请奖励:", response.res);
+            console.warn("邀请奖励:", JSON.stringify(response.res) );
             return response.res;
         } else {
             console.error("邀请奖励请求异常", response);
@@ -48,7 +49,7 @@ export namespace InviteNetService {
 
         const response = await http.getUrl("tgapp/api/presell/getUserInviteDetail?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            Logger.logNet("邀请名单:", response.res);
+            console.warn("邀请名单:", response.res);
             return response.res;
         } else {
             console.error("邀请名单请求异常", response);

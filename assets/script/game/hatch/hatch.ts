@@ -35,9 +35,7 @@ export class HatchView extends Component {
     @property(HatchReward)
     hatchReward: HatchReward = null!;
 
-    // @property(Animation)
-    // hatchAnim: Animation = null!;
-
+    // 抽奖视频
     @property(VideoPlayer)
     videoPlayer: VideoPlayer = null!;
     @property(Node)
@@ -47,10 +45,11 @@ export class HatchView extends Component {
     private canHatch: boolean = true;
     private _userData: UserHatchData = new UserHatchData();
 
+    onLoad() {
+        this.getHatchMinNum();
+    }
+
     onEnable() {
-        if (!this.isInit) {
-            this.getHatchMinNum();
-        }
         this.getUserHatchNum();
     }
 
@@ -95,6 +94,7 @@ export class HatchView extends Component {
 
     private onHandler(event: string, args: any) {
         switch (event) {
+            // 孵蛋次数变化
             case UserHatchEvent.HatchRemailChange:
                 this._userData.remainNum = args;
                 this.label_remainNum.string = this._userData.remainNum.toString();
@@ -104,7 +104,8 @@ export class HatchView extends Component {
 
     private async userHatch(num: number) {
         if (this._userData.remainNum < num) {
-            oops.gui.toast("孵蛋次数不足,请购买");
+            // oops.gui.toast("hatch_tips_needmore", true);
+            oops.gui.open(UIID.HatchShop)
             return
         }
 

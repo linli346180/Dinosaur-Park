@@ -1,3 +1,7 @@
+import { oops } from "../../../extensions/oops-plugin-framework/assets/core/Oops";
+import { GameEvent } from "../game/common/config/GameEvent";
+import { NetErrorCode } from "./custom/NetErrorCode";
+
 /** HTTP请求返回值 */
 export class HttpReturn<T> {
     /** 是否请求成功 */
@@ -135,7 +139,7 @@ export class HttpManager {
                     if (this.url.indexOf("?") > -1)
                         this.url = this.url + "&" + paramsStr;
                     else
-                    this.url = this.url + "?" + paramsStr;
+                        this.url = this.url + "?" + paramsStr;
                 }
             }
             else if (method == HttpMethod.POST) {
@@ -245,8 +249,12 @@ export class HttpManager {
         ret.isSucc = isSucc;
         if (isSucc) {
             ret.res = value;
+            if (value.resultCode != null && value.resultCode != NetErrorCode.Success) {
+                oops.message.dispatchEvent(GameEvent.WebRequestFail, value.resultMsg);
+            }
         }
         else {
+            oops.message.dispatchEvent(GameEvent.WebRequestFail, "网络异常,请检查网络连接");
             ret.err = value;
         }
         urls.delete(url);

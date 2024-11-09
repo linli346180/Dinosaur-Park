@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Sprite,SpriteFrame } from 'cc';
+import { _decorator, Component, Label, Sprite, SpriteFrame } from 'cc';
 import { RewardConfig, RewardType } from './HatchDefine';
 import { TableItemConfig } from '../common/table/TableItemConfig';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
@@ -29,11 +29,10 @@ export class RewardItem extends Component {
         });
 
         // 显示星兽碎片等级
+        const parent = this.levelName.node.getParent();
+        parent.active = false;
         if (rewardConfig.rewardType == RewardType.StarBeastFragment) {
-            const parent = this.levelName.node.getParent();
-            if (parent) {
-                parent.active = true;
-            }
+            parent.active = true;
             this.levelName.string = rewardConfig.standbyID == 1 ? "Novice" : "Middle";
         }
     }

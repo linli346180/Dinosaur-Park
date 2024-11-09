@@ -7,3 +7,11 @@ export class STBSynthConfig {
     conCoinType: number = 2;    // 消耗货币的类型
     conCoinNum: number = 200;    // 消耗货币的数量
 }
+
+
+export class BuyGemsConfig {
+    id: number = 0;
+    dollarAmount: number = 0;  // 美元金额
+    gemsNumber: number = 0;      // 宝石数量
+    rebate: number = 0;      // 返现比例
+}

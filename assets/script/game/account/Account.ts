@@ -13,7 +13,7 @@ import { NetCmd, NetErrorCode } from "../../net/custom/NetErrorCode";
 import { tips } from "../common/tips/TipsManager";
 import { netConfig } from "../../net/custom/NetConfig";
 import { StringUtil } from "../common/utils/StringUtil";
-import { AwardType } from "./AccountDefine";
+import { AccountCoinType, AwardType } from "./AccountDefine";
 import { AccountLoginComp } from "./system/AccountLogin";
 
 /** 账号模块 */
@@ -41,6 +41,7 @@ export class Account extends ecs.Entity {
         oops.message.on(GameEvent.DataInitialized, this.onHandler, this);
         oops.message.on(GameEvent.GuideFinish, this.onHandler, this);
         oops.message.on(GameEvent.WebSocketConnected, this.onHandler, this);
+        oops.message.on(GameEvent.WebRequestFail, this.onHandler, this);
     }
 
     destroy(): void {
@@ -49,6 +50,7 @@ export class Account extends ecs.Entity {
         oops.message.off(GameEvent.DataInitialized, this.onHandler, this);
         oops.message.off(GameEvent.GuideFinish, this.onHandler, this);
         oops.message.off(GameEvent.WebSocketConnected, this.onHandler, this);
+        oops.message.off(GameEvent.WebRequestFail, this.onHandler, this);
         super.destroy();
     }
 
@@ -87,8 +89,8 @@ export class Account extends ecs.Entity {
             // 4. 数据初始化完成
             case GameEvent.DataInitialized:
                 console.log("4.数据初始化完成");
-                oops.gui.open(UIID.Map);
-                oops.gui.open(UIID.Main);
+                oops.gui.openAsync(UIID.Map);
+                oops.gui.openAsync(UIID.Main);
                 AccountNetService.createWebSocket();
                 break;
 
@@ -97,6 +99,11 @@ export class Account extends ecs.Entity {
                 console.log("5.WebSocket连接成功");
                 oops.message.dispatchEvent(GameEvent.CloseLoadingUI);
                 break;
+
+            // 6. 网络请求失败
+            case GameEvent.WebRequestFail:
+                this.OnWebRequestFail(args);
+                break
         }
     }
 
@@ -209,7 +216,6 @@ export class Account extends ecs.Entity {
             const STBData: IStartBeastData = res.userInstbSynthReData;
             let stbConfig = this.STBConfigMode.GetSTBConfigData(STBData.stbConfigID);
             if (stbConfig) {
-                console.log("星兽配置:" + stbConfigId + "  收益类型: " + stbConfig.isIncome)
                 if (stbConfig.isIncome == IsIncome.Yes) {
                     this.AccountModel.UserInstb.push(STBData);
                     console.log("领养收益星兽: ", STBData.id + " 名称:" + stbConfig.stbName);
@@ -247,13 +253,18 @@ export class Account extends ecs.Entity {
                 break;
 
             case NetCmd.NinstbDeathType:
-                console.log("无收益星兽死亡:", data.id);
+                console.error("无收益星兽死亡:", data.id);
                 this.delUserSTBData(data.id);
                 break;
 
             case NetCmd.IncomeStbDeathType:
-                console.log("收益星兽死亡:", data.id);
+                console.error("收益星兽死亡:", data.id);
                 this.delUserSTBData(data.id);
+                break;
+
+            case NetCmd.UserIncomeType:
+                console.warn("新增收益星兽:", data.id);
+                this.updateInstbData();
                 break;
 
             case NetCmd.UserHatchType:
@@ -269,6 +280,15 @@ export class Account extends ecs.Entity {
                 console.log("USDT奖励:", data.bounsID, data.amount);
                 oops.message.dispatchEvent(AccountEvent.UserBounsUSTD, data.amount);
                 break;
+        }
+    }
+
+    /** 网络请求失败处理 */
+    OnWebRequestFail(msg: string) {
+        oops.gui.toast(msg);
+
+        if (msg.includes('不足')) {
+            this.updateCoinData();
         }
     }
 
@@ -463,7 +483,6 @@ export class Account extends ecs.Entity {
                 return element;
             }
         }
-        console.log("未找到星兽配置:", configId);
         return null;
     }
 
@@ -476,5 +495,20 @@ export class Account extends ecs.Entity {
             }
         }
         return null;
+    }
+
+
+    /** 收集金币 */
+    public async UseCollectCoin(coinType: AccountCoinType) {
+        let res: any = null;
+        if (coinType == AccountCoinType.Gold)
+            res = await AccountNetService.UseCollectCoin();
+        if (coinType == AccountCoinType.Gems)
+            res = await AccountNetService.UseCollectGem();
+
+        if (res && res.userCoin != null) {
+            this.AccountModel.CoinData = res.userCoin;
+            oops.message.dispatchEvent(AccountEvent.CoinDataChange);
+        }
     }
 }

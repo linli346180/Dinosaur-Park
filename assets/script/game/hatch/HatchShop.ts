@@ -79,7 +79,6 @@ export class HatchShop extends Component {
     }
 
     initCoinData() {
-        let coinData = smc.account.AccountModel.CoinData;
-        this.gemNum.string = Math.floor(coinData.gemsCoin).toString();
+        this.gemNum.string = Math.floor(smc.account.AccountModel.CoinData.gemsCoin).toString();
     } 
 }

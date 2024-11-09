@@ -100,7 +100,10 @@ export class ActorDragComponent extends Component {
             for (const slot of KnapsackControlle.instance?.SlotNodes) {
                 if (this.isNodeInSlot(event, slot)) {
                     // console.log('进入插槽区域' + slot.getComponent(KnapsackSlot)?.slotId);
-                    dragSlotId = slot.getComponent(KnapsackSlot)?.slotId || 0;
+                    const comp = slot.getComponent(KnapsackSlot);
+                    if (comp && comp.CanSwap) {
+                        dragSlotId = slot.getComponent(KnapsackSlot)?.slotId || 0;
+                    }
                     break;
                 }
             }

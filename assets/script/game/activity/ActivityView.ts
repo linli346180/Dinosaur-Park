@@ -8,6 +8,8 @@ import { ActivityItem } from './ActivityItem';
 import { Prefab } from 'cc';
 import { ActivityData, BounsRankData } from './ActivityDefine';
 import { instantiate } from 'cc';
+import { RichText } from "cc";
+
 const { ccclass, property } = _decorator;
 
 @ccclass('ActivityView')
@@ -26,8 +28,8 @@ export class ActivityView extends Component {
     putinRedPacketTotal: Label = null!;
     @property(Label)
     putinRedPacketRemainTotal: Label = null!;
-    @property(Label)
-    desc: Label = null!;
+    @property(RichText)
+    desc: RichText = null!;
 
     @property(Node)
     emptyNode: Node = null!;

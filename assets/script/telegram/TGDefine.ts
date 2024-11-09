@@ -1,3 +1,4 @@
+import { sys } from "cc";
 
 
 /**
@@ -8,24 +9,54 @@ export class TGWebAppInitData {
     UserData: TGWebAppUser;  // 用户数据
     Auth_date: number;       // 授权时间
     Hash: string;            // 哈希值
-    InviteCode: string;      // 邀请码
+
     AvatarUrl: string;       // 头像地址
     chat_instance: string;  // 聊天实例
     chat_type: string;      // 聊天类型
+
     // 邀请参数
-    inviteSigin: string;     // 邀请签名
+    start_param: string;      // 邀请参数
+    inviteSign: string;         // 邀请签名
     inviteType: number;       // 邀请类型
+
+    // 登录设备(每次登录都会生成一个新的设备码)
+    get LoginEquipMent() {
+        let equipMentCode = TGWebAppInitData.GenerateGUID();
+        console.warn('登录设备:', equipMentCode);
+        return equipMentCode;
+    }
+
+    // 设备码
+    get DeviceCode() {
+        let deviceCode: string | null = localStorage.getItem("deviceCode");
+        if (deviceCode == null || deviceCode == '') {
+            deviceCode = TGWebAppInitData.GenerateGUID();
+            localStorage.setItem("deviceCode", deviceCode);
+        }
+        console.warn('设备码:', deviceCode);
+        return deviceCode;
+    }
 
     constructor() {
         this.UserData = new TGWebAppUser();
-        this.Auth_date = Date.now(),
+        this.Auth_date = Date.now();
         this.Hash = '';
-        this.InviteCode = '';
+
         this.AvatarUrl = '';
         this.chat_instance = '';
         this.chat_type = '';
-        this.inviteSigin = '';
+        this.start_param = '';
+        this.inviteSign = '';
         this.inviteType = 0;
+    }
+
+    // 生成GUID
+    static GenerateGUID(): string {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
     }
 }
 

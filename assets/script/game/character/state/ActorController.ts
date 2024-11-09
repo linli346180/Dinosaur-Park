@@ -12,6 +12,7 @@ import { Vector2 } from '../../../RVO/Common';
 import { smc } from '../../common/SingletonModuleComp';
 import { UIOpacity } from 'cc';
 import { tween } from 'cc';
+import { Collider2D } from 'cc';
 
 const { ccclass, property } = _decorator;
 
@@ -28,7 +29,7 @@ export class ActorController extends Component {
     private isDrag: boolean = false;
     private curLineSpd = new Vec3();  //当前线性速度
     private curPos = new Vec3();      //当前位置
-    private checkCd = 0.5;
+    private checkCd = 0.1;
     private checkCurt = 0;
     private rvoCollider: RvoCollider;
     private gridCollider: GridCollider;
@@ -61,6 +62,7 @@ export class ActorController extends Component {
     public setDrag(isDrag: boolean) {
         this.isDrag = isDrag;
         if (isDrag) {
+            this.curLineSpd.set(0, 0, 0);
             this.resetCollider();
         } else {
             this.init(this.node.position, Vec3.ZERO);
@@ -90,27 +92,26 @@ export class ActorController extends Component {
         this.resetCollider();
         this.actor.stateMgr.transit(StateDefine.Idle);
         let uiOpacity = this.node.getComponent(UIOpacity);
-        if(uiOpacity == null)
+        if (uiOpacity == null)
             uiOpacity = this.node.addComponent(UIOpacity);
-
         tween(this.node)
-        .call(() => { uiOpacity.opacity = 255; })
-        .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 * (1 - ratio * 0.5); } }) // 透明度从 255 变到 127.5
-        .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 127.5 + 127.5 * ratio; } }) // 透明度从 127.5 变到 255
-        .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 * (1 - ratio * 0.5); } }) // 透明度从 255 变到 127.5
-        .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 127.5 + 127.5 * ratio; } }) // 透明度从 127.5 变到 255
-        .to(1, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 * (1 - ratio); } }) // 透明度从 255 变到 0
-        .call(() => { 
-            this.node.removeFromParent();
-            this.node.destroy();
-        })
-        .start();
+            .call(() => { uiOpacity.opacity = 255; })
+            .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 * (1 - ratio * 0.5); } }) // 透明度从 255 变到 127.5
+            .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 127.5 + 127.5 * ratio; } }) // 透明度从 127.5 变到 255
+            .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 * (1 - ratio * 0.5); } }) // 透明度从 255 变到 127.5
+            .to(0.5, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 127.5 + 127.5 * ratio; } }) // 透明度从 127.5 变到 255
+            .to(1, {}, { onUpdate: (target, ratio) => { uiOpacity.opacity = 255 * (1 - ratio); } }) // 透明度从 255 变到 0
+            .call(() => {
+                this.node.removeFromParent();
+                this.node.destroy();
+            })
+            .start();
         return;
     }
 
     /** 初始化生命周期 */
     private initSurvival() {
-        if(!this.actor)
+        if (!this.actor)
             return;
 
         this.survivalSec = smc.account.getSTBSurvivalSec(this.stbId);
@@ -135,7 +136,7 @@ export class ActorController extends Component {
     }
 
     private randomToRun(dt: number) {
-        if(!this.rvoCollider)
+        if (!this.rvoCollider)
             return
 
         if (this.isDrag) {
@@ -271,17 +272,31 @@ export class ActorController extends Component {
     }
 
     private checkBounds(pos: Vector2) {
+        let isOutOfBounds = false;
         if (pos.x < this.widthLimit.x && this.curLineSpd.x < 0) {
             this.curLineSpd.x *= -1;
+            pos.x = this.widthLimit.x; // 调整位置到边界内
+            isOutOfBounds = true;
         }
         if (pos.x > this.widthLimit.y && this.curLineSpd.x > 0) {
             this.curLineSpd.x *= -1;
+            pos.x = this.widthLimit.y; // 调整位置到边界内
+            isOutOfBounds = true;
         }
         if (pos.y < this.heightLimit.x && this.curLineSpd.y < 0) {
             this.curLineSpd.y *= -1;
+            pos.y = this.heightLimit.x; // 调整位置到边界内
+            isOutOfBounds = true;
         }
         if (pos.y > this.heightLimit.y && this.curLineSpd.y > 0) {
             this.curLineSpd.y *= -1;
+            pos.y = this.heightLimit.y; // 调整位置到边界内
+            isOutOfBounds = true;
+        }
+
+        if (isOutOfBounds) {
+            this.rvoCollider.setPosition(v3(pos.x, pos.y, this.node.position.z)); // 更新碰撞体的位置
+            this.node.setPosition(pos.x, pos.y, this.node.position.z); // 更新节点的位置
         }
     }
 

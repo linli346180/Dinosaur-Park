@@ -1,4 +1,4 @@
-import { HttpManager} from '../../net/HttpManager';
+import { HttpManager } from '../../net/HttpManager';
 import { netConfig } from '../../net/custom/NetConfig';
 import { NetErrorCode } from '../../net/custom/NetErrorCode';
 
@@ -63,7 +63,7 @@ export namespace HatchNetService {
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
 
-        const response = await http.getUrl("tgapp/api/hatch/num/price?token=" + netConfig.Token);
+        const response = await http.getUrl(`tgapp/api/hatch/num/price?token=${netConfig.Token}`);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("获取孵蛋次数价格:", response.res.hatchConfigArr);
             return response.res.hatchConfigArr
@@ -78,18 +78,14 @@ export namespace HatchNetService {
         const http = new HttpManager();
         http.server = netConfig.Server;
         http.token = netConfig.Token;
-        http.timeout = netConfig.Timeout * 3;
+        http.timeout = netConfig.Timeout;
 
-        const params = {
-            'hatchNum': hatchNum.toString()
-        };
-        const newParams = new URLSearchParams(params).toString();
-        const response = await http.postUrl("tgapp/api/user/hatch?token=" + netConfig.Token, newParams);
+        const response = await http.postUrl(`tgapp/api/user/hatch?hatchNum=${hatchNum}&token=${netConfig.Token}`);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("用户孵化请求成功:", response.res);
             return response.res;
         } else {
-            console.error("用户孵化请求异常", response.res);
+            console.error("用户孵化请求异常", response);
             return null;
         }
     }
@@ -101,17 +97,12 @@ export namespace HatchNetService {
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
 
-        const params = {
-            'hatchNumPriceID': hatchNumPriceID.toString()
-        };
-
-        const newParams = new URLSearchParams(params).toString();
-        const response = await http.postUrl("tgapp/api/user/hatch/num/pur?token=" + netConfig.Token, newParams);
+        const response = await http.postUrl(`tgapp/api/user/hatch/num/pur?hatchNumPriceID=${hatchNumPriceID}&token=${netConfig.Token}`);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("购买用户孵蛋次数:", response.res);
             return response.res;
         } else {
-            console.error("购买用户孵蛋次数请求异常", response.res);
+            console.error("购买用户孵蛋次数请求异常", response);
             return response.res;
         }
     }
@@ -123,19 +114,12 @@ export namespace HatchNetService {
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
 
-        console.log(id)
-
-        const params = {
-            'id': id.toString()
-        };
-
-        const newParams = new URLSearchParams(params).toString();
-        const response = await http.getUrl("tgapp/api/user/hatch/pur/num?token=" + netConfig.Token, newParams);
+        const response = await http.getUrl(`tgapp/api/user/hatch/pur/num?id=${id}&token=${netConfig.Token}`);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.warn("孵蛋购买情况:", response.res);
+            console.warn("孵蛋次数的购买情况:", response.res);
             return response.res;
         } else {
-            console.error("孵蛋购买情况异常", response.res);
+            console.error("孵蛋次数的购买情况异常", response);
             return null;
         }
     }

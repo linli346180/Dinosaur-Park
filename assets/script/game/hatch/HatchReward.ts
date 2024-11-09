@@ -1,14 +1,9 @@
 import { Button } from 'cc';
 import { Prefab } from 'cc';
 import { _decorator, Component, Node } from 'cc';
-import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
-import { UIID } from '../common/config/GameUIConfig';
 import { RewardConfig } from './HatchDefine';
 import { instantiate } from 'cc';
 import { RewardItem } from './RewardItem';
-import { tween } from 'cc';
-import { v3 } from 'cc';
-import { Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('HatchReward')
@@ -25,14 +20,6 @@ export class HatchReward extends Component {
     start() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_reward?.node.on(Button.EventType.CLICK, this.closeUI, this);
-    }
-
-    protected onEnable(): void {
-        tween()
-            .target(this.node)
-            .to(0.15, { scale: v3(1.1, 1.1, 1), }, { easing: 'fade' })
-            .to(0.15, { scale: Vec3.ONE, }, { easing: 'fade' })
-            .start()
     }
 
     closeUI() {
@@ -53,5 +40,3 @@ export class HatchReward extends Component {
         itemNode.getComponent<RewardItem>(RewardItem)?.initItem(reward);
     }
 }
-
-

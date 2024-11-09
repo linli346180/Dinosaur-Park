@@ -11,9 +11,6 @@
       "gfx-webgl2": {
         "_value": false
       },
-      "gfx-webgpu": {
-        "_value": false
-      },
       "animation": {
         "_value": true
       },
@@ -39,7 +36,7 @@
         "_value": false
       },
       "physics": {
-        "_value": true,
+        "_value": false,
         "_option": "physics-ammo"
       },
       "physics-ammo": {
@@ -68,7 +65,7 @@
         "_value": true
       },
       "primitive": {
-        "_value": true
+        "_value": false
       },
       "profiler": {
         "_value": false
@@ -119,9 +116,15 @@
         "_value": true
       },
       "marionette": {
-        "_value": true
+        "_value": false
       },
       "procedural-animation": {
+        "_value": false
+      },
+      "custom-pipeline": {
+        "_value": true
+      },
+      "gfx-webgpu": {
         "_value": false
       },
       "custom-pipeline-post-process": {
@@ -130,9 +133,6 @@
       "render-pipeline": {
         "_value": true,
         "_option": "legacy-pipeline"
-      },
-      "custom-pipeline": {
-        "_value": true
       },
       "legacy-pipeline": {
         "_value": false
@@ -149,11 +149,8 @@
       "dragon-bones",
       "gfx-webgl",
       "intersection-2d",
-      "marionette",
       "meshopt",
       "physics-2d-builtin",
-      "physics-ammo",
-      "primitive",
       "spine",
       "tween",
       "ui",

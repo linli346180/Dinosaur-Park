@@ -263,14 +263,14 @@
     "node": {
       "__id__": 8
     },
-    "_enabled": false,
+    "_enabled": true,
     "__prefab": {
       "__id__": 10
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
-      "height": 79.1
+      "width": 150,
+      "height": 114.1
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -305,11 +305,11 @@
       "b": 0,
       "a": 255
     },
-    "_string": "iOiJIUzI1NiIsInR5cC",
+    "_string": "好友好友好友好友好友好友",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 35,
-    "_fontSize": 35,
+    "_actualFontSize": 30,
+    "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 35,
     "_overflow": 3,

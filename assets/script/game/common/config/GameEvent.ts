@@ -23,9 +23,12 @@ export enum GameEvent {
     /** 数据初始化完成 */
     DataInitialized = "DataInitialized",
 
-    /** 游戏服务器连接成功 */
+    /** WebSocket连接成功 */
     WebSocketConnected = "WebSocketConnected",
 
-     /** 关闭加载UI */
-     CloseLoadingUI = "CloseLoadingUI",
+    /** 网络请求失败 */
+    WebRequestFail = "WebRequestFail",
+
+    /** 关闭加载UI */
+    CloseLoadingUI = "CloseLoadingUI",
 }

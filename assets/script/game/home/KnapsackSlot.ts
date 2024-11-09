@@ -24,6 +24,13 @@ export class KnapsackSlot extends Component {
     private levelUpAnim: Animation = null!;         // 升级动画
     private drapTipAnim: Animation = null!;         // 拖拽动画
 
+    /** 是否可以交换 */
+    get CanSwap(): boolean {
+        if(this.landingNode.active || this.levelUpNode.active) 
+            return false;
+        return true;
+    }
+
     /** 获取星兽配置ID(等级) */
     get STBConfigId(): number {
         if (this.stbData == null)

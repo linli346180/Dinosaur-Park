@@ -44,8 +44,6 @@ export class STBPurItem extends Component {
         smc.account.adopStartBeastNet(this.configId, false, (success: boolean, msg: string) => {
             if (success) {
                 oops.gui.toast('领养星兽成功');
-            } else {
-                oops.gui.toast(msg);
             }
         });
     }

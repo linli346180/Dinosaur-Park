@@ -79,8 +79,9 @@ export class GuideView extends Component {
 
     private joinChannel(url: string) {
         console.log('跳转链接:', url);
-        const WebApp = (window as any).Telegram.WebApp;
-        WebApp.openLink(url);
+        window.open(url);
+        // const WebApp = (window as any).Telegram.WebApp;
+        // WebApp.openLink(url);
     }
 
     private onPresellLeave() {

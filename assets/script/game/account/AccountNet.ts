@@ -24,20 +24,24 @@ export namespace AccountNetService {
             'hash': data.Hash,
         };
         let initDataString = new URLSearchParams(initData).toString();
-        if (data.inviteSigin != '') {
-            initDataString += `&start_param=${data.inviteSigin}`;
+        if (data.start_param != '') {
+            initDataString += `&start_param=${data.start_param}`;
         }
+        console.warn("TG登录参数:" + initDataString);
 
+        // 登录参数
         const params = JSON.stringify({
             loginType: 1,
             initData: initDataString,
-            loginEquipMent: generateGUID(),
-            avatarUrl: data.AvatarUrl || '',
-            inviteCode: data.InviteCode,
-            inviteSigin: data.inviteSigin,
+            avatarUrl: data.AvatarUrl,
+            inviteSign: data.inviteSign,
             inviteType: data.inviteType,
+            deviceCode: data.DeviceCode,
+            loginEquipMent: data.LoginEquipMent
         });
-        console.log("TG登录参数:" + params);
+
+        console.warn("登录参数:" + params);
+        
         const response = await http.postUrlNoHead("tgapp/api/login", params);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn(`TG账号登录成功${http.url}`, response.res);
@@ -59,7 +63,7 @@ export namespace AccountNetService {
             'loginType': 3,
             'account': netConfig.Account,
             'password': netConfig.Password,
-            'loginEquipMent': generateGUID()
+            'loginEquipMent': TGWebAppInitData.GenerateGUID()
         };
         // const paramString = new URLSearchParams(params).toString();
         const response = await http.postUrlNoHead("tgapp/api/login", JSON.stringify(params));
@@ -72,14 +76,6 @@ export namespace AccountNetService {
             console.error(`测试账号登录异常${http.url}`, response);
             return null;
         }
-    }
-
-    function generateGUID(): string {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
     }
 
     /** 查询用户是否加入官方群组或频道 */
@@ -105,6 +101,11 @@ export namespace AccountNetService {
         netChannel.game.on(NetCmd.DownLineType, '', (data) => {
             smc.account.OnRecevieMessage(NetCmd.DownLineType, data);
         });
+        netChannel.game.on(NetCmd.UserIncomeType, '', (data) => {
+            smc.account.OnRecevieMessage(NetCmd.UserIncomeType, data);
+        });
+
+
         netChannel.game.on(NetCmd.NinstbDeathType, '', (data) => {
             smc.account.OnRecevieMessage(NetCmd.NinstbDeathType, data);
         });
@@ -260,7 +261,7 @@ export namespace AccountNetService {
         const http = createHttpManager();
         const response = await http.postUrl("tgapp/api/user/goldc/receive?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            Logger.logNet("领取金币:" + JSON.stringify(response.res));
+            Logger.logNet("领取金币:" + response.res);
             return response.res;
         } else {
             console.error("领取金币异常:", response);
@@ -274,7 +275,7 @@ export namespace AccountNetService {
 
         const response = await http.postUrl("tgapp/api/user/gemsc/receive?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            Logger.logNet("领取宝石:" + JSON.stringify(response.res));
+            Logger.logNet("领取宝石:" + response.res);
             return response.res;
         } else {
             console.error("领取宝石异常", response);
@@ -317,6 +318,19 @@ export namespace AccountNetService {
             return response.res;
         } else {
             console.error("获取系统配置异常", response);
+            return null;
+        }
+    }
+
+     /** 购买宝石配置 */
+     export async function getBugGemConfig() {
+        const http = createHttpManager();
+        const response = await http.getUrl(`tgapp/api/user/buy/gems/config?token=${netConfig.Token}`);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
+            console.warn(`获取购买宝石配置:`, response.res);
+            return response.res;
+        } else {
+            console.error("获取购买宝石配置异常", response);
             return null;
         }
     }

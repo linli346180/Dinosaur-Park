@@ -19,47 +19,72 @@ export class AdoptionView extends Component {
     @property(Sprite)
     beast: Sprite = null!;
     @property(Label)
-    level:Label = null!;
+    level: Label = null!;
 
     private _index: number = 0;
     private _configDataList: UserInstbConfigData[] = [];
     private _spriteFrames: SpriteFrame[] = [];
 
     start() {
-        this.btn_adopt_one.node.on(Button.EventType.CLICK, this.onAdoptOne, this);
-        this.btn_left.node.on(Button.EventType.CLICK, this.onLeft, this);
-        this.btn_right.node.on(Button.EventType.CLICK, this.onRight, this);
-
-        this.getSTBConfig_PurGold();
-        this._index = oops.storage.getNumber("STBConfigIndex", 0);
-        resLoader.loadDir("bundle", "gui/game/texture/adoption/", SpriteFrame, (err: any, assets: any) => {
-            this._spriteFrames = assets.sort((a: any, b: any) => a.name.localeCompare(b.name));
-            this.beast.spriteFrame = this._spriteFrames[this._index];
-            this.InitUI();
-        });        
+        this.setupButtonHandlers();
+        this.loadConfigData();
+        this.loadSpriteFrames();
     }
 
-    InitUI() {
+    private setupButtonHandlers() {
+        this.btn_adopt_one.node.on(Button.EventType.CLICK, this.adoptStartBeast, this);
+        this.btn_left.node.on(Button.EventType.CLICK, this.onLeft, this);
+        this.btn_right.node.on(Button.EventType.CLICK, this.onRight, this);
+    }
+
+    private loadConfigData() {
+        this.getSTBConfig_PurGold();
+        this._index = oops.storage.getNumber("STBConfigIndex", 0);
+    }
+
+    private loadSpriteFrames() {
+        resLoader.loadDir("bundle", "gui/game/texture/adoption/", SpriteFrame, (err: any, assets: any) => {
+            if (err) {
+                console.error("Failed to load sprite frames:", err);
+                return;
+            }
+            this._spriteFrames = assets.sort((a: any, b: any) => a.name.localeCompare(b.name));
+            this.beast.spriteFrame = this._spriteFrames[this._index];
+            this.initUI();
+        });
+    }
+
+    private initUI() {
         this.changeSTBConfig();
     }
 
-    onAdoptOne() {
-        KnapsackControlle.instance?.AdopStartBeast(this._configDataList[this._index].id);
+    private adoptStartBeast() {
+        const config = this._configDataList[this._index];
+        if (config) {
+            console.log(`领养${config.stbName}`);
+            smc.account.adopStartBeastNet(config.id, false, (success: boolean, msg: string) => {
+                // if (!success) {
+                //     oops.gui.toast(msg);
+                // }
+            });
+        }
     }
 
-    onLeft() {
+    private onLeft() {
         this._index--;
         this.changeSTBConfig();
     }
-    onRight() {
+
+    private onRight() {
         this._index++;
         this.changeSTBConfig();
     }
 
-    changeSTBConfig() {
+    private changeSTBConfig() {
         this._index = math.clamp(this._index, 0, this._configDataList.length - 1);
-        this.level.string = this._configDataList[this._index].stbGrade.toString();
-        this.price.string = this._configDataList[this._index].purConCoinNum.toString();
+        const config = this._configDataList[this._index];
+        this.level.string = config.stbGrade.toString();
+        this.price.string = config.purConCoinNum.toString();
         if (this._spriteFrames.length > this._index) {
             this.beast.spriteFrame = this._spriteFrames[this._index];
         }
@@ -67,13 +92,9 @@ export class AdoptionView extends Component {
     }
 
     /** 获取使用金币购买的黄金星兽配置 */
-    getSTBConfig_PurGold() {
-        this._configDataList = [];
-        smc.account.STBConfigMode.instbConfigData.forEach(element => {
-            if (element.isPur === IsPur.Yes && element.purConCoin === PurConCoin.gold) {
-                this._configDataList.push(element);
-            }
-        });
-        this._configDataList.sort((a, b) => a.stbGrade - b.stbGrade);
+    private getSTBConfig_PurGold() {
+        this._configDataList = smc.account.STBConfigMode.instbConfigData.filter(element =>
+            element.isPur === IsPur.Yes && element.purConCoin === PurConCoin.gold
+        ).sort((a, b) => a.stbGrade - b.stbGrade);
     }
 }

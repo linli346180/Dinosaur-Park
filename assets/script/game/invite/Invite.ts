@@ -2,9 +2,9 @@ import { _decorator, Component, Node, Button, Prefab, Sprite, Texture2D, ImageAs
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { InviteNetService } from './InviteNet';
-import { InviteDataList } from './InviteData';
 import { InviteItemView } from './InviteItemView';
 import qr from 'qrcode-generator';
+import { InviteRewardItem } from './InviteRewardItem';
 
 const { ccclass, property } = _decorator;
 
@@ -26,53 +26,90 @@ export class InviteVeiw extends Component {
     @property(Sprite)
     icon: Sprite = null!;
 
+    // 邀请奖励
+    @property(Node)
+    rewardContainer: Node = null!;
+    @property(Prefab)
+    rewardItem: Prefab = null!;
+
     private inviteLink: string = "";
-    private inviteData: InviteDataList = new InviteDataList();
+
+    onLoad() {
+        this.initQRCode();
+        this.initRewardList();
+    }
 
     start() {
-        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.btn_invite?.node.on(Button.EventType.CLICK, this.openInviteLink, this);
-        this.btn_copy?.node.on(Button.EventType.CLICK, this.copyInviteLink, this);
-        this.initQRCode()
+        this.setupButtonHandlers();
     }
 
     onEnable() {
         this.initInviteList();
     }
 
-    closeUI() {
-        oops.gui.remove(UIID.Invite, false);
+    private setupButtonHandlers() {
+        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.Invite, false) }, this);
+        this.btn_invite?.node.on(Button.EventType.CLICK, this.openInviteLink, this);
+        this.btn_copy?.node.on(Button.EventType.CLICK, this.copyInviteLink, this);
     }
 
-    private initQRCode() {
-        InviteNetService.getCopyLink().then((res) => {
+    private async initQRCode() {
+        try {
+            const res = await InviteNetService.getCopyLink();
             if (res && res.copyInviteLinkReturn.inviteLink != null) {
                 this.inviteLink = res.copyInviteLinkReturn.inviteLink;
                 this.generateQRCode(this.inviteLink);
             }
-        });
+        } catch (error) {
+            console.error("Failed to initialize QR code:", error);
+        }
     }
 
-    private initInviteList() {
-        this.inviteContent.removeAllChildren();
-        InviteNetService.getInviteList().then((res) => {
-            if (res && res.userInviteDetail != null) {
-                this.inviteData.userInviteDetail = res.userInviteDetail;
-                this.nofriend.active = this.inviteData.userInviteDetail.length == 0;
-                for (const item of this.inviteData.userInviteDetail) {
-                    const itemNode = instantiate(this.inviteItem);
-                    itemNode.setParent(this.inviteContent);
-                    itemNode.getComponent(InviteItemView)?.initItem(item.inviteeUserName, item.avatarUrl);
+    /** 初始化奖励列表 */
+    private async initRewardList() {
+        this.rewardContainer.removeAllChildren();
+        try {
+            const res = await InviteNetService.getInviteRewardConfig();
+            if (res && res.inviteConfigList != null) {
+                for (const item of res.inviteConfigList) {
+                    const itemNode = instantiate(this.rewardItem);
+                    if (itemNode) {
+                        itemNode.setParent(this.rewardContainer);
+                        itemNode.getComponent(InviteRewardItem)?.initItem(item);
+                    }
                 }
             }
-        })
+        } catch (error) {
+            console.error("Failed to initialize reward list:", error);
+        }
+    }
+
+    /** 初始化邀请列表 */
+    private async initInviteList() {
+        this.inviteContent.removeAllChildren();
+        try {
+            const res = await InviteNetService.getInviteList();
+            if (res && res.userInviteDetail != null) {
+                this.nofriend.active = res.userInviteDetail.length == 0;
+                for (const item of res.userInviteDetail) {
+                    const itemNode = instantiate(this.inviteItem);
+                    if (itemNode) {
+                        itemNode.setParent(this.inviteContent);
+                        itemNode.getComponent(InviteItemView)?.initItem(item.inviteeUserName, item.avatarUrl);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Failed to initialize invite list:", error);
+        }
     }
 
     private openInviteLink() {
-        let url = 'https://t.me/share/url?url=' + this.inviteLink;
-        // window.open(url);
-        const WebApp = (window as any).Telegram.WebApp;
-        WebApp.openLink(url);
+        const url = `https://t.me/share/url?url=${this.inviteLink}`;
+        console.log('打开邀请链接:', url);
+        window.open(url);
+        // const WebApp = (window as any).Telegram.WebApp;
+        // WebApp.openLink(url);
     }
 
     private copyInviteLink() {
@@ -88,9 +125,8 @@ export class InviteVeiw extends Component {
     }
 
     private generateQRCode(qrCodeUrl: string) {
-        const url = qrCodeUrl;
         const qrCode = qr(0, 'M');
-        qrCode.addData(url);
+        qrCode.addData(qrCodeUrl);
         qrCode.make();
 
         const dataURL = qrCode.createDataURL(4, 4);
@@ -104,6 +140,8 @@ export class InviteVeiw extends Component {
                 texture.image = imageAsset;
                 spriteFrame.texture = texture;
                 this.icon.spriteFrame = spriteFrame;
+            } else {
+                console.error("Failed to load QR code image:", err);
             }
         });
     }

@@ -138,6 +138,7 @@
     "hatch_tips_hatch_once":"孵蛋 1 次",
     "hatch_tips_hatch_ten":"孵蛋 10 次",
     "hatch_tips_purchased":"购买孵蛋次数",
+    "hatch_tips_needmore":"孵蛋次数不足,请购买",
 
     "reward_tip_preview": "奖励预览",
     "reward_tip_normal": "普通奖励",

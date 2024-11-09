@@ -235,29 +235,24 @@ export class KnapsackControlle extends Component {
     /**
      * 系统自动领养星兽
      */
-    private autoAdoptBeast() {
-        this.schedule(() => {
-            console.log("触发自动领养星兽");
-            this.AdopStartBeast(STBTypeID.STB_Gold_Level1, true)
-        }, this.interval, macro.REPEAT_FOREVER, this.interval);
-    };
+    // private autoAdoptBeast() {
+    //     this.schedule(() => {
+    //         console.log("触发自动领养星兽");
+    //         this.AdopStartBeast(STBTypeID.STB_Gold_Level1, true)
+    //     }, this.interval, macro.REPEAT_FOREVER, this.interval);
+    // };
 
     /**
      * 领养星兽
      * @param stbConfigId - 星兽配置ID 1-10
      * @param autoAdop - 是否系统自动领养
      */
-    AdopStartBeast(stbConfigId: number, autoAdop: boolean = false) {
-        // if (this.getEmptySlot() == -1) {
-        //     if (!autoAdop)
-        //         oops.gui.toast("背包已满，无法添加新物品", false);
-        //     return;
-        // }
-        smc.account.adopStartBeastNet(stbConfigId, autoAdop, (success: boolean, msg: string) => {
-            if (!autoAdop && !success)
-                oops.gui.toast(msg);
-        });
-    }
+    // AdopStartBeast(stbConfigId: number, autoAdop: boolean = false) {
+    //     smc.account.adopStartBeastNet(stbConfigId, autoAdop, (success: boolean, msg: string) => {
+    //         if (!autoAdop && !success)
+    //             oops.gui.toast(msg);
+    //     });
+    // }
 
     /** 获取第一个空闲的背包槽 */
     getEmptySlot(): number {

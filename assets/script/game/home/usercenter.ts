@@ -166,7 +166,8 @@ export class usercenter extends Component {
         for(const item of this.configData) {
             if(item.languageKey === kye) { 
                 const WebApp = (window as any).Telegram.WebApp;
-                WebApp.openLink(item.description);
+                // WebApp.openLink(item.description);
+                window.open(item.description);
             }
         }
     }

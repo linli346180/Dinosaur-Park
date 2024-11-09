@@ -15,6 +15,7 @@ export enum UIID {
     /** 确认弹出窗口 */
     Confirm,
     Notify,
+    Wait,
     Demo,
     Main,   // 游戏主界面
     User,    // 用户中心
@@ -47,13 +48,14 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.Confirm]: { layer: LayerType.Dialog, prefab: "common/prefab/confirm" },
     [UIID.Demo]: { layer: LayerType.UI, prefab: "gui/demo/demo" },
     [UIID.Notify]: { layer: LayerType.Notify, prefab: "common/prefab/notify" },
+    [UIID.Wait]: { layer: LayerType.Notify, prefab: "common/prefab/wait" },
 
     // 游戏主界面
     [UIID.Map]: { layer: LayerType.Game, prefab: "gui/map/prefab/map" },
     [UIID.Main]: { layer: LayerType.UI, prefab: "gui/game/prefab/home" },
     [UIID.Email]: { layer: LayerType.UI, prefab: "gui/email/prefab/emailUI", mask: true },
     [UIID.RankUI]: { layer: LayerType.UI, prefab: "gui/rank/prefab/ranklUI", mask: true },
-    [UIID.Revive]: { layer: LayerType.UI, prefab: "gui/debris/prefab/debris", mask: true },
+    [UIID.Revive]: { layer: LayerType.UI, prefab: "gui/debris/prefab/debrisUI", mask: true },
     [UIID.Hatch]: { layer: LayerType.UI, prefab: "gui/hatch/prefab/hatch", mask: true },
     [UIID.Activity]: { layer: LayerType.UI, prefab: "gui/activity/activityUI", mask: true },
     [UIID.Guide]: { layer: LayerType.Dialog, prefab: "gui/guide/guideUI", mask: true },
@@ -64,8 +66,8 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.User]: { layer: LayerType.Dialog, prefab: "gui/setting/usercenter", mask: true },
     [UIID.DebrisResult]: { layer: LayerType.Dialog, prefab: "gui/debris/prefab/debrisResult", mask: true },
     [UIID.STBShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/stbShop", mask: true },
-    [UIID.GemShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/gemShop", mask: true },
-    [UIID.STBMerge]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/stbMerge", mask: true },
+    [UIID.GemShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/GemShop", mask: true, vacancy: true },
+    [UIID.STBMerge]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/STBMergeUI", mask: true },
     [UIID.RewardView]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/rewardPrview", mask: true },
     [UIID.HatchShop]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/hatchShop", mask: true, vacancy: true },
     [UIID.HatchReward]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/hatchReward", mask: true },

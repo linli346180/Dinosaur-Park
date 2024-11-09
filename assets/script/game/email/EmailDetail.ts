@@ -58,14 +58,18 @@ export class EmailDetail extends Component {
         this.mailContent.string = this.mailRecord.mailContent;
         this.expireTime.string = `${oops.language.getLangByID("common_validity")}:${this.formatExpireTime(this.mailRecord.expireTime)}`;
 
+        // 设置奖励列表
         this.rewardContainer.removeAllChildren();
-        this.mailRecord.rewards.forEach((reward) => {
-            let rewardItem = instantiate(this.rewardItem);
-            if (rewardItem) {
-                rewardItem.parent = this.rewardContainer;
-                rewardItem.getComponent(EmailRewardItem)?.initItem(reward);
-            }
-        });
+        if(this.mailRecord.rewards != null && this.mailRecord.rewards.length > 0) { 
+            this.mailRecord.rewards.forEach((reward) => {
+                let rewardItem = instantiate(this.rewardItem);
+                if (rewardItem) {
+                    rewardItem.parent = this.rewardContainer;
+                    rewardItem.getComponent(EmailRewardItem)?.initItem(reward);
+                }
+            });
+        }
+        
     }
 
     private onClaimed() {

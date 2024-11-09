@@ -9,6 +9,10 @@ import { tween } from 'cc';
 import { v3 } from 'cc';
 import { Vec3 } from 'cc';
 import { AnimUtil } from '../common/utils/AnimUtil';
+import { BuyGemsConfig } from './MergeDefine';
+import { Prefab } from 'cc';
+import { instantiate } from 'cc';
+import { GemShopItem } from './GemShopItem';
 const { ccclass, property } = _decorator;
 
 /** 宝石商店 */
@@ -18,14 +22,25 @@ export class GemShop extends Component {
     btn_close: Button = null!;
     @property(Label)
     gemNum: Label = null!;
-    @property(Button)
-    btn_buy_lv1: Button = null!;
-    @property(Button)
-    btn_buy_lv2: Button = null!;
-    @property(Button)
-    btn_buy_lv3: Button = null!;
-    @property(Button)
-    btn_buy_lv4: Button = null!;
+
+    @property(Node)
+    gemsContainer: Node = null!;
+
+    @property(Prefab)
+    gemShopItem: Prefab = null!;
+
+    async onLoad() {
+        const res = await AccountNetService.getBugGemConfig();
+        if (res && res.buyGemsConfigArr != null) {
+            let gemConfigs: BuyGemsConfig[] = res.buyGemsConfigArr;
+            gemConfigs.sort((a, b) => a.id - b.id);
+            for (const gemConfig of gemConfigs) {
+                let item = instantiate(this.gemShopItem);
+                // this.gemsContainer.appendChild(item);
+                // item.getComponent(GemShopItem)?.initItem(gemConfig);
+            }
+        }
+    }
 
     onEnable() {
         AnimUtil.playAnim_Scale(this.node);
@@ -34,23 +49,11 @@ export class GemShop extends Component {
 
     start() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.btn_buy_lv1?.node.on(Button.EventType.CLICK, this.buyGemLv1, this);
-        this.btn_buy_lv2?.node.on(Button.EventType.CLICK, this.buyGemLv2, this);
-        this.btn_buy_lv3?.node.on(Button.EventType.CLICK, this.buyGemLv3, this);
-        this.btn_buy_lv4?.node.on(Button.EventType.CLICK, this.buyGemLv4, this);
-        oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
+        oops.message.on(AccountEvent.CoinDataChange, this.initCoinData, this);
     }
 
     onDestroy() {
-        oops.message.off(AccountEvent.CoinDataChange, this.onHandler, this);
-    }
-
-    private onHandler(event: string, args: any) {
-        switch (event) {
-            case AccountEvent.CoinDataChange:
-                this.initCoinData();
-                break
-        }
+        oops.message.off(AccountEvent.CoinDataChange, this.initCoinData, this);
     }
 
     private initCoinData() {
@@ -62,18 +65,6 @@ export class GemShop extends Component {
     }
 
     private buyGemLv1() {
-        const tips = oops.language.getLangByID("common_tips_Not_Enabled");
-        oops.gui.toast(tips);
-    }
-    private buyGemLv2() {
-        const tips = oops.language.getLangByID("common_tips_Not_Enabled");
-        oops.gui.toast(tips);
-    }
-    private buyGemLv3() {
-        const tips = oops.language.getLangByID("common_tips_Not_Enabled");
-        oops.gui.toast(tips);
-    }
-    private buyGemLv4() {
         const tips = oops.language.getLangByID("common_tips_Not_Enabled");
         oops.gui.toast(tips);
     }

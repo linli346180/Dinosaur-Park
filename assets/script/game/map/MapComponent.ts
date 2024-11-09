@@ -12,6 +12,7 @@ import { Logger } from '../../Logger';
 import { v3 } from 'cc';
 import { math } from 'cc';
 import { StringUtil } from '../common/utils/StringUtil';
+import { Collider2D } from 'cc';
 const { ccclass, property } = _decorator;
 
 const tmpP0 = v3();
@@ -170,6 +171,7 @@ export class MapComponent extends Component {
         this.mapNodes.forEach((value, key) => {
             value.children.forEach((node) => {
                 const cmp = node.getComponent(ActorController);
+                node.getComponent(Collider2D).enabled = false;
                 if (cmp && cmp.stbId == stb) {
                     this.delList.push(stb);
                     cmp.onActorDeath();

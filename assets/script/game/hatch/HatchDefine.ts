@@ -12,14 +12,14 @@ interface UserHatchData {
 }
 
 // 孵蛋价格配置
-export interface HatchPriceConfig {
-    id: number;                 // ID
-    hatchNum: number;           // 购买次数
-    conCoinType: CoinType;      // 所需货币类型(1.金币,2.宝石,3.星兽币,4.USDT)
-    purNeedCoinNum: number;     // 购买价格
-    limitedNum: number;         // 限购次数，当限购次数为0时，表示不限购
-    purNum:number;              // 已经购买次数
-    desc: string;               // 描述
+export class HatchPriceConfig {
+    id: number = 0;                 // ID
+    hatchNum: number = 0;           // 购买次数
+    conCoinType: CoinType = CoinType.Gems;      // 所需货币类型(1.金币,2.宝石,3.星兽币,4.USDT)
+    purNeedCoinNum: number = 0;     // 购买价格
+    limitedNum: number = 0;         // 限购次数，当限购次数为0时，表示不限购
+    purNum:number = 0;              // 已经购买次数
+    desc: string = '';               // 描述
 }
 
 // 所需货币类型枚举

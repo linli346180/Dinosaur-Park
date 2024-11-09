@@ -1,16 +1,11 @@
-import { _decorator, Component, Button, Label } from 'cc';
+import { _decorator, Component, Button, Label, Node, tween, Vec3, v3 } from 'cc';
 import { StringUtil } from '../common/utils/StringUtil';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { AccountEvent } from '../account/AccountEvent';
 import { smc } from '../common/SingletonModuleComp';
-import { tween } from 'cc';
-import { Vec3 } from 'cc';
-import { Node } from 'cc';
-import { math } from 'cc';
-import { CoinType } from '../hatch/HatchDefine';
 import { AccountCoinType, UserCoinData } from '../account/AccountDefine';
-import { v3 } from 'cc';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('UserCoinView')
@@ -31,21 +26,9 @@ export class UserCoinView extends Component {
     private btn_buygem: Button = null!;
     private btn_buyusdt: Button = null!;
     private coinData: UserCoinData = new UserCoinData();
+    private playingNode: Set<Node> = new Set();
 
     start() {
-        this.status_gold.getChildByName("btn_show")?.getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
-            this.playCoinAnim(AccountCoinType.Gold, 0, 1.5);
-        });
-        this.status_gem.getChildByName("btn_show")?.getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
-            this.playCoinAnim(AccountCoinType.Gems, 0, 0.5);
-        });
-        this.status_dinosaur.getChildByName("btn_show")?.getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
-            this.playCoinAnim(AccountCoinType.StarBeast, 0, 1.5);
-        });
-        this.status_usdt.getChildByName("btn_show")?.getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
-            this.playCoinAnim(AccountCoinType.USDT, 0, 1.5);
-        });
-
         this.goldCoin = this.status_gold.getChildByName("num")?.getComponent(Label)!;
         this.gemsCoin = this.status_gem.getChildByName("num")?.getComponent(Label)!;
         this.starBeastCoin = this.status_dinosaur.getChildByName("num")?.getComponent(Label)!;
@@ -53,10 +36,16 @@ export class UserCoinView extends Component {
 
         this.btn_buygem = this.status_gem.getChildByName("btn_buy")?.getComponent(Button)!;
         this.btn_buyusdt = this.status_usdt.getChildByName("btn_buy")?.getComponent(Button)!;
-        this.btn_buygem?.node.on(Button.EventType.CLICK, this.buyGem, this);
-        this.btn_buyusdt?.node.on(Button.EventType.CLICK, this.buyUsdt, this);
+        this.btn_buygem?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.GemShop) }, this);
+        this.btn_buyusdt?.node.on(Button.EventType.CLICK, () => { console.log("buyusdt"); }, this);
+
+        this.setupButtonHandler(this.status_gold, AccountCoinType.Gold);
+        this.setupButtonHandler(this.status_gem, AccountCoinType.Gems);
+        this.setupButtonHandler(this.status_dinosaur, AccountCoinType.StarBeast);
+        this.setupButtonHandler(this.status_usdt, AccountCoinType.USDT);
 
         oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
+
         this.initUI();
     }
 
@@ -64,45 +53,97 @@ export class UserCoinView extends Component {
         oops.message.off(AccountEvent.CoinDataChange, this.onHandler, this);
     }
 
+    private initUI() {
+        // smc.account.AccountModel.CoinData.usdt = 0.0001;
+        Object.assign(this.coinData, smc.account.AccountModel.CoinData);
+        this.goldCoin.string = StringUtil.formatMoney(this.coinData.goldCoin);
+        this.gemsCoin.string = StringUtil.formatMoney(this.coinData.gemsCoin);
+        this.starBeastCoin.string = StringUtil.formatMoney(this.coinData.starBeastCoin);
+        this.usdtCoin.string = StringUtil.formatMoney(this.coinData.usdt);
+    }
+
+    private setupButtonHandler(statusNode: Node, coinType: AccountCoinType, holdSec: number = 1) {
+        statusNode.getChildByName("btn_show")?.getComponent(Button)?.node.on(Button.EventType.CLICK, () => {
+            this.playCoinAnim(coinType, 0, holdSec);
+        });
+    }
+
     private onHandler(event: string, args: any) {
-        switch (event) {
-            case AccountEvent.CoinDataChange:
-                this.initUI(true);
-                break
+        if (event === AccountEvent.CoinDataChange) {
+            this.updateCoinDataWithAnim();
         }
-    }
-
-    private initUI(showAnim: boolean = false) {
-        if (showAnim) {
-            if (this.coinData.goldCoin != smc.account.AccountModel.CoinData.goldCoin)
-                this.playCoinAnim(AccountCoinType.Gold, 1);
-            if (this.coinData.gemsCoin != smc.account.AccountModel.CoinData.gemsCoin)
-                this.playCoinAnim(AccountCoinType.Gems, 0);
-            if (this.coinData.starBeastCoin != smc.account.AccountModel.CoinData.starBeastCoin)
-                this.playCoinAnim(AccountCoinType.StarBeast, 0);
-            if (this.coinData.usdt != smc.account.AccountModel.CoinData.usdt)
-                this.playCoinAnim(AccountCoinType.USDT, 0);
-
-            Object.assign(this.coinData, smc.account.AccountModel.CoinData);
-        } else {
-            Object.assign(this.coinData, smc.account.AccountModel.CoinData);
-            this.goldCoin.string = StringUtil.formatMoney(this.coinData.goldCoin);
-            this.gemsCoin.string = StringUtil.formatMoney(this.coinData.gemsCoin);
-            this.starBeastCoin.string = StringUtil.formatMoney(this.coinData.starBeastCoin);
-            this.usdtCoin.string = StringUtil.formatMoney(this.coinData.usdt);
-        }
-    }
-
-    private buyGem() {
-        oops.gui.open(UIID.GemShop)
-    }
-
-    private buyUsdt() {
-        console.log("buyusdt");
     }
 
     // 播放金币增加动画
-    playCoinAnim(coinType: AccountCoinType, delaySec: number = 0, holdSec: number = 1) {
+    private updateCoinDataWithAnim() {
+        if (this.coinData.goldCoin !== smc.account.AccountModel.CoinData.goldCoin) {
+            this.playCoinAnim(AccountCoinType.Gold, 1, 1, () => {
+                this.goldCoin.string = StringUtil.formatMoney(this.coinData.goldCoin);
+            });
+        }
+
+        if (this.coinData.gemsCoin !== smc.account.AccountModel.CoinData.gemsCoin) {
+            this.playCoinAnim(AccountCoinType.Gems, 0, 1, () => {
+                this.gemsCoin.string = StringUtil.formatMoney(this.coinData.gemsCoin);
+            });
+        }
+
+        if (this.coinData.starBeastCoin !== smc.account.AccountModel.CoinData.starBeastCoin) {
+            this.playCoinAnim(AccountCoinType.StarBeast, 0, 1, () => {
+                this.starBeastCoin.string = StringUtil.formatMoney(this.coinData.starBeastCoin);
+            });
+        }
+
+        if (this.coinData.usdt !== smc.account.AccountModel.CoinData.usdt) {
+            this.playCoinAnim(AccountCoinType.USDT, 0, 1, () => {
+                this.usdtCoin.string = StringUtil.formatMoney(this.coinData.usdt);
+            });
+        }
+        
+        Object.assign(this.coinData, smc.account.AccountModel.CoinData);
+    }
+
+    /**
+     * Plays a coin animation.
+     * 
+     * @param coinType - The type of the coin.
+     * @param delaySec - 延迟播放时间
+     * @param holdSec - 持续时间
+     * @param decimalPlaces - 小数点精度
+     */
+    playCoinAnim(coinType: AccountCoinType, delaySec: number = 0, holdSec: number = 1, callback?: Function) {
+        const { label, startNum, endNum } = this.getCoinAnimData(coinType);
+        if (!label || this.playingNode.has(label.node)) return;
+
+        const targetScale = new Vec3(1.2, 1.2, 1.2);
+        this.playingNode.add(label.node);
+
+        tween(label.node)
+            .delay(delaySec)
+            .to(0.1, { scale: Vec3.ZERO })
+            .call(() => { label.string = startNum.toString(); })
+            .to(0.1, { scale: targetScale })
+            .to(holdSec, {}, {
+                onUpdate: (target, ratio) => {
+                    if (ratio == undefined) return;
+                    if (startNum != endNum) {
+                        const currentNum = Math.floor(startNum + (endNum - startNum) * ratio);
+                        label.string = currentNum.toString();
+                    }
+                }
+            })
+            .to(0.1, { scale: Vec3.ZERO })
+            .call(() => {
+                this.playingNode.delete(label.node);
+                label.string = StringUtil.formatMoney(endNum);
+
+                if (callback) callback();
+            })
+            .to(0.1, { scale: Vec3.ONE })
+            .start();
+    }
+
+    private getCoinAnimData(coinType: AccountCoinType) {
         let label: Label = null!;
         let startNum: number = 0;
         let endNum: number = 0;
@@ -119,41 +160,15 @@ export class UserCoinView extends Component {
                 break;
             case AccountCoinType.StarBeast:
                 label = this.starBeastCoin;
-                startNum = Math.floor(this.coinData.starBeastCoin);
+                startNum = Math.floor(this.coinData.starBeastCoin)
                 endNum = Math.floor(smc.account.AccountModel.CoinData.starBeastCoin);
                 break;
             case AccountCoinType.USDT:
                 label = this.usdtCoin;
-                startNum = Math.floor(this.coinData.usdt);
-                endNum = Math.floor(smc.account.AccountModel.CoinData.usdt);
+                startNum = smc.account.AccountModel.CoinData.usdt;
+                endNum = smc.account.AccountModel.CoinData.usdt;
                 break;
         }
-        if (label == null) return;
-
-        const targetScale = new Vec3(1.2, 1.2, 1.2);
-        if (!label.node.scale.equals(Vec3.ONE)) {
-            console.log("playCoinAnim: label.node.scale != Vec3.ONE", label.node.scale);
-            return;
-        }
-
-        tween(label.node)
-            .delay(delaySec)
-            .to(0.1, { scale: Vec3.ZERO })
-            .call(() => { label.string = startNum.toString(); })
-            .to(0.1, { scale: targetScale })
-            .to(holdSec, {}, {
-                onUpdate: (target, ratio) => {
-                    if(ratio == undefined) return;
-                    const currentNum =  Math.floor(startNum + (endNum - startNum) * ratio);
-                    label.string = currentNum.toString();
-                }
-            })
-            .to(0.1, { scale: Vec3.ZERO })
-            .call(() => {
-                label.string = StringUtil.formatMoney(endNum);;
-            })
-            .to(0.1, { scale: Vec3.ONE })
-            .start();
+        return { label, startNum, endNum };
     }
-
 }

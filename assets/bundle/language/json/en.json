@@ -139,6 +139,7 @@
     "hatch_tips_hatch_once":"Hatch once",
     "hatch_tips_hatch_ten":"Hatch ten times",
     "hatch_tips_purchased":"Hatchings purchased",
+    "hatch_tips_needmore":"Not enough hatching attempts, please purchase.",
 
     "reward_tip_preview": "Reward Preview",        
     "reward_tip_normal": "Normal Reward",           

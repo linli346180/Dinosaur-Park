@@ -17,7 +17,7 @@ export enum NetErrorCode {
 export enum NetCmd {
     UserCoinType        = 100, // 用户货币
     UserNinstbType      = 101, // 自动领养1级黄金星兽
-    UserIncomeType      = 102, // 收益星兽
+    UserIncomeType      = 102, // 新增收益星兽
     UserHatchType       = 103, // 孵蛋
     InvitedType         = 104, // 邀请
     UserDebrisType      = 105, // 复活

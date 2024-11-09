@@ -9,24 +9,28 @@ import { STBSynthConfig } from './MergeDefine';
 import { AnimUtil } from '../common/utils/AnimUtil';
 const { ccclass, property } = _decorator;
 
-@ccclass('STBMerge')
-export class STBMerge extends Component {
+@ccclass('STBMergeView')
+export class STBMergeView extends Component {
     @property(Button)
     btn_close: Button = null!;
+
     @property(Node)
     beforePanel: Node = null!;
     @property(Toggle)
     tog_add: Toggle = null!;
     @property(Button)
     btn_evolve: Button = null!;
+    
     @property(Node)
     sucessPanel: Node = null!;
     @property(Button)
-    btn_close1: Button = null!;
+    btn_sucessclose: Button = null!;
+
     @property(Node)
     failPanel: Node = null!;
     @property(Button)
-    btn_close2: Button = null!
+    btn_failclose: Button = null!
+
     @property(VideoPlayer)
     videoPlayer: VideoPlayer = null!;
     @property(Node)
@@ -85,8 +89,9 @@ export class STBMerge extends Component {
 
     start() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.btn_close1?.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.btn_close2?.node.on(Button.EventType.CLICK, this.closeUI, this);
+        this.btn_sucessclose?.node.on(Button.EventType.CLICK, this.closeUI, this);
+        this.btn_failclose?.node.on(Button.EventType.CLICK, this.closeUI, this);
+
         this.btn_evolve?.node.on(Button.EventType.CLICK, this.onEvolve, this);
         this.videoPlayer.node.on(VideoPlayer.EventType.COMPLETED, this.OnVideoCompleted, this);
     }
