@@ -286,7 +286,6 @@ export class Account extends ecs.Entity {
     /** 网络请求失败处理 */
     OnWebRequestFail(msg: string) {
         oops.gui.toast(msg);
-
         if (msg.includes('不足')) {
             this.updateCoinData();
         }

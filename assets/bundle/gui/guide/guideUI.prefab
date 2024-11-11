@@ -348,7 +348,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1080,
-      "height": 1959.9999999999998
+      "height": 1960
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -903,7 +903,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 175.464,
+      "y": 230.705,
       "z": 0
     },
     "_lrot": {
@@ -966,7 +966,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -141.323,
+      "y": -110.666,
       "z": 0
     },
     "_lrot": {
@@ -2219,7 +2219,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -340.323,
+      "y": -309.666,
       "z": 0
     },
     "_lrot": {
@@ -3472,7 +3472,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -547.888,
+      "y": -517.231,
       "z": 0
     },
     "_lrot": {
@@ -4703,7 +4703,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1023.5,
-      "height": 1446
+      "height": 1353
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4838,7 +4838,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -421.544,
-      "y": -622.301,
+      "y": -542.785,
       "z": 0
     },
     "_lrot": {
@@ -5231,7 +5231,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -777.4,
+      "y": -707.059,
       "z": 0
     },
     "_lrot": {
@@ -5324,7 +5324,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 360.263671875,
+      "width": 320.234375,
       "height": 126
     },
     "_anchorPoint": {
@@ -5363,8 +5363,8 @@
     "_string": "Continue",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 90,
-    "_fontSize": 90,
+    "_actualFontSize": 80,
+    "_fontSize": 80,
     "_fontFamily": "Arial",
     "_lineHeight": 100,
     "_overflow": 0,
@@ -5622,7 +5622,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -929.04,
+      "y": -893.086,
       "z": 0
     },
     "_lrot": {
@@ -5662,8 +5662,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 440,
-      "height": 50.4
+      "width": 550,
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5701,10 +5701,10 @@
     "_string": "完成任务后点击验证按钮",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 40,
-    "_fontSize": 40,
+    "_actualFontSize": 50,
+    "_fontSize": 50,
     "_fontFamily": "Arial",
-    "_lineHeight": 40,
+    "_lineHeight": 50,
     "_overflow": 0,
     "_enableWrapText": true,
     "_font": null,
@@ -5792,7 +5792,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1080,
-      "height": 1959.9999999999998
+      "height": 1960
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

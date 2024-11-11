@@ -27,23 +27,14 @@ export class STBPurShop extends Component {
     btn_close: Button = null!;
     private configDataList: UserInstbConfigData[] = [];
 
-    start() {
-        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.STBShop) }, this);
-        oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
-        AnimUtil.playAnim_Scale(this.node);
+    onLoad() {
+        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.STBShop, false) }, this);
+        oops.message.on(AccountEvent.CoinDataChange, this.initCoinData, this);
         this.initUI();
     }
 
-    onDestroy() {
-        oops.message.off(AccountEvent.CoinDataChange, this.onHandler, this);
-    }
-
-    private onHandler(event: string, args: any) {
-        switch (event) {
-            case AccountEvent.CoinDataChange:
-                this.initCoinData();
-                break
-        }
+    onEnable() {
+        this.initCoinData();
     }
 
     initCoinData() {

@@ -5,7 +5,7 @@ import { HatchNetService } from './HatchNet';
 import { UserHatchData } from './HatchData';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { HatchReward } from './HatchReward';
-import { UserHatchEvent } from './HatchDefine';
+import { RewardConfig, UserHatchEvent } from './HatchDefine';
 import { NetErrorCode } from '../../net/custom/NetErrorCode';
 import { VideoPlayer } from 'cc';
 import { tween } from 'cc';
@@ -32,9 +32,6 @@ export class HatchView extends Component {
     @property(Label)
     label_guaranteedNum: Label = null!;
 
-    @property(HatchReward)
-    hatchReward: HatchReward = null!;
-
     // 抽奖视频
     @property(VideoPlayer)
     videoPlayer: VideoPlayer = null!;
@@ -44,6 +41,8 @@ export class HatchView extends Component {
     private isInit = false;
     private canHatch: boolean = true;
     private _userData: UserHatchData = new UserHatchData();
+
+    private rewardConfig: RewardConfig[] = [];
 
     onLoad() {
         this.getHatchMinNum();
@@ -99,12 +98,11 @@ export class HatchView extends Component {
                 this._userData.remainNum = args;
                 this.label_remainNum.string = this._userData.remainNum.toString();
                 break;
-        }   
+        }
     }
 
     private async userHatch(num: number) {
         if (this._userData.remainNum < num) {
-            // oops.gui.toast("hatch_tips_needmore", true);
             oops.gui.open(UIID.HatchShop)
             return
         }
@@ -121,13 +119,21 @@ export class HatchView extends Component {
 
         const res = await HatchNetService.requestUserHatch(num);
         if (res && res.userHatch != null) {
-            this.hatchReward.InitUI(res.userHatch);
-        } else {
-            console.error("孵蛋异常");
+            this.rewardConfig = res.userHatch;
         }
     }
 
     private OnAnimFinish() {
+
+        console.log("抽奖动画播放完成");
+        var uic: UICallbacks = {
+            onAdded: (node: Node, params: any) => {
+                node.getComponent(HatchReward)?.InitUI(this.rewardConfig);
+            },
+        };
+        let uiArgs: any;
+        oops.gui.open(UIID.HatchReward, uiArgs, uic);
+
         this.canHatch = true;
         this.videoPlayer.stop();
         this.videoPlayer.node.active = false;
@@ -135,15 +141,14 @@ export class HatchView extends Component {
 
         let uiOpacity = this.videoMask.getComponent(UIOpacity);
         if (!uiOpacity) return
-
         tween(this.videoMask)
             .call(() => {
                 uiOpacity.opacity = 255;
             })
-            .to(0.8, {}, { onUpdate: (target, ratio) => { if (ratio) uiOpacity.opacity = 255 - (255 - 155 * ratio); } }) // 透明度减少到 100
+            .to(1, {}, { onUpdate: (target, ratio) => { if (ratio) uiOpacity.opacity = 255 - (255 - 155 * ratio); } }) // 透明度减少到 100
             .call(() => {
                 this.videoMask.active = false;
-                this.hatchReward.node.active = true;
+                uiOpacity.opacity = 255;
             })
             .start();
     }

@@ -153,6 +153,7 @@ export class HomeView extends Component {
 
     private showStartAnim(stbId: number) {
         // oops.gui.toast("星兽进化成功");
+        
         const endPos = this.btn_book.node.worldPosition;
         for (const slotNode of KnapsackControlle.instance.SlotNodes) {
             const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);

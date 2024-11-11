@@ -69,7 +69,9 @@ export class TaskItem extends Component {
     }
 
     onClaim() {
+        this.btn_available.interactable = false;
         TaskNetService.claimTaskReward(this.taskData.taskCompileConditionId, this.taskData.taskProgressId).then((res) => {
+            this.btn_available.interactable = true;
             if (res) {
                 oops.message.dispatchEvent(TaskEvent.TaskClaimed, this.taskData.taskId);
                 this.taskData.taskState = TaskStatus.Claimed;

@@ -16,26 +16,11 @@ export class GuideRewardItem extends Component {
     num: Label = null!;
 
     public initItem(rewardConfig: Reward) {
-        // this.num.string = "X" + StringUtil.formatMoney(reward.awardQuantity, 0).toString();
-        
-        // let itemConfig = new TableItemConfig();
-        // let itemId = StringUtil.combineNumbers(reward.awardType, reward.awardResourceId, 2);
-        // itemConfig.init(itemId);
-        // if (itemConfig.icon != undefined && itemConfig.icon != null && itemConfig.icon != '') {
-        //     oops.res.loadAsync(itemConfig.icon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
-        //         if (spriteFrame)
-        //             this.icon.spriteFrame = spriteFrame;
-        //     });
-        // }
-
-        console.log('奖励', rewardConfig);
-    
-        this.num.string =  `x${rewardConfig.awardQuantity}`;
+        this.num.string = `x${StringUtil.formatMoney(rewardConfig.awardQuantity)}`;
         let itemConfig = new TableItemConfig();
         let itemId = StringUtil.combineNumbers(rewardConfig.awardType, rewardConfig.awardResourceId, 2);
-
         itemConfig.init(itemId);
-        if(itemConfig.icon != null && itemConfig.icon != undefined && itemConfig.icon != ''){ 
+        if (itemConfig.icon != null && itemConfig.icon != undefined && itemConfig.icon != '') {
             oops.res.loadAsync(itemConfig.icon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
                 if (spriteFrame)
                     this.icon.spriteFrame = spriteFrame;

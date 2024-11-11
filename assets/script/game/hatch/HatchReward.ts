@@ -4,6 +4,8 @@ import { _decorator, Component, Node } from 'cc';
 import { RewardConfig } from './HatchDefine';
 import { instantiate } from 'cc';
 import { RewardItem } from './RewardItem';
+import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
+import { UIID } from '../common/config/GameUIConfig';
 const { ccclass, property } = _decorator;
 
 @ccclass('HatchReward')
@@ -23,20 +25,15 @@ export class HatchReward extends Component {
     }
 
     closeUI() {
-        this.container.removeAllChildren();
-        this.node.active = false;
+        oops.gui.remove(UIID.HatchReward, false);
     }
 
     InitUI(rewardList: RewardConfig[]) {
         this.container.removeAllChildren();
         rewardList.forEach(reward => {
-            this.createItem(reward);
+            const itemNode = instantiate(this.itemPrefab);
+            itemNode.parent = this.container;
+            itemNode.getComponent<RewardItem>(RewardItem)?.initItem(reward);
         });
-    }
-
-    createItem(reward: RewardConfig) {
-        const itemNode = instantiate(this.itemPrefab);
-        itemNode.parent = this.container;
-        itemNode.getComponent<RewardItem>(RewardItem)?.initItem(reward);
     }
 }

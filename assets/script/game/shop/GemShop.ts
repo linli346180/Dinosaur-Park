@@ -1,18 +1,14 @@
-import { _decorator, Component, Button, Label } from 'cc';
+import { _decorator, Component, Button, Label, Node, Prefab, instantiate } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { AccountNetService } from '../account/AccountNet';
 import { StringUtil } from '../common/utils/StringUtil';
 import { smc } from '../common/SingletonModuleComp';
 import { AccountEvent } from '../account/AccountEvent';
-import { tween } from 'cc';
-import { v3 } from 'cc';
-import { Vec3 } from 'cc';
 import { AnimUtil } from '../common/utils/AnimUtil';
 import { BuyGemsConfig } from './MergeDefine';
-import { Prefab } from 'cc';
-import { instantiate } from 'cc';
 import { GemShopItem } from './GemShopItem';
+
 const { ccclass, property } = _decorator;
 
 /** 宝石商店 */
@@ -23,27 +19,28 @@ export class GemShop extends Component {
     @property(Label)
     gemNum: Label = null!;
 
-    @property(Node)
-    gemsContainer: Node = null!;
-
+    @property({type: Node,})
+    public itemContent: Node = null!;
     @property(Prefab)
-    gemShopItem: Prefab = null!;
+    itemPrefab: Prefab = null!;
 
     async onLoad() {
+        this.itemContent.removeAllChildren();
         const res = await AccountNetService.getBugGemConfig();
         if (res && res.buyGemsConfigArr != null) {
             let gemConfigs: BuyGemsConfig[] = res.buyGemsConfigArr;
             gemConfigs.sort((a, b) => a.id - b.id);
             for (const gemConfig of gemConfigs) {
-                let item = instantiate(this.gemShopItem);
-                // this.gemsContainer.appendChild(item);
-                // item.getComponent(GemShopItem)?.initItem(gemConfig);
+                let itemNode = instantiate(this.itemPrefab);
+                if(itemNode){
+                    this.itemContent.addChild(itemNode);
+                    itemNode.getComponent(GemShopItem)?.initItem(gemConfig);
+                } 
             }
         }
     }
 
     onEnable() {
-        AnimUtil.playAnim_Scale(this.node);
         this.initCoinData();
     }
 
@@ -62,10 +59,5 @@ export class GemShop extends Component {
 
     private closeUI() {
         oops.gui.remove(UIID.GemShop, false);
-    }
-
-    private buyGemLv1() {
-        const tips = oops.language.getLangByID("common_tips_Not_Enabled");
-        oops.gui.toast(tips);
     }
 }

@@ -29,12 +29,19 @@ export class LanguageView extends Component {
         const languageList = oops.language.languages;
         const curLanguage = oops.language.current;
         for (const language of languageList) {
-            const item = instantiate(this.itemPrefab);
-            this.content.addChild(item);
-            const comp = item.getComponent(LanguageItem);
-            if (comp) {
-                comp.InitItem(language, oops.language.languageNames[language], curLanguage == language);
-                comp.OnSelect = this.onItemClicked.bind(this);
+            const itemNode = instantiate(this.itemPrefab);
+            if (itemNode) {
+                this.content.addChild(itemNode);
+                const comp = itemNode.getComponent(LanguageItem);
+                if (comp) {
+                    const name = oops.language.languageNames[language];
+                    if (name === undefined) {
+                        console.error("language name is undefined", language);
+                        continue;
+                    }
+                    comp.InitItem(language, name, curLanguage === language);
+                    comp.OnSelect = this.onItemClicked.bind(this);
+                }
             }
         }
     }
@@ -44,12 +51,12 @@ export class LanguageView extends Component {
     }
 
     closeUI() {
-        oops.language.setLanguage(this._language , (success) => {
-            if (success){
+        oops.language.setLanguage(this._language, (success) => {
+            if (success) {
                 oops.storage.set("language", this._language);
                 oops.message.dispatchEvent(AccountEvent.ChangeLanguage);
                 console.log("切换多语言" + name);
-            } 
+            }
         });
         oops.gui.remove(UIID.LanguageUI, false);
     }

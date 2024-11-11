@@ -115,12 +115,14 @@ export class InviteVeiw extends Component {
     private copyInviteLink() {
         if (navigator.clipboard) {
             navigator.clipboard.writeText(this.inviteLink).then(() => {
-                oops.gui.toast("邀请链接已拷贝到剪切板");
+                oops.gui.toast("invite_tips_copytoclipboard", true);
             }).catch(err => {
-                oops.gui.toast("无法拷贝到剪切板");
+                console.error("无法拷贝到剪切板", err);
+                // oops.gui.toast("Invite link copied to clipboard fail.");
             });
         } else {
-            oops.gui.toast("当前浏览器不支持 Clipboard API");
+            console.error("当前浏览器不支持 Clipboard API");
+            // oops.gui.toast("当前浏览器不支持 Clipboard API");
         }
     }
 

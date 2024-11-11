@@ -9,13 +9,12 @@ const { ccclass, property } = _decorator;
 export namespace GuideNetService {
 
     /** 获取预售配置 */
-    export async function getPresellData(): Promise<PresellInfo | null> {
+    export async function getPresellData() {
         const http = createHttpManager();
         const response = await http.getUrl(`tgapp/api/presell/getPresell?token=${netConfig.Token}`);
         if (response.isSucc && response.res.resultCode === NetErrorCode.Success) {
             console.warn("获取预售配置:", response.res);
-            let data: PresellInfo = response.res.presellConfig;
-            return data;
+            return response.res;
         } else {
             console.error("获取预售配置异常", response);
             return null;

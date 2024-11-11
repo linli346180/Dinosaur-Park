@@ -18,26 +18,18 @@ export class GuideReward extends Component {
     itemPerfab: Prefab = null!;
 
     start() {
-        this.btn_sure.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.GuideReward); });
+        this.btn_sure.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.GuideReward, true); });
     }
 
     public initUI(rewards: Reward[]) {
         this.itemContain.removeAllChildren();
-        if (rewards == null || rewards.length == 0) {
-            console.error('奖励数据为空');
-            return;
-        }
-        console.error('奖励数据:', rewards);
+        if (rewards == null || rewards.length == 0) { return; }
         rewards.forEach((reward) => {
-            this.createItem(reward);
+            let itemNode = instantiate(this.itemPerfab);
+            if (itemNode) {
+                this.itemContain.addChild(itemNode);
+                itemNode.getComponent(GuideRewardItem)?.initItem(reward);
+            }
         });
-    }
-
-    private createItem(reward: Reward) {
-        let item = instantiate(this.itemPerfab);
-        if (item) {
-            this.itemContain.addChild(item);
-            item.getComponent(GuideRewardItem)?.initItem(reward);
-        }
     }
 }

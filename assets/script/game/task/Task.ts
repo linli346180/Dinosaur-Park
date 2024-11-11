@@ -92,12 +92,4 @@ export class TaskView extends Component {
         this.curGroupIndex = taskGroupKeys[nextIndex];
         // this.updateTaskVisibility(this.taskGroup[this.curGroupIndex]);
     }
-
-    // private updateTaskVisibility(taskGroup: TaskType[]) {
-    //     for (const itemNode of this.toggleContainer.children) {
-    //         let taskType: TaskType = itemNode.getComponent(TaskToggle).taskType;
-    //         itemNode.active = taskGroup.includes(taskType);
-    //     }
-    // }
-
 }

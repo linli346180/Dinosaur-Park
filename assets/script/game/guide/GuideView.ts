@@ -26,10 +26,9 @@ export class GuideView extends Component {
     private presellInfo = new PresellInfo();
     private userOfficial = new UserOfficial();
 
-    start() {
-        console.error("start")
-        this.btn_close.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.btn_continue.node.on(Button.EventType.CLICK, this.onContinue, this);
+    onLoad(): void {
+        this.btn_close.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.Guide, false) }, this);
+        this.btn_continue.node.on(Button.EventType.CLICK, () => { this.updateUI(true) }, this);
         this.btn_joinChannel.node.on(Button.EventType.CLICK, () => { this.joinChannel(this.presellInfo.officialChannelUrl); }, this);
         this.btn_joinGroup.node.on(Button.EventType.CLICK, () => { this.joinChannel(this.presellInfo.officialGroupUrl); }, this);
         this.btn_joinX.node.on(Button.EventType.CLICK, this.onPresellLeave, this);
@@ -38,14 +37,11 @@ export class GuideView extends Component {
         this.updateUI();
     }
 
-    private initUI() {
-        GuideNetService.getPresellData().then((data) => {
-            if (data) { this.presellInfo = data; }
-        });
-    }
-
-    private closeUI() {
-        // oops.gui.remove(UIID.Guide, false);
+    private async initUI() {
+        const res = await GuideNetService.getPresellData();
+        if (res && res.presellConfig != null) {
+            this.presellInfo = res.presellConfig;
+        }
     }
 
     private updateUI(close: boolean = false) {
@@ -63,9 +59,10 @@ export class GuideView extends Component {
                         var uic: UICallbacks = {
                             onAdded: (node: Node, params: any) => {
                                 node.getComponent(GuideReward)?.initUI(this.presellInfo.rewards);
+                                oops.message.dispatchEvent(GameEvent.GuideFinish);
                             },
                             onRemoved: (node: Node | null, params: any) => {
-                                oops.message.dispatchEvent(GameEvent.GuideFinish);
+                                // oops.message.dispatchEvent(GameEvent.GuideFinish);
                                 oops.gui.remove(UIID.Guide);
                             }
                         };
@@ -80,16 +77,12 @@ export class GuideView extends Component {
     private joinChannel(url: string) {
         console.log('跳转链接:', url);
         window.open(url);
-        // const WebApp = (window as any).Telegram.WebApp;
-        // WebApp.openLink(url);
     }
 
     private onPresellLeave() {
+        console.log('离开页面时间',this.presellInfo.xUrl);
         this.joinChannel(this.presellInfo.xUrl);
         GuideNetService.getPresellLeave(1);
     }
 
-    private onContinue() {
-        this.updateUI(true);
-    }
 }

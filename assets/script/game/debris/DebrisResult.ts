@@ -23,12 +23,6 @@ export class DebrisResult extends Component {
     start() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_ok?.node.on(Button.EventType.CLICK, this.closeUI, this);
-
-        tween()
-            .target(this.node)
-            .to(0.15, { scale: v3(1.1, 1.1, 1), }, { easing: 'fade' })
-            .to(0.15, { scale: Vec3.ONE, }, { easing: 'fade' })
-            .start()
     }
 
     initUI(stbId: number, count: number) {

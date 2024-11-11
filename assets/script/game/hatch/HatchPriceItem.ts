@@ -67,7 +67,7 @@ export class HatchPriceItem extends Component {
             const letNum = Math.floor(smc.account.AccountModel.CoinData.gemsCoin) - Math.floor(this._priceData.purNeedCoinNum);
             console.log(`剩余宝石数量:${smc.account.AccountModel.CoinData.gemsCoin},所需宝石:${this._priceData.purNeedCoinNum}`);
             if (letNum < 0) {
-                oops.gui.toast("宝石不足,请购买");
+                oops.gui.toast("tips_gem_noenough", true);
                 oops.gui.open(UIID.GemShop);
                 oops.gui.remove(UIID.HatchShop, false);
                 return;
@@ -81,7 +81,7 @@ export class HatchPriceItem extends Component {
 
             smc.account.updateCoinData(); // 刷新金币数量
             oops.message.dispatchEvent(UserHatchEvent.HatchRemailChange, res.userHatch.remainNum);
-            oops.gui.toast("购买成功");
+            oops.gui.toast("tips_buy_sucess", true);
             return;
         }
 

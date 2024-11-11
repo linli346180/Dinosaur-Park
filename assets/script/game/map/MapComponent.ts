@@ -171,8 +171,8 @@ export class MapComponent extends Component {
         this.mapNodes.forEach((value, key) => {
             value.children.forEach((node) => {
                 const cmp = node.getComponent(ActorController);
-                node.getComponent(Collider2D).enabled = false;
                 if (cmp && cmp.stbId == stb) {
+                    node.getComponent(Collider2D).enabled = false;
                     this.delList.push(stb);
                     cmp.onActorDeath();
                     return;
