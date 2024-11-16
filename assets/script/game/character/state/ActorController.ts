@@ -1,5 +1,5 @@
 import { _decorator, Component, math, v3, Vec2, Vec3, Color, UITransform, size, Sprite, Quat, macro } from 'cc';
-import { IStartBeastData } from '../../account/model/AccountModelComp';
+import { StartBeastData } from '../../account/model/AccountModelComp';
 import { RvoCollider } from '../../../RVO/RvoCollider';
 import { GridCollider } from '../../../RVO/Collision/GridCollider';
 import { GridGroup } from '../../../RVO/Collision/GridColliderMgr';
@@ -21,7 +21,7 @@ const tmpP0 = new Vec2();
 @ccclass('ActorController')
 export class ActorController extends Component {
     public stbId: number = 0;  // 星兽ID
-    public stbData: IStartBeastData | undefined; // 星兽数据
+    public stbData: StartBeastData | undefined; // 星兽数据
     public widthLimit: Vec2 = new Vec2();
     public heightLimit: Vec2 = new Vec2();
     public actor: Actor = null!;

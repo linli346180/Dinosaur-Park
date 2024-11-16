@@ -4,6 +4,7 @@ import { UIID } from '../common/config/GameUIConfig';
 import { EmailRewardState, MailRecord } from './EmailDefine';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { EmailDetail } from './EmailDetail';
+import { StringUtil } from '../common/utils/StringUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('EmailItem')
@@ -65,7 +66,7 @@ export class EmailItem extends Component {
         this.mailTitle.string = this.mailRecord.mailTitle;
         this.mailContent.string = this.checkLabelMaxLength(this.mailRecord.mailContent, 19);
         const date = new Date(this.mailRecord.mailTime * 1000);
-        this.mailTime.string = date.toLocaleString();
+        this.mailTime.string = StringUtil.formatTimestamp(this.mailRecord.mailTime);
     }
 
     checkLabelMaxLength(content: string, maxLength: number) {

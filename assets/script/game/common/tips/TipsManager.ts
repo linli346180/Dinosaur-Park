@@ -55,16 +55,17 @@ class TipsManager {
         let newCallbacks: UICallbacks = {
             // 节点添加动画
             onAdded: (node, params) => {
-                node.setScale(0.1, 0.1, 0.1);
-
-                tween(node)
-                    .to(0.2, { scale: new Vec3(1, 1, 1) })
-                    .start();
+                node.setScale(1, 1, 1);
+                // tween(node)
+                //     .to(0.2, { scale: new Vec3(1, 1, 1) }, { easing: 'elasticOut' })
+                //     // .to(0.1, { scale: new Vec3(1, 1, 1) }, { easing: 'elasticIn' })
+                //     .start();
             },
             // 节点删除动画
             onBeforeRemove: (node, next) => {
                 tween(node)
-                    .to(0.2, { scale: new Vec3(0.1, 0.1, 0.1) })
+                    .to(0.1, { scale: new Vec3(1.1, 1.1, 1.1) }, { easing: 'fade' })
+                    .to(0.2, { scale: new Vec3(0.1, 0.1, 0.1) }, { easing: 'fade' })
                     .call(next)
                     .start();
             },

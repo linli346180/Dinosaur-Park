@@ -37,7 +37,7 @@ export class UserCoinView extends Component {
         this.btn_buygem = this.status_gem.getChildByName("btn_buy")?.getComponent(Button)!;
         this.btn_buyusdt = this.status_usdt.getChildByName("btn_buy")?.getComponent(Button)!;
         this.btn_buygem?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.GemShop) }, this);
-        this.btn_buyusdt?.node.on(Button.EventType.CLICK, () => { console.log("buyusdt"); }, this);
+        this.btn_buyusdt?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Wallet) }, this);
 
         this.setupButtonHandler(this.status_gold, AccountCoinType.Gold);
         this.setupButtonHandler(this.status_gem, AccountCoinType.Gems);

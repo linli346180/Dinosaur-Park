@@ -54,7 +54,7 @@ export class LoadingViewComp extends CCVMParentComp {
     private onHandler(event: string, args: any) {
         switch (event) {
             case GameEvent.CloseLoadingUI:
-                console.log("关闭加载界面");
+                // console.log("关闭加载界面");
                 this.CloseUI();
                 break;
         }

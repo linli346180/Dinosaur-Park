@@ -145,7 +145,7 @@ export class HatchView extends Component {
             .call(() => {
                 uiOpacity.opacity = 255;
             })
-            .to(1, {}, { onUpdate: (target, ratio) => { if (ratio) uiOpacity.opacity = 255 - (255 - 155 * ratio); } }) // 透明度减少到 100
+            .to(1, {}, { onUpdate: (target, ratio) => { if (ratio) uiOpacity.opacity = 255 - (255 * ratio); } }) // 透明度减少到 100
             .call(() => {
                 this.videoMask.active = false;
                 uiOpacity.opacity = 255;

@@ -6,6 +6,7 @@ import { sys } from "cc";
  */
 export class TGWebAppInitData {
     // TG参数
+    initData: string;        // 初始化数据
     UserData: TGWebAppUser;  // 用户数据
     Auth_date: number;       // 授权时间
     Hash: string;            // 哈希值
@@ -26,7 +27,7 @@ export class TGWebAppInitData {
         return equipMentCode;
     }
 
-    // 设备码
+    // 设备码(每个设备唯一)
     get DeviceCode() {
         let deviceCode: string | null = localStorage.getItem("deviceCode");
         if (deviceCode == null || deviceCode == '') {
@@ -38,6 +39,7 @@ export class TGWebAppInitData {
     }
 
     constructor() {
+        this.initData = '';
         this.UserData = new TGWebAppUser();
         this.Auth_date = Date.now();
         this.Hash = '';

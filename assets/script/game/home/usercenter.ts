@@ -4,9 +4,6 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { AccountEvent } from '../account/AccountEvent';
 import { UserConfigData } from '../account/AccountDefine';
 import { UIID } from '../common/config/GameUIConfig';
-import { tween } from 'cc';
-import { v3 } from 'cc';
-import { Vec3 } from 'cc';
 import { AccountNetService } from '../account/AccountNet';
 import { AnimUtil } from '../common/utils/AnimUtil';
 const { ccclass, property } = _decorator;
@@ -49,15 +46,22 @@ export class usercenter extends Component {
     btn_cs01: Button = null!;
     @property(Button)
     btn_cs02: Button = null!;
+    @property(Label)
+    label_cs01: Label = null!;
+    @property(Label)
+    label_cs02: Label = null!;
 
     private configData: UserConfigData[] = [];
 
     async onEnable() {
-        AnimUtil.playAnim_Scale(this.node);
-
         // 获取客服链接
         const res = await AccountNetService.getUserConfig('external_link');
-        if (res && res.languageConfigArr) { this.configData = res.languageConfigArr; }
+        if (res && res.languageConfigArr) {
+            this.configData = res.languageConfigArr;
+        }
+
+        this.label_cs01.string = oops.language.getLangByID('user_customer_service') + "1";
+        this.label_cs02.string = oops.language.getLangByID('user_customer_service') + "2";
     }
 
     start() {
@@ -73,21 +77,19 @@ export class usercenter extends Component {
         this.toggle_music.node.on(Toggle.EventType.TOGGLE, this.onToggleMusic, this);
         this.toggle_sound.node.on(Toggle.EventType.TOGGLE, this.onToggleSound, this);
 
-        console.log("显示UI");
         oops.message.on(AccountEvent.ChangeNickName, this.onHandler, this);
         oops.message.on(AccountEvent.ChangeEmail, this.onHandler, this);
         oops.message.on(AccountEvent.ChangeLanguage, this.onHandler, this);
     }
 
     onDestroy() {
-        console.log("销毁UI");
         oops.message.off(AccountEvent.ChangeNickName, this.onHandler, this);
         oops.message.off(AccountEvent.ChangeEmail, this.onHandler, this);
         oops.message.off(AccountEvent.ChangeLanguage, this.onHandler, this);
     }
 
     initUI() {
-        const userData = smc.account.AccountModel.user;
+        const userData = smc.account.AccountModel.userData;
         this.label_id.string = userData.id.toString();
         this.label_name.string = userData.name;
         this.label_email.string = userData.email;
@@ -101,18 +103,17 @@ export class usercenter extends Component {
         if (!url || url.length === 0) {
             return;
         }
-
-        assetManager.loadRemote<ImageAsset>(url, (err, imageAsset) => {
-            if (err) {
-                console.error('Failed to load avatar:', err);
-                return;
-            }
-            const texture = new Texture2D();
-            texture.image = imageAsset;
-            const spriteFrame = new SpriteFrame();
-            spriteFrame.texture = texture;
-            this.avatar.spriteFrame = spriteFrame;
-        });
+        // assetManager.loadRemote<ImageAsset>(url, (err, imageAsset) => {
+        //     if (err) {
+        //         console.error('Failed to load avatar:', err);
+        //         return;
+        //     }
+        //     const texture = new Texture2D();
+        //     texture.image = imageAsset;
+        //     const spriteFrame = new SpriteFrame();
+        //     spriteFrame.texture = texture;
+        //     this.avatar.spriteFrame = spriteFrame;
+        // });
     }
 
     private onHandler(event: string, args: any) {
@@ -125,6 +126,8 @@ export class usercenter extends Component {
                 break;
             case AccountEvent.ChangeLanguage:
                 this.label_language.string = oops.language.languageNames[oops.language.current];
+                this.label_cs01.string = oops.language.getLangByID('user_customer_service') + "1";
+                this.label_cs02.string = oops.language.getLangByID('user_customer_service') + "2";
                 break;
             default:
                 break;
@@ -136,7 +139,7 @@ export class usercenter extends Component {
     }
 
     ChangeEmailClicked() {
-        // smc.account.changeEmail("123@email.com");
+        oops.gui.open(UIID.EmailVerify);
     }
 
     ChangeLanguageClicked() {
@@ -163,13 +166,10 @@ export class usercenter extends Component {
     }
 
     private customerService(kye: string) {
-        for(const item of this.configData) {
-            if(item.languageKey === kye) { 
-                const WebApp = (window as any).Telegram.WebApp;
-                // WebApp.openLink(item.description);
+        for (const item of this.configData) {
+            if (item.languageKey === kye) {
                 window.open(item.description);
             }
         }
     }
-
 }

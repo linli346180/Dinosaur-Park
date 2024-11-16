@@ -39,12 +39,15 @@ export enum UIID {
     Activity,    // USDT活动
     Guide,    // 新手引导
     GuideReward,    // 新手引导
+    Wallet,    // 钱包
+    EmailVerify,    // 邮箱验证
+    WalletDetail,    // 钱包详情
 }
 
 /** 打开界面方式的配置数据 */
 export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.Loading]: { layer: LayerType.Dialog, prefab: "gui/loading/loading" },
-    [UIID.Alert]: { layer: LayerType.Dialog, prefab: "common/prefab/alert" },
+    [UIID.Alert]: { layer: LayerType.System, prefab: "common/prefab/alert", mask: true },
     [UIID.Confirm]: { layer: LayerType.Dialog, prefab: "common/prefab/confirm" },
     [UIID.Demo]: { layer: LayerType.UI, prefab: "gui/demo/demo" },
     [UIID.Notify]: { layer: LayerType.Notify, prefab: "common/prefab/notify" },
@@ -59,6 +62,8 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.Hatch]: { layer: LayerType.UI, prefab: "gui/hatch/prefab/hatch", mask: true },
     [UIID.Activity]: { layer: LayerType.UI, prefab: "gui/activity/activityUI", mask: true },
     [UIID.Guide]: { layer: LayerType.Dialog, prefab: "gui/guide/guideUI", mask: true },
+    [UIID.Wallet]: { layer: LayerType.UI, prefab: "gui/wallet/walletUI", mask: true },
+    [UIID.WalletDetail]: { layer: LayerType.UI, prefab: "gui/wallet/walletDetailUI", mask: true },
 
     [UIID.Book]: { layer: LayerType.Dialog, prefab: "gui/book/prefab/stbReportUI", mask: true, vacancy: true },
     [UIID.Task]: { layer: LayerType.Dialog, prefab: "gui/task/prefab/task" },
@@ -66,14 +71,14 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.User]: { layer: LayerType.Dialog, prefab: "gui/setting/usercenter", mask: true },
     [UIID.DebrisResult]: { layer: LayerType.Dialog, prefab: "gui/debris/prefab/debrisResult", mask: true },
     [UIID.STBShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/stbShop", mask: true },
-    [UIID.GemShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/GemShop", mask: true, vacancy: true },
+    [UIID.GemShop]: { layer: LayerType.Dialog, prefab: "gui/wallet/gemShop", mask: true },
     [UIID.STBMerge]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/STBMergeUI", mask: true },
     [UIID.RewardView]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/rewardPrview", mask: true },
     [UIID.HatchShop]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/hatchShop", mask: true, vacancy: true },
     [UIID.HatchReward]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/hatchReward", mask: true },
     [UIID.EmailDetail]: { layer: LayerType.Dialog, prefab: "gui/email/prefab/emailDetailUI", mask: true },
+
+    [UIID.EmailVerify]: { layer: LayerType.System, prefab: "gui/setting/emailVerify", mask: true },
     [UIID.GuideReward]: { layer: LayerType.System, prefab: "gui/guide/guideReward", mask: true },
-
     [UIID.LanguageUI]: { layer: LayerType.System, prefab: "gui/setting/languageView", mask: true, vacancy: true },
-
 }

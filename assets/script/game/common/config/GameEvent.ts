@@ -26,6 +26,9 @@ export enum GameEvent {
     /** WebSocket连接成功 */
     WebSocketConnected = "WebSocketConnected",
 
+    /** WebSocket连接失败 */
+    WebSocketConnectFail = "WebSocketConnectFail",
+
     /** 网络请求失败 */
     WebRequestFail = "WebRequestFail",
 

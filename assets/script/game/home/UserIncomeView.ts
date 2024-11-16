@@ -8,6 +8,7 @@ import { tween } from 'cc';
 import { STBTypeID } from '../character/STBDefine';
 import { IncomeType } from '../account/model/STBConfigModeComp';
 import { AccountCoinType } from '../account/AccountDefine';
+import { GameEvent } from '../common/config/GameEvent';
 const { ccclass, property } = _decorator;
 
 /** 用户收益提示牌 */
@@ -27,8 +28,21 @@ export class UserIncomeView extends Component {
     start() {
         this.btn_collectGold.node.on(Button.EventType.CLICK, this.UseCollectGold, this);
         this.btn_collectGem.node.on(Button.EventType.CLICK, this.UseCollectGem, this);
+
+        oops.message.on(GameEvent.WebSocketConnectFail, this.onHandler, this);
+
         coinPoolVM.Init();
         this.initUI();
+    }
+
+    protected onDestroy(): void {
+        oops.message.off(GameEvent.WebSocketConnectFail, this.onHandler, this);
+    }
+
+    private onHandler() {
+        console.log("停止金币池更新")
+        this.unschedule(this.updateGoldPool);
+        this.unschedule(this.updateGenPool);
     }
 
     private initUI() {

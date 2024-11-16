@@ -79,7 +79,11 @@ export class RankView extends Component {
         this.toggleGroup.active = this.curRankGroup == RankGroup.Invite;
         if (!this.rankData) return;
 
+        if(this.rankData.userRank.userName == '') {
+            this.rankData.userRank.userName = smc.account.AccountModel.userData.name;
+        }
         this.selfRankItem.initItem(this.rankData.userRank, this.curRankGroup);
+
         this.emptyNode.active = this.rankData.rankList.length == 0;
         this.rankData.rankList.sort((a, b) => { return a.ranking - b.ranking; });
         for (const rankItem of this.rankData.rankList) {

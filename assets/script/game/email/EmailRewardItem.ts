@@ -15,9 +15,7 @@ export class EmailRewardItem extends Component {
     @property(Label)
     num: Label = null!;
 
-    initItem(rewardConfig: EmailReward) {
-        console.log('奖励', rewardConfig);
-    
+    initItem(rewardConfig: EmailReward) {    
         this.num.string =  `x${rewardConfig.awardQuantity}`;
         let itemConfig = new TableItemConfig();
         let itemId = StringUtil.combineNumbers(rewardConfig.awardType, rewardConfig.awardResourceId, 2);

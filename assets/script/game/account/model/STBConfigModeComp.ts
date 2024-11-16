@@ -5,12 +5,14 @@ const { ccclass, property } = _decorator;
 
 @ecs.register('STBConfigMode')
 export class STBConfigModeComp extends ecs.Comp {
+    
     instbConfigData: UserInstbConfigData[] = [];
 
     reset(): void {
         this.instbConfigData = [];
     }
 
+    /** 获取星兽配置数据 */
     GetSTBConfigData(configId: number): UserInstbConfigData | undefined {
         return this.instbConfigData.find((element) => element.id === configId);
     }

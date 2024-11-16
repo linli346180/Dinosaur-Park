@@ -839,7 +839,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": 257.48449999999997,
       "z": 0
     },
     "_lrot": {
@@ -1153,7 +1153,7 @@
     "value": {
       "__type__": "cc.Vec3",
       "x": -334.5,
-      "y": 0,
+      "y": -130,
       "z": 0
     }
   },
@@ -1239,12 +1239,12 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 849,
-      "height": 200
+      "height": 230
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
       "x": 0.5,
-      "y": 0.5
+      "y": 1
     },
     "_id": ""
   },
@@ -1274,7 +1274,7 @@
     "_startAxis": 0,
     "_paddingLeft": 30,
     "_paddingRight": 0,
-    "_paddingTop": 0,
+    "_paddingTop": 30,
     "_paddingBottom": 0,
     "_spacingX": 50,
     "_spacingY": 30,
@@ -1302,7 +1302,7 @@
     "__prefab": {
       "__id__": 59
     },
-    "_alignFlags": 42,
+    "_alignFlags": 41,
     "_target": null,
     "_left": 0,
     "_right": 0,
@@ -2106,9 +2106,6 @@
     "itemPrefab": {
       "__uuid__": "e6f98dec-cb68-46ea-822c-e145c3213d1b",
       "__expectedType__": "cc.Prefab"
-    },
-    "btn_close": {
-      "__id__": 7
     },
     "btn_reward": {
       "__id__": 89

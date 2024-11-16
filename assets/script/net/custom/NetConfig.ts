@@ -3,10 +3,16 @@
 /** 网络配置 */
 class NetConfig {
     public get Server() {
+        if (this.dynamicRoute) {
+            return `https://${this.Route}/`
+        }
         return this.ServerConfigList[this.curEnvironment].Server;
     }
 
     public get WebSock() {
+        if (this.dynamicRoute) {
+            return `${this.Route}/wss`
+        }
         return this.ServerConfigList[this.curEnvironment].WebSock;
     }
 
@@ -14,7 +20,7 @@ class NetConfig {
         return this.ServerConfigList[this.curEnvironment].BotToken;
     }
 
-    private curEnvironment: EnvironmentType = EnvironmentType.Development;
+    private curEnvironment: EnvironmentType = EnvironmentType.PreRelease;
     private ServerConfigList = {
         [EnvironmentType.Development]: {
             Server: "https://konglong.live/",
@@ -33,6 +39,7 @@ class NetConfig {
         }
     };
 
+    public ExampleLogin: boolean = false;   // 是否使用测试账号登陆
     public API: string = "/tgapp/api";
     public VERSION: string = "/v1";
     public PATH: string = "/login";
@@ -41,14 +48,17 @@ class NetConfig {
     public Timeout: number = 10000;
     public Token: string = "";
     public timeDifference: number = 0;    // 服务端和系统的时间差(毫秒)
+    public deviceCode: string = '';       // 设备码
     public GetUrl(PATH: string): string {
         return this.Server + this.API + PATH;
-    }
+    };
+    public dynamicRoute: boolean = false;   // 是否动态路由
+    public Route: string = '';            // 动态路由
 }
 
 /** 网络配置 */
 enum EnvironmentType {
-    Development = '开发环境',   
+    Development = '开发环境',
     PreRelease = '测试环境',
     Production = '发布环境'
 }

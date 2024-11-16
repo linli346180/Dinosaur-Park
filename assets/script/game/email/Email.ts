@@ -65,6 +65,8 @@ export class EmailView extends Component {
 
     // 更新邮件列表
     private updateEmailList(newMailList: MailRecord[]) {
+        newMailList.sort((a, b) => { return a.mailRecordId - b.mailRecordId; });
+
         const currentMailMap = new Map<number, Node>();
         this.content.children.forEach(child => {
             const emailItem = child.getComponent(EmailItem);
@@ -95,10 +97,10 @@ export class EmailView extends Component {
     }
 
     private createEmailItem(mailRecord: MailRecord) {
-        let item = instantiate(this.itemPrefab);
-        if (item) {
-            item.parent = this.content;
-            item.getComponent(EmailItem)?.initItem(mailRecord);
+        let itemNode = instantiate(this.itemPrefab);
+        if (itemNode) {
+            this.content.insertChild(itemNode, 0);
+            itemNode.getComponent(EmailItem)?.initItem(mailRecord);
         }
     }
 
@@ -131,6 +133,6 @@ export class EmailView extends Component {
             for (const type of rewardType) {
                 smc.account.OnClaimAward(type);
             }
-         }, 500);
+        }, 1000);
     }
 }

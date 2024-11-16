@@ -1,6 +1,8 @@
 import { error } from "cc";
 import { Logger } from "../Logger";
 import { CallbackObject, INetworkTips, IProtocolHelper, IRequestProtocol, IResponseProtocol, ISocket, NetCallFunc, NetData } from "./NetInterface";
+import { oops } from "../../../extensions/oops-plugin-framework/assets/core/Oops";
+import { GameEvent } from "../game/common/config/GameEvent";
 
 /*
 *   CocosCreator网络节点基类，以及网络相关接口定义
@@ -266,7 +268,7 @@ export class NetNode {
 
     protected onError(event: any) {
         // error(event);
-        console.error("ScoketError连接错误: " + event.toString());
+        console.error("ScoketError连接错误: " + JSON.stringify(event));
         this.updateNetTips(NetTipsType.Error, true);
     }
 
@@ -288,8 +290,12 @@ export class NetNode {
                 this.connect(this._connectOptions!);
                 if (this._autoReconnect > 0) {
                     this._autoReconnect -= 1;
+                    console.log("剩余重连次数:", this._autoReconnect);
                 }
             }, this._reconnetTimeOut);
+        } else {
+            oops.message.dispatchEvent(GameEvent.WebSocketConnectFail)
+            console.log("重连失败,网络已断开");
         }
     }
 

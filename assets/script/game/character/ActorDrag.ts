@@ -17,6 +17,7 @@ import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets
 import { EDITOR } from 'cc/env';
 import { STBMergeView } from '../shop/STBMerge';
 import { smc } from '../common/SingletonModuleComp';
+import { UserSTBType } from '../account/model/AccountModelComp';
 const { ccclass } = _decorator;
 
 @ccclass('ActorDrag')
@@ -54,7 +55,7 @@ export class ActorDrag extends Component {
       console.log('碰撞到了', otherCollider.node.name);
       let stbID1 = this.actorCtrl?.stbId ?? 0;
       let stbID2 = otherCollider.node.getComponent(ActorController)?.stbId ?? 0;
-      if (stbID1 === 0 || stbID2 === 0 || smc.account.getUserSTBData(stbID2) == null) return;
+      if (stbID1 === 0 || stbID2 === 0 || smc.account.getUserSTBData(stbID2, UserSTBType.InCome) == null) return;
 
       var uic: UICallbacks = {
         onAdded: (node: Node, params: any) => {

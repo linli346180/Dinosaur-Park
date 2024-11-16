@@ -1,6 +1,6 @@
 import { _decorator } from 'cc';
 import { ecs } from '../../../../../extensions/oops-plugin-framework/assets/libs/ecs/ECS';
-import { AccountModelComp, IStartBeastData } from '../model/AccountModelComp';
+import { AccountModelComp, StartBeastData } from '../model/AccountModelComp';
 import { Account } from '../Account';
 import { oops } from '../../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { AccountNetService } from '../AccountNet';
@@ -39,10 +39,9 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
         // 获取用户星兽数据
         const res = await AccountNetService.GetUserSTBData();
         if (res && res.userInstbData != null) {
-           
             // 收益星兽
             if (res.userInstbData.UserInstb != null) {
-                entity.AccountModel.UserInstb = res.userInstbData.UserInstb;
+                entity.AccountModel.setUserInstb(res.userInstbData.UserInstb);
             } else {
                 console.log("收益星兽为空");
             }
@@ -51,7 +50,7 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
             if (res.userInstbData.UserNinstb != null) {
                 for (const stbItem of res.userInstbData.UserNinstb) {
                     if (stbItem.stbConfigID > 0) {
-                        entity.AccountModel.UserNinstb.push(stbItem);
+                        entity.AccountModel.addUserUnInComeSTB(stbItem);
                     } else {
                         console.log("星兽配置ID为空");
                     }

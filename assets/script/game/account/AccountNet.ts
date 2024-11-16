@@ -16,32 +16,34 @@ export namespace AccountNetService {
         const http = new HttpManager();
         http.server = netConfig.Server;
         http.timeout = netConfig.Timeout;
-        const initData = {
-            'user': JSON.stringify(data.UserData),
-            'chat_instance': data.chat_instance,
-            'chat_type': data.chat_type,
-            'auth_date': data.Auth_date.toString(),
-            'hash': data.Hash,
-        };
-        let initDataString = new URLSearchParams(initData).toString();
-        if (data.start_param != '') {
-            initDataString += `&start_param=${data.start_param}`;
-        }
-        console.warn("TG登录参数:" + initDataString);
+
+        // const initData = {
+        //     'user': JSON.stringify(data.UserData),
+        //     'chat_instance': data.chat_instance,
+        //     'chat_type': data.chat_type,
+        //     'auth_date': data.Auth_date.toString(),
+        //     'hash': data.Hash,
+        // };
+        // let initDataString = new URLSearchParams(initData).toString();
+        // if (data.start_param != '') {
+        //     initDataString += `&start_param=${data.start_param}`;
+        // }
+        // console.warn("TG登录参数:" + initDataString);
 
         // 登录参数
         const params = JSON.stringify({
             loginType: 1,
-            initData: initDataString,
+            initData: data.initData,
             avatarUrl: data.AvatarUrl,
             inviteSign: data.inviteSign,
             inviteType: data.inviteType,
             deviceCode: data.DeviceCode,
-            loginEquipMent: data.LoginEquipMent
+            // loginEquipMent: data.LoginEquipMent
         });
 
+        netConfig.deviceCode = data.DeviceCode;
         console.warn("登录参数:" + params);
-        
+
         const response = await http.postUrlNoHead("tgapp/api/login", params);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn(`TG账号登录成功${http.url}`, response.res);
@@ -50,6 +52,24 @@ export namespace AccountNetService {
             return response.res;
         } else {
             console.error(`TG账号登录失败${http.url}`, response);
+            return null;
+        }
+    }
+
+    /** 获取用户所在的路由 */
+    export async function getUserRoute(tgId: string) {
+        const http = new HttpManager();
+        http.server = netConfig.Server;
+        http.timeout = netConfig.Timeout;
+        const response = await http.getUrl(`api/rl?account=${tgId}&loginRegisWay=1`);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success && response.res.url != null) {
+            console.warn(`获取用户所在的路由${http.url}`, response.res);
+            netConfig.dynamicRoute = true;
+            netConfig.Route = response.res.url
+            return response.res;
+        } else {
+            netConfig.dynamicRoute = false;
+            console.error(`获取用户所在的路由异常${http.url}`, response);
             return null;
         }
     }
@@ -63,7 +83,7 @@ export namespace AccountNetService {
             'loginType': 3,
             'account': netConfig.Account,
             'password': netConfig.Password,
-            'loginEquipMent': TGWebAppInitData.GenerateGUID()
+            // 'loginEquipMent': TGWebAppInitData.GenerateGUID()
         };
         // const paramString = new URLSearchParams(params).toString();
         const response = await http.postUrlNoHead("tgapp/api/login", JSON.stringify(params));
@@ -309,7 +329,9 @@ export namespace AccountNetService {
         }
     }
 
-    /** 获取系统配置 */
+    /** 获取系统配置
+     * @param typeKey 配置类型  presell_explan = 预购说明  game_explan = 游戏说明 language = 语言类型 external_link = 外部邀请链接
+     */
     export async function getUserConfig(typeKey: string) {
         const http = createHttpManager();
         const response = await http.getUrl(`tgapp/api/language/getConfigList?token=${netConfig.Token}&typeKey=${typeKey}`);
@@ -322,8 +344,8 @@ export namespace AccountNetService {
         }
     }
 
-     /** 购买宝石配置 */
-     export async function getBugGemConfig() {
+    /** 购买宝石配置 */
+    export async function getBugGemConfig() {
         const http = createHttpManager();
         const response = await http.getUrl(`tgapp/api/user/buy/gems/config?token=${netConfig.Token}`);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
@@ -364,6 +386,4 @@ export namespace AccountNetService {
         http.timeout = netConfig.Timeout;
         return http;
     }
-
-
 }

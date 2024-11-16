@@ -26,7 +26,7 @@ export class NetChannelManager {
     gameConnect() {
         NetManager.getInstance().connect({
             url: `wss://${netConfig.WebSock}?token=${netConfig.Token}`,
-            autoReconnect: 3        // 重连接设置
+            autoReconnect: 5        // 重连接设置
         }, NetChannelType.Game);
     }
 

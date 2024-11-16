@@ -5,7 +5,7 @@ import { AccountEvent } from '../account/AccountEvent';
 import { smc } from '../common/SingletonModuleComp';
 import { ISTBConfigData, STBConfigData } from '../character/STBConfig';
 import { ViewUtil } from '../../../../extensions/oops-plugin-framework/assets/core/utils/ViewUtil';
-import { IStartBeastData } from '../account/model/AccountModelComp';
+import { StartBeastData, UserSTBType } from '../account/model/AccountModelComp';
 import { ActorController } from '../character/state/ActorController';
 import { RvoMgr } from '../../RVO/RvoMgr';
 import { Logger } from '../../Logger';
@@ -122,7 +122,7 @@ export class MapComponent extends Component {
 
     /** 创建星兽对象 */
     private async createSTBItem(stbId: number) {
-        const stbData: IStartBeastData | null = smc.account.getUserSTBData(stbId);
+        const stbData: StartBeastData | null = smc.account.getUserSTBData(stbId, UserSTBType.InCome);
         if (stbData) {
             const stbConfig = smc.account.getSTBConfigById(stbData.stbConfigID);
             if (!stbConfig) {

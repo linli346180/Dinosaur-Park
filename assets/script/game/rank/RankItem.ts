@@ -1,17 +1,21 @@
 import { _decorator, Component, Node, Label } from 'cc';
 import { RankData, RankGroup } from './RankDefine';
+import { StringUtil } from '../common/utils/StringUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('RankItem')
 export class RankItem extends Component {
+    @property(Node)
+    rankIcon: Node = null!;
     @property(Node)
     level1: Node = null!;
     @property(Node)
     level2: Node = null!;
     @property(Node)
     level3: Node = null!;
+
     @property(Label)
-    ranking: Label = null!;
+    rankNum: Label = null!;
     @property(Label)
     userName: Label = null!;
     @property(Label)
@@ -23,22 +27,24 @@ export class RankItem extends Component {
     richIcon: Node = null!;
 
     initItem(data: RankData, rankGroup: RankGroup) {
-        if (data == null)
-            return;
+        // console.log('排行榜数据:', data);
+        if (!data) return;
+
         this.userName.string = data.userName;
-        this.inviteCount.string = data.inviteCount.toString();
-        this.level1.active = data.ranking == 1;
-        this.level2.active = data.ranking == 2;
-        this.level3.active = data.ranking == 3;
-        if (data.ranking == 0) {
-            this.ranking.string = '99+';
-        }
-        if (data.ranking > 3) {
-            this.ranking.string = data.ranking.toString();
-        }
-        this.inviteIcon.active = rankGroup == RankGroup.Invite;
-        this.richIcon.active = rankGroup == RankGroup.Rich;
+        this.inviteCount.string =  StringUtil.formatMoney(data.inviteCount,2).toString();
+        this.inviteIcon.active = rankGroup === RankGroup.Invite;
+        this.richIcon.active = rankGroup === RankGroup.Rich;
+
+        this.updateRankingDisplay(Math.floor(data.ranking));
+    }
+
+    private updateRankingDisplay(ranking: number) {
+        const isTopThree = ranking > 0 && ranking <= 3;
+        this.rankIcon.active = isTopThree;
+        this.rankNum.string = isTopThree ? '' : ranking > 3 ? ranking.toString() : '99+';
+
+        this.level1.active = ranking === 1;
+        this.level2.active = ranking === 2;
+        this.level3.active = ranking === 3;
     }
 }
-
-

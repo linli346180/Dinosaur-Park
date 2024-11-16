@@ -46,6 +46,8 @@ export class EmailDetail extends Component {
     }
 
     initUI(mailRecord: MailRecord) {
+        console.log("邮件明细:", mailRecord);
+
         this.mailRecord = mailRecord;
         if (this.mailRecord.readState == EmailReadState.unread) {
             EmailNetService.readEmail(this.mailRecord.mailRecordId);

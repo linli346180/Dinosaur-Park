@@ -4,7 +4,7 @@ import { GameEvent } from "../common/config/GameEvent";
 import { UIID } from "../common/config/GameUIConfig";
 import { AccountEvent } from "./AccountEvent";
 import { AccountNetService } from "./AccountNet";
-import { AccountModelComp, IStartBeastData } from "./model/AccountModelComp";
+import { AccountModelComp, StartBeastData, UserSTBType } from "./model/AccountModelComp";
 import { IsIncome, STBConfigModeComp, UserInstbConfigData } from "./model/STBConfigModeComp";
 import { AccountNetDataComp } from "./system/AccountNetData";
 import { AccountEmailComp } from "./system/ChangeEmail";
@@ -15,6 +15,8 @@ import { netConfig } from "../../net/custom/NetConfig";
 import { StringUtil } from "../common/utils/StringUtil";
 import { AccountCoinType, AwardType } from "./AccountDefine";
 import { AccountLoginComp } from "./system/AccountLogin";
+import { net } from "electron";
+import { netChannel } from "../../net/custom/NetChannelManager";
 
 /** 账号模块 */
 @ecs.register('Account')
@@ -41,6 +43,7 @@ export class Account extends ecs.Entity {
         oops.message.on(GameEvent.DataInitialized, this.onHandler, this);
         oops.message.on(GameEvent.GuideFinish, this.onHandler, this);
         oops.message.on(GameEvent.WebSocketConnected, this.onHandler, this);
+        oops.message.on(GameEvent.WebSocketConnectFail, this.onHandler, this);
         oops.message.on(GameEvent.WebRequestFail, this.onHandler, this);
     }
 
@@ -50,6 +53,7 @@ export class Account extends ecs.Entity {
         oops.message.off(GameEvent.DataInitialized, this.onHandler, this);
         oops.message.off(GameEvent.GuideFinish, this.onHandler, this);
         oops.message.off(GameEvent.WebSocketConnected, this.onHandler, this);
+        oops.message.off(GameEvent.WebSocketConnectFail, this.onHandler, this);
         oops.message.off(GameEvent.WebRequestFail, this.onHandler, this);
         super.destroy();
     }
@@ -65,7 +69,7 @@ export class Account extends ecs.Entity {
             // 2. 登陆成功
             case GameEvent.LoginSuccess:
                 console.log("2.登陆成功");
-                oops.storage.setUser(this.AccountModel.user.id.toString());
+                oops.storage.setUser(this.AccountModel.userData.id.toString());
                 oops.audio.load();
                 this.loadUserLanguage();
 
@@ -100,9 +104,16 @@ export class Account extends ecs.Entity {
                 oops.message.dispatchEvent(GameEvent.CloseLoadingUI);
                 break;
 
-            // 6. 网络请求失败
+            // 6. WebSocket连接失败
+            case GameEvent.WebSocketConnectFail:
+                tips.alert(oops.language.getLangByID('net_tips_fetch_fail'), () => {
+                    // (window as any).Telegram.WebApp.close();
+                });
+                break
+
+            // 7. 网络请求失败
             case GameEvent.WebRequestFail:
-                this.OnWebRequestFail(args);
+                oops.gui.toast(args);
                 break
         }
     }
@@ -131,22 +142,6 @@ export class Account extends ecs.Entity {
         oops.language.setLanguage(lan, (a) => { });
     }
 
-    changeAvatar(avatar: string) {
-
-    }
-
-    /** 修改昵称 */
-    changeNickname(nickname: string) {
-        let comp = this.add(AccountNickNameComp);
-        comp.nickname = nickname;
-    }
-
-    /** 修改邮箱 */
-    changeEmail(email: string) {
-        let comp = this.add(AccountEmailComp);
-        comp.email = email;
-    }
-
     /** 领取奖励 */
     public OnClaimAward(awardType: AwardType) {
         switch (awardType) {
@@ -167,6 +162,7 @@ export class Account extends ecs.Entity {
         }
     }
 
+    // 更新收益星兽数据
     async updateInstbData() {
         const res = await AccountNetService.GetUserSTBData();
         let idList: number[] = [];
@@ -180,7 +176,7 @@ export class Account extends ecs.Entity {
                     continue;
 
                 idList.push(stbId);
-                if (this.getUserSTBData(stbId) == null) {
+                if (this.getUserSTBData(stbId, UserSTBType.InCome) == null) {
                     this.AccountModel.addInComeSTBData(stbItem);
                     oops.message.dispatchEvent(AccountEvent.AddInComeSTB, stbId);
                 }
@@ -188,7 +184,7 @@ export class Account extends ecs.Entity {
 
             // 删除已经不存在的星兽
             let delList: number[] = [];
-            for (const stbItem of this.AccountModel.UserInstb) {
+            for (const stbItem of this.AccountModel.getUserInstb()) {
                 if (!idList.includes(stbItem.id)) {
                     delList.push(stbItem.id);
                 }
@@ -198,7 +194,6 @@ export class Account extends ecs.Entity {
             }
         }
     }
-
 
     /**
      *  领养星兽
@@ -213,15 +208,15 @@ export class Account extends ecs.Entity {
                 this.updateCoinData();
             }
 
-            const STBData: IStartBeastData = res.userInstbSynthReData;
+            const STBData: StartBeastData = res.userInstbSynthReData;
             let stbConfig = this.STBConfigMode.GetSTBConfigData(STBData.stbConfigID);
             if (stbConfig) {
                 if (stbConfig.isIncome == IsIncome.Yes) {
-                    this.AccountModel.UserInstb.push(STBData);
+                    this.AccountModel.addInComeSTBData(STBData);
                     console.log("领养收益星兽: ", STBData.id + " 名称:" + stbConfig.stbName);
                     oops.message.dispatchEvent(AccountEvent.AddInComeSTB, STBData.id);
                 } else {
-                    this.AccountModel.UserNinstb.push(STBData);
+                    this.AccountModel.addUserUnInComeSTB(STBData);
                     console.log("领养无收益星兽: ", STBData.id + " 名称:" + stbConfig.stbName + " 自动领养:" + autoAdop);
                     oops.message.dispatchEvent(autoAdop ? AccountEvent.AutoAddUnIncomeSTB : AccountEvent.AddUnIncomeSTB, STBData.id);
                 }
@@ -235,21 +230,22 @@ export class Account extends ecs.Entity {
     public OnRecevieMessage(cmd: number, data: any) {
         switch (cmd) {
             case NetCmd.UserNinstbType:
-                console.log("自动领养1级黄金星兽");
-                const STBData: IStartBeastData = data;
+                const STBData: StartBeastData = data;
                 let stbConfig = this.STBConfigMode.GetSTBConfigData(STBData.stbConfigID);
                 if (stbConfig) {
-                    this.AccountModel.UserNinstb.push(STBData)
+                    this.AccountModel.addUserUnInComeSTB(STBData);
                     oops.message.dispatchEvent(AccountEvent.AutoAddUnIncomeSTB, STBData.id);
+                } else {
+                    console.error("星兽配置不存在:", STBData.id);
                 }
                 break;
 
             case NetCmd.DownLineType:
-                console.error("用户下线通知");
-                // oops.gui.toast("用户下线通知");
-                // tips.alert("异地登录退出应用", () => {
-                //     (window as any).Telegram.WebApp.close();
-                // }, "确认");
+                if (data == null || data.toString() == netConfig.deviceCode) return;
+                netChannel.gameClose();
+                tips.alert(oops.language.getLangByID('net_tips_multi_device_login'), () => {
+                    (window as any).Telegram.WebApp.close();
+                });
                 break;
 
             case NetCmd.NinstbDeathType:
@@ -283,14 +279,6 @@ export class Account extends ecs.Entity {
         }
     }
 
-    /** 网络请求失败处理 */
-    OnWebRequestFail(msg: string) {
-        oops.gui.toast(msg);
-        if (msg.includes('不足')) {
-            this.updateCoinData();
-        }
-    }
-
     /**
      * 合并无收益星兽
      * @param stbID_to - The ID of the STB to merge into.
@@ -300,12 +288,12 @@ export class Account extends ecs.Entity {
     async mergeUnIncomeSTBNet(stbID_to: number, stbID_del: number, callback: (success: boolean) => void) {
         const res = await AccountNetService.mergeGoldNinSTB(stbID_to, stbID_del);
         if (res && res.userNinstb != null) {
-            const STBData: IStartBeastData = res.userNinstb;
+            const STBData: StartBeastData = res.userNinstb;
             const stbConfigID = STBData.stbConfigID;
             let stbConfig = this.STBConfigMode.GetSTBConfigData(stbConfigID);
             if (stbConfig) {
                 if (stbConfig.isIncome == IsIncome.Yes) {
-                    console.log("升级十级星兽:", STBData.id);
+                    // console.log("升级十级星兽:", STBData.id);
                     this.AccountModel.addInComeSTBData(STBData);
                     this.AccountModel.delUserUnIncomeSTB(stbID_to);
                     this.AccountModel.delUserUnIncomeSTB(stbID_del);
@@ -314,7 +302,7 @@ export class Account extends ecs.Entity {
                     oops.message.dispatchEvent(AccountEvent.EvolveUnIncomeSTB, stbID_to);
                 }
                 else {
-                    console.log("升级星兽:", STBData.id);
+                    // console.log("升级星兽:", STBData);
                     this.AccountModel.updateUnIncomeSTBData(STBData);
                     this.AccountModel.delUserUnIncomeSTB(stbID_del);
                     oops.message.dispatchEvent(AccountEvent.DelUnIncomeSTB, stbID_del);
@@ -374,11 +362,10 @@ export class Account extends ecs.Entity {
 
     /** 设置无收益星兽位置 */
     setUserNinstbSlot(stbId: number, slotId: number): boolean {
-        let stbData = this.AccountModel.UserNinstb;
-        const index = stbData.findIndex((element) => element.id === stbId);
-        if (index !== -1) {
-            stbData[index].stbPosition = slotId;
-            return true;
+        let stbData = this.getUserSTBData(stbId);
+        if (stbData) {
+            stbData.stbPosition = slotId;
+            return this.AccountModel.updateUnIncomeSTBData(stbData);
         }
         return false;
     }
@@ -389,7 +376,7 @@ export class Account extends ecs.Entity {
      * @returns 存活时间, 0:已经死亡, >0:剩余存活时间(秒) -1:不限制存活时间
      */
     getSTBSurvivalSec(stbId: number): number {
-        let stbData = this.getUserSTBData(stbId);
+        let stbData = this.getUserSTBData(stbId, UserSTBType.InCome);
         if (stbData) {
             const stbConfigID = stbData.stbConfigID;
             let stbConfig = this.STBConfigMode.GetSTBConfigData(stbConfigID);
@@ -411,17 +398,17 @@ export class Account extends ecs.Entity {
      * @param isIncome - 是否为收益星兽
      * @returns 返回星兽数据
      */
-    getUserSTBData(stbId: number): IStartBeastData | null {
-        // 先在 UserInstb 中查找
-        if (this.AccountModel.UserInstb) {
-            const foundData = this.AccountModel.UserInstb.find((element) => element.id === stbId);
-            if (foundData) { return foundData; }
-        }
-
-        // 如果在 UserInstb 中未找到，再在 UserNinstb 中查找
-        if (this.AccountModel.UserNinstb) {
-            const foundData = this.AccountModel.UserNinstb.find((element) => element.id === stbId);
-            if (foundData) { return foundData; }
+    getUserSTBData(stbId: number, stbType: UserSTBType = UserSTBType.UnInCome): StartBeastData | null {
+        if (stbType == UserSTBType.InCome) {
+            const foundData = this.AccountModel.getUserInstb().find((element) => element.id === stbId);
+            if (foundData) {
+                return foundData;
+            }
+        } else {
+            const foundData = this.AccountModel.getUserNinstb().find((element) => element.id === stbId);
+            if (foundData) {
+                return foundData;
+            }
         }
 
         // 如果都未找到，返回 null
@@ -447,31 +434,27 @@ export class Account extends ecs.Entity {
     }
 
     /** 获取指定类型的星兽数据 */
-    getSTBDataByConfigType(configIds: number[]): IStartBeastData[] {
-        let dataList: IStartBeastData[] = [];
-        if (this.AccountModel.UserNinstb) {
-            this.AccountModel.UserNinstb.forEach((element) => {
-                const config = this.getSTBConfigById(element.stbConfigID)
-                if (config) {
-                    const itemID = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
-                    if (configIds.includes(itemID)) {
-                        dataList.push(element);
-                    }
+    getSTBDataByConfigType(configIds: number[]): StartBeastData[] {
+        let dataList: StartBeastData[] = [];
+        this.AccountModel.getUserNinstb().forEach((element) => {
+            const config = this.getSTBConfigById(element.stbConfigID)
+            if (config) {
+                const itemID = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+                if (configIds.includes(itemID)) {
+                    dataList.push(element);
                 }
-            });
-        }
+            }
+        });
 
-        if (this.AccountModel.UserInstb) {
-            this.AccountModel.UserInstb.forEach((element) => {
-                const config = this.getSTBConfigById(element.stbConfigID)
-                if (config) {
-                    const itemID = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
-                    if (configIds.includes(itemID)) {
-                        dataList.push(element);
-                    }
+        this.AccountModel.getUserInstb().forEach((element) => {
+            const config = this.getSTBConfigById(element.stbConfigID)
+            if (config) {
+                const itemID = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
+                if (configIds.includes(itemID)) {
+                    dataList.push(element);
                 }
-            });
-        }
+            }
+        });
         return dataList;
     }
 

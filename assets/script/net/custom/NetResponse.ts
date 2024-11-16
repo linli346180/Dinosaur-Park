@@ -18,7 +18,6 @@ export interface NetBody {
     data: any;
 }
 
-
 // 网络返回数据基类
 export class NetResponseBase {
     resultCode: string = "";

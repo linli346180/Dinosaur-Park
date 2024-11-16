@@ -11,9 +11,7 @@ import { INetworkTips } from "../NetInterface";
 export class NetGameTips implements INetworkTips {
     /** 连接提示 */
     async connectTips(isShow: boolean) {
-        if (isShow) {
-            Logger.logNet("WebSocket游戏服务器正在连接");
-        }
+        // Logger.logNet("WebSocket游戏服务器正在连接");
     }
 
     /** 重连接提示 */
@@ -23,19 +21,16 @@ export class NetGameTips implements INetworkTips {
 
     /** 请求提示 */
     requestTips(isShow: boolean): void {
-        if (isShow) {
-            Logger.logNet("WebSocket发送请求提示");
-        }
+        Logger.logNet("WebSocket发送请求提示");
     }
 
     /** 断开连接提示 */
     disconnectTips(isShow: boolean): void {
-        if (isShow)
-            Logger.logNet("WebSocket断开连接提示");
+        Logger.logNet("WebSocket断开连接提示");
+          
     }
 
     errorTips(isShow: boolean): void {
-        if (isShow)
-            Logger.logNet("WebSocket错误提示");
+        Logger.logNet("WebSocket错误提示"); 
     }
 }

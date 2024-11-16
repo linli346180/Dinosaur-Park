@@ -1,5 +1,5 @@
 import { NetErrorCode } from "../../net/custom/NetErrorCode";
-import { IStartBeastData } from "./model/AccountModelComp";
+import { StartBeastData } from "./model/AccountModelComp";
 
 
 /** 用户货币数据 */
@@ -17,7 +17,7 @@ export interface IMergeResponse {
     isSucc: boolean;
     resultCode: NetErrorCode;
     resultMsg: string;
-    userInStb: IStartBeastData
+    userInStb: StartBeastData
 }
 
 

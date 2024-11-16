@@ -80,7 +80,7 @@
         "_value": false
       },
       "particle-2d": {
-        "_value": false
+        "_value": true
       },
       "audio": {
         "_value": true
@@ -107,7 +107,7 @@
         "_value": false
       },
       "tiled-map": {
-        "_value": false
+        "_value": true
       },
       "spine": {
         "_value": true
@@ -122,7 +122,7 @@
         "_value": false
       },
       "custom-pipeline": {
-        "_value": true
+        "_value": false
       },
       "gfx-webgpu": {
         "_value": false
@@ -131,7 +131,6 @@
         "_value": false
       },
       "render-pipeline": {
-        "_value": true,
         "_option": "legacy-pipeline"
       },
       "legacy-pipeline": {
@@ -145,13 +144,14 @@
       "animation",
       "audio",
       "base",
-      "custom-pipeline",
       "dragon-bones",
       "gfx-webgl",
       "intersection-2d",
       "meshopt",
+      "particle-2d",
       "physics-2d-builtin",
       "spine",
+      "tiled-map",
       "tween",
       "ui",
       "video",

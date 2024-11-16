@@ -13,18 +13,18 @@ export namespace TGNetService {
             script.onload = async () => {
                 try {
                     const WebApp = (window as any).Telegram.WebApp;
-                    const initData = JSON.stringify(WebApp.initDataUnsafe);
-
-                    if (initData == null || initData == undefined || initData == '') {
-                        Logger.logNet('Failed to get initDataUnsafe:', initData);
-                        reject(initData);
+                    const initDataUnsafe = JSON.stringify(WebApp.initDataUnsafe);
+                    if (initDataUnsafe == null || initDataUnsafe == undefined || initDataUnsafe == '') {
+                        Logger.logNet('Failed to get initDataUnsafe:', initDataUnsafe);
+                        reject(initDataUnsafe);
                     }
+                    console.log('TG数据:', WebApp.initDataUnsafe);
 
-                    console.log('TG数据:', WebApp.initData);
-
-                    const parsedData = JSON.parse(initData);
+                    const parsedData = JSON.parse(initDataUnsafe);
                     if (parsedData) {
                         const TGAppData = new TGWebAppInitData();
+                        TGAppData.initData = WebApp.initData;
+                        
                         TGAppData.Auth_date = parsedData.auth_date;
                         TGAppData.Hash = parsedData.hash;
                         TGAppData.UserData = parsedData.user;
@@ -37,26 +37,29 @@ export namespace TGNetService {
                         let start_param = params.get("start_param") || '';
                         const parts = start_param.split('_');
                         TGAppData.start_param = start_param;
-                        TGAppData.inviteSign = parts.length > 0 ? parts[0]:'';
-                        TGAppData.inviteType = parts.length > 1 ? parseInt(parts[1]):0;
+                        TGAppData.inviteSign = parts.length > 0 ? parts[0] : '';
+                        TGAppData.inviteType = parts.length > 1 ? parseInt(parts[1]) : 0;
 
                         // 获取用户头像下载地址
                         const userId: string = TGAppData.UserData.id.toString();
                         let fileId = await getUserProfilePhotos(userId);
                         let fileUrl = await getPhotoFile(fileId);
+                        console.log('头像地址1:', fileUrl);
+                        console.log('头像地址2:', TGAppData.AvatarUrl);
                         TGAppData.AvatarUrl = fileUrl;
+                    
                         resolve(TGAppData);
                     } else {
-                        Logger.logNet('Failed to get initDataUnsafe:', initData);
-                        reject(initData);
+                        console.error('Failed to get initDataUnsafe:', initDataUnsafe);
+                        reject(initDataUnsafe);
                     }
                 } catch (error) {
-                    // Logger.logNet('Error during TG login:', error.toString());
+                    console.error('Error during TG login:', error.toString());
                     reject(error);
                 }
             };
             script.onerror = (error) => {
-                Logger.logNet('Failed to load Telegram WebApp script:', error.toString());
+                console.error('Failed to load Telegram WebApp script:', error.toString());
                 reject(error);
             };
             document.head.appendChild(script);
@@ -66,20 +69,15 @@ export namespace TGNetService {
     /** 获取用户头像 */
     async function getUserProfilePhotos(userId: string) {
         const url = `https://api.telegram.org/bot${netConfig.BotToken}/getUserProfilePhotos?user_id=${userId}`;
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            if (data.ok) {
-                if (data.result.photos.length > 0) {
-                    const photo = data.result.photos[0][0];
-                    return photo.file_id;
-                }
-            } else {
-                Logger.logNet('Failed to get user profile photos:', data.description);
-                return '';
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.ok) {
+            if (data.result.photos.length > 0) {
+                const photo = data.result.photos[0][0];
+                return photo.file_id;
             }
-        } catch (error) {
-            // Logger.logNet('Error:', error);
+        } else {
+            Logger.logNet('Failed to get user profile photos:', data.description);
             return '';
         }
     }
@@ -87,21 +85,17 @@ export namespace TGNetService {
     /** 获取头像下载链接 */
     async function getPhotoFile(fileId: string) {
         const url = `https://api.telegram.org/bot${netConfig.BotToken}/getFile?file_id=${fileId}`
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            if (data.ok) {
-                const filePath = data.result.file_path;
-                const fileUrl = `https://api.telegram.org/file/bot${netConfig.BotToken}/${filePath}`;
-                console.warn('Photo File path:', fileUrl);
-                return fileUrl;
-            } else {
-                Logger.logNet('Failed to get File:', data.description);
-                return '';
-            }
-        } catch (error) {
-            // Logger.logNet('Error:', error.toString());
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.ok) {
+            const filePath = data.result.file_path;
+            const fileUrl = `https://api.telegram.org/file/bot${netConfig.BotToken}/${filePath}`;
+            return fileUrl;
+        } else {
+            Logger.logNet('Failed to get File:', data.description);
             return '';
         }
     }
+
+
 }

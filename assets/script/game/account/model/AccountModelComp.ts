@@ -6,80 +6,97 @@ import { AccountType, RegisterType, UserCoinData, UserCoinIncome, UserData } fro
  */
 @ecs.register('AccountModel')
 export class AccountModelComp extends ecs.Comp {
-    user: UserData = new UserData(); // 用户数据
+    userData: UserData = new UserData(); // 用户数据
     coinPoolData: UserCoinIncome = new UserCoinIncome(); // 户货币数据(待领取)
     CoinData: UserCoinData = new UserCoinData(); // 户货币数据
-    UserInstb: IStartBeastData[] = [];    //用户收益星兽列表
-    UserNinstb: IStartBeastData[] = [];  //用户无收益星兽列表
+
+    private UserInstb: StartBeastData[] = [];    //用户收益星兽列表
+    private UserNinstb: StartBeastData[] = [];  //用户无收益星兽列表
+
+    public getUserInstb(): StartBeastData[] {
+        return [...this.UserInstb];
+    }
+
+    public setUserInstb(value: StartBeastData[]) {
+        this.UserInstb = value;
+    }
+
+    public getUserNinstb(): StartBeastData[] {
+        return [...this.UserNinstb];
+    }
+
+    public setUserNinstb(value: StartBeastData[]) {
+        this.UserNinstb = value;
+    }
 
     reset() {
-        this.user = new UserData();
+        this.userData = new UserData();
+    }
+
+    /** 添加星兽数据 */
+    private addSTBData(STBData: StartBeastData, list: StartBeastData[]): boolean {
+        const index = list.findIndex(element => element.id === STBData.id);
+        if (index === -1) {
+            list.push({ ...STBData });
+            return true;
+        }
+        console.error("星兽已存在,添加失败:", STBData.id, list.length);
+        return false;
+    }
+
+    /** 删除星兽数据 */
+    private delSTBData(stbId: number, list: StartBeastData[]): boolean {
+        const index = list.findIndex(element => element.id === stbId);
+        if (index !== -1) {
+            list.splice(index, 1);
+            return true;
+        }
+        console.error("星兽不存在,删除星兽:", stbId, list.length);
+        return false;
     }
 
     /** 添加有收益星兽 */
-    addInComeSTBData(STBData: IStartBeastData): boolean {
-        let stbId = STBData.id;
-        const index = this.UserInstb.findIndex((element) => element.id === stbId);
-        if (index == -1) {
-            this.UserInstb.push(STBData);
-            return true
-        }
-        console.error("添加有收益星兽失败:", stbId);
-        return false;
+    addInComeSTBData(STBData: StartBeastData): boolean {
+        return this.addSTBData(STBData, this.UserInstb);
     }
 
-    /** 删除收益星兽 */
+    /** 删除有收益星兽 */
     delUserInComeSTB(stbId: number): boolean {
-        const index = this.UserInstb.findIndex((element) => element.id === stbId);
-        if (index !== -1) {
-            this.UserInstb.splice(index, 1);
-            return true;
-        }
-        return false;
+        return this.delSTBData(stbId, this.UserInstb);
     }
 
     /** 添加无收益星兽 */
-    addUserUnInComeSTB(STBData: IStartBeastData): boolean {
-        let stbId = STBData.id;
-        const index = this.UserNinstb.findIndex((element) => element.id === stbId);
-        if (index == -1) {
-            this.UserNinstb.push(STBData);
-            return true
-        }
-        console.error("添加无收益星兽失败:", stbId);
-        return false;
+    addUserUnInComeSTB(STBData: StartBeastData): boolean {
+        return this.addSTBData(STBData, this.UserNinstb);
     }
 
     /** 删除无收益星兽 */
     delUserUnIncomeSTB(stbId: number): boolean {
-        const index = this.UserNinstb.findIndex((element) => element.id === stbId);
-        if (index !== -1) {
-            this.UserNinstb.splice(index, 1);
-            return true;
-        }
-        return false;
+        return this.delSTBData(stbId, this.UserNinstb);
     }
 
     /** 更新星兽数据 */
-    updateUnIncomeSTBData(STBData: IStartBeastData): boolean {
-        const index = this.UserNinstb.findIndex((element) => element.id === STBData.id);
+    updateUnIncomeSTBData(STBData: StartBeastData): boolean {
+        const index = this.UserNinstb.findIndex(element => element.id === STBData.id);
         if (index !== -1) {
-            this.UserNinstb[index] = STBData;
+            this.UserNinstb[index] = { ...STBData };
             return true;
         }
-        console.error("升级无收益星兽失败:", STBData.id);
         return false;
     }
 }
 
 /** 星兽数据 */
-export interface IStartBeastData {
-    id: number;             //星兽ID
-    createdAt: string;      //创建时间
-    updatedAt: string;      //更新时间
-    userID: number;         //用户ID
-    stbConfigID: number;    //星兽配置ID
-    stbPosition: number;    //星兽位置
-    lastIncomeTime: string; //最后收益时间
-    // stbConfig: IStbConfig;
+export class StartBeastData {
+    readonly id: number = 0;             //星兽ID
+    readonly createdAt: string = '';     //创建时间
+    readonly userID: number = 0;         //用户ID
+    readonly stbConfigID: number = 0;    //星兽配置ID
+    stbPosition: number = 0;    //星兽位置
+    readonly lastIncomeTime: string = ''; //最后收益时间
+}
+
+export enum UserSTBType{
+    InCome = 1, //有收益星兽
+    UnInCome = 2, //无收益星兽
 }

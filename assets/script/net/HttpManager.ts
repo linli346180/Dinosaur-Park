@@ -24,7 +24,8 @@ export enum HttpResponseType {
 /** 请求方法 */
 export enum HttpMethod {
     GET = "GET",
-    POST = "POST"
+    POST = "POST",
+    PUT = "PUT"
 }
 
 const HeaderName = 'Content-Type';
@@ -32,6 +33,8 @@ const HeaderValueText = 'application/text';
 const HeaderValueJson = 'application/json';
 const HeaderValuePb = 'application/x-protobuf';
 const HeaderValueURL = "application/x-www-form-urlencoded"
+
+const HeaderLanguage = 'accept-language';
 
 /** 当前请求地址集合 */
 var urls: Map<string, boolean> = new Map();
@@ -56,11 +59,20 @@ export class HttpManager {
     postUrl(name: string, params: BodyInit | null = null): Promise<HttpReturn<any>> {
         var headers = new Headers();
         headers.append(HeaderName, HeaderValueURL);
+        headers.append(HeaderLanguage, oops.language.current);
         return this.request(name, params, HttpMethod.POST, HttpResponseType.Json, headers);
+    }
+
+    putUrl(name: string, params: BodyInit | null = null): Promise<HttpReturn<any>> {
+        var headers = new Headers();
+        headers.append(HeaderName, HeaderValueURL);
+        headers.append(HeaderLanguage, oops.language.current);
+        return this.request(name, params, HttpMethod.PUT, HttpResponseType.Json, headers);
     }
 
     postUrlNoHead(name: string, params: BodyInit | null = null): Promise<HttpReturn<any>> {
         var headers = new Headers();
+        headers.append(HeaderLanguage, oops.language.current);
         return this.request(name, params, HttpMethod.POST, HttpResponseType.Json, headers);
     }
 
@@ -72,6 +84,7 @@ export class HttpManager {
      */
     getUrl(name: string, params: BodyInit | null = null): Promise<HttpReturn<any>> {
         var headers = new Headers();
+        headers.append(HeaderLanguage, oops.language.current);
         return this.urlRequest(name, params, HttpResponseType.Json, headers);
     }
 
@@ -84,6 +97,7 @@ export class HttpManager {
     getText(name: string, params: BodyInit | null = null): Promise<HttpReturn<any>> {
         var headers = new Headers();
         headers.append(HeaderName, HeaderValueText);
+        headers.append(HeaderLanguage, oops.language.current);
         return this.request(name, params, HttpMethod.GET, HttpResponseType.Text, headers);
     }
 
@@ -96,6 +110,7 @@ export class HttpManager {
     getJson(name: string, params: BodyInit | null = null): Promise<HttpReturn<any>> {
         var headers = new Headers();
         headers.append(HeaderName, HeaderValueJson);
+        headers.append(HeaderLanguage, oops.language.current);
         if (this.token != "")
             headers.append('token', this.token);
         return this.request(name, params, HttpMethod.GET, HttpResponseType.Json, headers);
@@ -110,6 +125,7 @@ export class HttpManager {
     postJson(name: string, params: BodyInit | null = null): Promise<HttpReturn<any>> {
         var headers = new Headers();
         headers.append(HeaderName, HeaderValueJson);
+        headers.append(HeaderLanguage, oops.language.current);
 
         if (this.token != "")
             headers.append('token', this.token);
@@ -254,7 +270,7 @@ export class HttpManager {
             }
         }
         else {
-            oops.message.dispatchEvent(GameEvent.WebRequestFail, "网络异常,请检查网络连接");
+            oops.message.dispatchEvent(GameEvent.WebRequestFail, oops.language.getLangByID("net_tips_fetch_fail"));
             ret.err = value;
         }
         urls.delete(url);

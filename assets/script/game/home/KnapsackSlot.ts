@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, Animation } from 'cc';
-import { IStartBeastData } from '../account/model/AccountModelComp';
+import { StartBeastData } from '../account/model/AccountModelComp';
 import { ActorAnimComp } from '../character/actor/ActorLevelUp';
 const { ccclass, property } = _decorator;
 
@@ -18,7 +18,7 @@ export class KnapsackSlot extends Component {
     dragTipNode: Node = null!;
 
     public slotId: number = 0;  // 插槽ID
-    public stbData: IStartBeastData | null = null;
+    public stbData: StartBeastData | null = null;
     private idleAnim: ActorAnimComp = null!;        // 待机动画
     private landingAnim: Animation = null!;         // 着陆动画
     private levelUpAnim: Animation = null!;         // 升级动画
@@ -26,7 +26,7 @@ export class KnapsackSlot extends Component {
 
     /** 是否可以交换 */
     get CanSwap(): boolean {
-        if(this.landingNode.active || this.levelUpNode.active) 
+        if (this.landingNode.active || this.levelUpNode.active)
             return false;
         return true;
     }
@@ -58,8 +58,9 @@ export class KnapsackSlot extends Component {
         // this.levelUpAnim?.on(Animation.EventType.FINISHED, this.onLevelUpAnimFinished, this);
     }
 
-    InitUI(stbData: IStartBeastData | null, showLand: boolean = false, showLevelUp: boolean = false) {
-        console.log("初始化槽位:" + this.slotId + "星兽ID:" + stbData?.id + "降落伞:", showLand + "升级:", showLevelUp);
+    InitUI(stbData: StartBeastData | null, showLand: boolean = false, showLevelUp: boolean = false) {
+        console.log(`初始化槽位:${this.slotId} 星兽id:${stbData?.id} 星兽配置:${stbData?.stbConfigID} 降落伞:${showLand} 升级:${showLevelUp}`);
+        
         this.stbData = stbData;
         this.levelUpNode.active = showLevelUp;
         this.landingNode.active = showLand;
@@ -78,7 +79,7 @@ export class KnapsackSlot extends Component {
             return;
         }
         this.container.active = true;
-        this.idleAnim?.InitUI(this.stbData.stbConfigID);
+        this.idleAnim?.InitUI(this.stbData?.stbConfigID || -1);
     }
 
     /** 显示拖拽提示 */
@@ -101,9 +102,9 @@ export class KnapsackSlot extends Component {
         this.levelUpNode.active = show;
         if (show) {
             this.levelUpAnim.play();
-            this.levelUpAnim.once(Animation.EventType.FINISHED, ()=>{
+            this.levelUpAnim.once(Animation.EventType.FINISHED, () => {
                 this.onLevelUpAnimFinished();
-                if(callback) callback();
+                if (callback) callback();
             }, this);
         }
     }
@@ -116,12 +117,12 @@ export class KnapsackSlot extends Component {
     private onLandAnimFinished() {
         this.landingNode.active = false;
         this.container.active = true;
-        this.idleAnim?.InitUI(this.stbData?.stbConfigID||-1);
+        this.idleAnim?.InitUI(this.stbData?.stbConfigID || -1);
     }
 
     private onLevelUpAnimFinished() {
         this.levelUpNode.active = false;
         this.container.active = true;
-        this.idleAnim?.InitUI(this.stbData?.stbConfigID||-1);
+        this.idleAnim?.InitUI(this.stbData?.stbConfigID || -1);
     }
 }

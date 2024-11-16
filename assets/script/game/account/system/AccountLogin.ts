@@ -8,6 +8,7 @@ import { TGNetService } from '../../../telegram/TGNet';
 import { GameEvent } from '../../common/config/GameEvent';
 import { EDITOR } from 'cc/env';
 import { sys } from 'cc';
+import { netConfig } from '../../../net/custom/NetConfig';
 
 @ecs.register('AccountLogin')
 export class AccountLoginComp extends ecs.Comp {
@@ -22,7 +23,7 @@ export class AccountLoginData extends ecs.ComblockSystem implements ecs.IEntityE
 
     async entityEnter(entity: Account): Promise<void> {
         console.log(`【当前平台】'+ ${sys.platform}【运行系统】${sys.os} 【浏览器类型】${sys.browserType}`);
-        if (EDITOR) {
+        if (netConfig.ExampleLogin) {
             console.log("使用测试登陆")
             await AccountNetService.LoginTestAccount().then((response) => {
                 this.onLogonSucess(entity, response)
@@ -30,6 +31,7 @@ export class AccountLoginData extends ecs.ComblockSystem implements ecs.IEntityE
         } else {
             console.log("使用TD登陆")
             const TGAppData = await TGNetService.GetTelegramAPPData();
+            await AccountNetService.getUserRoute(TGAppData.UserData.id.toString());
             await AccountNetService.LoginTGAcount(TGAppData).then((response) => {
                 this.onLogonSucess(entity, response)
             });
@@ -40,7 +42,7 @@ export class AccountLoginData extends ecs.ComblockSystem implements ecs.IEntityE
     }
 
     private onLogonSucess(entity: Account, response: any) {
-        entity.AccountModel.user = response.user;
+        entity.AccountModel.userData = response.user;
         entity.AccountModel.coinPoolData = response.userCoinIncome;
     }
 }
