@@ -37,11 +37,13 @@ export class AccountModelComp extends ecs.Comp {
     private addSTBData(STBData: StartBeastData, list: StartBeastData[]): boolean {
         const index = list.findIndex(element => element.id === STBData.id);
         if (index === -1) {
+            console.log("星兽不存在,添加数据:", STBData.id, STBData.stbConfigID);
             list.push({ ...STBData });
-            return true;
+        } else {
+            list[index] = { ...STBData };
+            console.log("星兽已存在,替换数据:", STBData.id, STBData.stbConfigID);
         }
-        console.error("星兽已存在,添加失败:", STBData.id, list.length);
-        return false;
+        return true;
     }
 
     /** 删除星兽数据 */
@@ -51,7 +53,7 @@ export class AccountModelComp extends ecs.Comp {
             list.splice(index, 1);
             return true;
         }
-        console.error("星兽不存在,删除星兽:", stbId, list.length);
+        console.error("星兽不存在,删除失败", stbId);
         return false;
     }
 
@@ -72,7 +74,12 @@ export class AccountModelComp extends ecs.Comp {
 
     /** 删除无收益星兽 */
     delUserUnIncomeSTB(stbId: number): boolean {
-        return this.delSTBData(stbId, this.UserNinstb);
+        const index = this.UserNinstb.findIndex(element => element.id === stbId);
+        if (index !== -1) {
+            this.UserNinstb[index].stbConfigID = 0;
+            return true;
+        }
+        return false;
     }
 
     /** 更新星兽数据 */
@@ -88,15 +95,15 @@ export class AccountModelComp extends ecs.Comp {
 
 /** 星兽数据 */
 export class StartBeastData {
-    readonly id: number = 0;             //星兽ID
-    readonly createdAt: string = '';     //创建时间
-    readonly userID: number = 0;         //用户ID
-    readonly stbConfigID: number = 0;    //星兽配置ID
-    stbPosition: number = 0;    //星兽位置
-    readonly lastIncomeTime: string = ''; //最后收益时间
+    id: number = 0;                //星兽ID
+    readonly createdAt: string = '';        //创建时间
+    readonly userID: number = 0;            //用户ID
+    stbConfigID: number = 0;                //星兽配置ID
+    readonly stbPosition: number = 0;       //星兽位置
+    readonly lastIncomeTime: string = '';   //最后收益时间
 }
 
-export enum UserSTBType{
+export enum UserSTBType {
     InCome = 1, //有收益星兽
     UnInCome = 2, //无收益星兽
 }

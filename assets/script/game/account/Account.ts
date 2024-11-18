@@ -209,7 +209,7 @@ export class Account extends ecs.Entity {
             }
 
             const STBData: StartBeastData = res.userInstbSynthReData;
-            let stbConfig = this.STBConfigMode.GetSTBConfigData(STBData.stbConfigID);
+            let stbConfig = this.STBConfigMode.getSTBConfigData(STBData.stbConfigID);
             if (stbConfig) {
                 if (stbConfig.isIncome == IsIncome.Yes) {
                     this.AccountModel.addInComeSTBData(STBData);
@@ -230,14 +230,8 @@ export class Account extends ecs.Entity {
     public OnRecevieMessage(cmd: number, data: any) {
         switch (cmd) {
             case NetCmd.UserNinstbType:
-                const STBData: StartBeastData = data;
-                let stbConfig = this.STBConfigMode.GetSTBConfigData(STBData.stbConfigID);
-                if (stbConfig) {
-                    this.AccountModel.addUserUnInComeSTB(STBData);
-                    oops.message.dispatchEvent(AccountEvent.AutoAddUnIncomeSTB, STBData.id);
-                } else {
-                    console.error("星兽配置不存在:", STBData.id);
-                }
+                this.AccountModel.addUserUnInComeSTB(data);
+                oops.message.dispatchEvent(AccountEvent.AutoAddUnIncomeSTB, data.id);
                 break;
 
             case NetCmd.DownLineType:
@@ -263,6 +257,9 @@ export class Account extends ecs.Entity {
                 this.updateInstbData();
                 break;
 
+            case NetCmd.UserCoinType:
+                this.updateCoinData();
+
             case NetCmd.UserHatchType:
             case NetCmd.InvitedType:
             case NetCmd.UserDebrisType:
@@ -282,37 +279,26 @@ export class Account extends ecs.Entity {
     /**
      * 合并无收益星兽
      * @param stbID_to - The ID of the STB to merge into.
-     * @param stbID_del - The ID of the STB to be deleted.
+     * @param stbID_from - The ID of the STB to be deleted.
      * @param callback - A callback function that is called with a boolean parameter indicating the success of the merge operation.
      */
-    async mergeUnIncomeSTBNet(stbID_to: number, stbID_del: number, callback: (success: boolean) => void) {
-        const res = await AccountNetService.mergeGoldNinSTB(stbID_to, stbID_del);
+    async mergeUnIncomeSTBNet(stbID_to: number, stbID_from: number, callback: (success: boolean, levelUp: boolean) => void) {
+        const res = await AccountNetService.mergeGoldNinSTB(stbID_to, stbID_from);
         if (res && res.userNinstb != null) {
             const STBData: StartBeastData = res.userNinstb;
             const stbConfigID = STBData.stbConfigID;
-            let stbConfig = this.STBConfigMode.GetSTBConfigData(stbConfigID);
+            let stbConfig = this.STBConfigMode.getSTBConfigData(stbConfigID);
             if (stbConfig) {
                 if (stbConfig.isIncome == IsIncome.Yes) {
-                    // console.log("升级十级星兽:", STBData.id);
                     this.AccountModel.addInComeSTBData(STBData);
-                    this.AccountModel.delUserUnIncomeSTB(stbID_to);
-                    this.AccountModel.delUserUnIncomeSTB(stbID_del);
-                    oops.message.dispatchEvent(AccountEvent.DelUnIncomeSTB, stbID_del);
                     oops.message.dispatchEvent(AccountEvent.AddInComeSTB, STBData.id);
                     oops.message.dispatchEvent(AccountEvent.EvolveUnIncomeSTB, stbID_to);
                 }
-                else {
-                    // console.log("升级星兽:", STBData);
-                    this.AccountModel.updateUnIncomeSTBData(STBData);
-                    this.AccountModel.delUserUnIncomeSTB(stbID_del);
-                    oops.message.dispatchEvent(AccountEvent.DelUnIncomeSTB, stbID_del);
-                    oops.message.dispatchEvent(AccountEvent.LevelUpUnIncomeSTB, STBData.id);
-                }
-                callback(true);
+                callback(true, stbConfig.isIncome == IsIncome.Yes);
                 return;
             }
         }
-        callback(false);
+        callback(false, false);
     }
 
 
@@ -353,20 +339,25 @@ export class Account extends ecs.Entity {
     /** 设置星兽(无收益星兽)位置 */
     async changeSTBSlotIdNet(stbId: number, slotId: number, callback: (success: boolean) => void) {
         const res = await AccountNetService.swapPosition(stbId, slotId);
-        if (res) {
-            callback(this.setUserNinstbSlot(stbId, slotId));
+        if (res && res.userNinstb) {
+            // 返回交换后的数据
+            this.AccountModel.addUserUnInComeSTB(res.userNinstb);
+            oops.message.dispatchEvent(AccountEvent.AddUnIncomeSTB, res.userNinstb.id);
+            callback(true);
             return;
         }
         callback(false);
     }
 
-    /** 设置无收益星兽位置 */
-    setUserNinstbSlot(stbId: number, slotId: number): boolean {
-        let stbData = this.getUserSTBData(stbId);
+    /** 设置无收益星兽配置 */
+    setUserNinstbConfig(stbId: number, stbConfigID: number): boolean {
+        console.log("设置无收益星兽配置:", stbId, stbConfigID);
+        let stbData = this.getUserSTBData(stbId, UserSTBType.UnInCome);
         if (stbData) {
-            stbData.stbPosition = slotId;
+            stbData.stbConfigID = stbConfigID;
             return this.AccountModel.updateUnIncomeSTBData(stbData);
         }
+        console.error(`设置星兽配置ID异常:${stbId}, ${stbConfigID}`);
         return false;
     }
 
@@ -379,7 +370,7 @@ export class Account extends ecs.Entity {
         let stbData = this.getUserSTBData(stbId, UserSTBType.InCome);
         if (stbData) {
             const stbConfigID = stbData.stbConfigID;
-            let stbConfig = this.STBConfigMode.GetSTBConfigData(stbConfigID);
+            let stbConfig = this.STBConfigMode.getSTBConfigData(stbConfigID);
             if (stbConfig) {
                 if (stbConfig.stbSurvival > 0) {
                     const createdTime = new Date(stbData.createdAt);

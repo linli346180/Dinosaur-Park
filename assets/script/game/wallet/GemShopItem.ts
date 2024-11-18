@@ -7,25 +7,24 @@ const { ccclass, property } = _decorator;
 @ccclass('GemShopItem')
 export class GemShopItem extends Component {
     @property(Label)
-    gemsNumber: Label = null!;
+    private gemsNumber: Label = null!;
     @property(Label)
-    dollarAmount: Label = null!;
+    private dollarAmount: Label = null!;
     @property(Label)
-    rebate: Label = null!;
+    private rebate: Label = null!;
     @property(Button)
-    btn_buy: Button = null!;
+    private btn_buy: Button = null!;
 
     @property({ type: Node })
-    level1: Node = null!;
+    private level1: Node = null!;
     @property({ type: Node })
-    level2: Node = null!;
+    private level2: Node = null!;
     @property({ type: Node })
-    level3: Node = null!;
+    private level3: Node = null!;
     @property({ type: Node })
-    level4: Node = null!;
+    private level4: Node = null!;
 
-    onItemClicked: (configId: number) => void = null!;
-
+    public onItemClicked: (configId: number) => void = null!;
     private config: BuyGemsConfig = null!;
 
     onLoad() {

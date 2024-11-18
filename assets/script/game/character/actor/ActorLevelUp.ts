@@ -9,9 +9,9 @@ const { ccclass, property } = _decorator;
 @ccclass('ActorAnimComp')
 export class ActorAnimComp extends Component {
     @property(Label)
-    level: Label = null!;
+    private level: Label = null!;
     @property(Animation)
-    idleAnim: Animation = null!;   // 待机动画
+    private idleAnim: Animation = null!;   // 待机动画
 
     private stbTableConfig: TableSTBConfig = new TableSTBConfig();
 
@@ -29,6 +29,7 @@ export class ActorAnimComp extends Component {
             this.idleAnim.stop();
             return;
         }
+        
         this.level.string = config.stbGrade.toString();
         const itemID = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
         this.stbTableConfig.init(itemID);

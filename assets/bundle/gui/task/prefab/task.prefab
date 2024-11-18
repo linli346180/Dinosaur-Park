@@ -301,7 +301,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 620.5000000000001,
+      "y": 0,
       "z": 0
     },
     "_lrot": {
@@ -342,7 +342,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1080,
-      "height": 719
+      "height": 1960
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -378,12 +378,12 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "521638e1-7188-43cb-857b-c8ef9cf78808@f9941",
+      "__uuid__": "e4369ff2-9a60-4319-8891-48126662c717@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
     "_fillType": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -412,12 +412,12 @@
     "__prefab": {
       "__id__": 18
     },
-    "_alignFlags": 41,
+    "_alignFlags": 45,
     "_target": null,
     "_left": 0,
     "_right": 0,
     "_top": 0,
-    "_bottom": -208.0000000000001,
+    "_bottom": 0,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
     "_isAbsLeft": true,
@@ -427,7 +427,7 @@
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
     "_originalWidth": 1080,
-    "_originalHeight": 2376,
+    "_originalHeight": 719,
     "_alignMode": 2,
     "_lockFlags": 0,
     "_id": ""
@@ -483,7 +483,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -381,
-      "y": 806.0000000000001,
+      "y": 806,
       "z": 0
     },
     "_lrot": {
@@ -888,7 +888,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -0.7999999999999545,
-      "y": -156.80000000000007,
+      "y": -156.79999999999995,
       "z": 0
     },
     "_lrot": {
@@ -1371,7 +1371,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -395,
+      "x": -387.30000000000007,
       "y": -2.602000000000089,
       "z": 0
     },
@@ -1782,7 +1782,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 395,
+      "x": 387.30000000000007,
       "y": -2.602000000000089,
       "z": 0
     },
@@ -1790,8 +1790,8 @@
       "__type__": "cc.Quat",
       "x": 0,
       "y": 0,
-      "z": 0,
-      "w": 1
+      "z": 1,
+      "w": 6.123233995736766e-17
     },
     "_lscale": {
       "__type__": "cc.Vec3",
@@ -1805,7 +1805,7 @@
       "__type__": "cc.Vec3",
       "x": 0,
       "y": 0,
-      "z": 0
+      "z": 180
     },
     "_id": ""
   },
@@ -2019,7 +2019,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "03509663-6a57-4487-80cc-46de5314005d@f9941",
+      "__uuid__": "d972144b-70f6-4ea1-bb15-9d475563cf14@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 1,
@@ -2084,22 +2084,10 @@
       "b": 124,
       "a": 255
     },
-    "_normalSprite": {
-      "__uuid__": "03509663-6a57-4487-80cc-46de5314005d@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
-    "_hoverSprite": {
-      "__uuid__": "20835ba4-6145-4fbc-a58a-051ce700aa3e@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
-    "_pressedSprite": {
-      "__uuid__": "544e49d6-3f05-4fa8-9a9e-091f98fc2ce8@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
-    "_disabledSprite": {
-      "__uuid__": "951249e0-9f16-456d-8b85-a6ca954da16b@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
+    "_normalSprite": null,
+    "_hoverSprite": null,
+    "_pressedSprite": null,
+    "_disabledSprite": null,
     "_duration": 0.1,
     "_zoomScale": 1.2,
     "_target": {
@@ -6102,9 +6090,9 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 236,
-      "g": 205,
-      "b": 139,
+      "r": 248,
+      "g": 209,
+      "b": 126,
       "a": 255
     },
     "_spriteFrame": {
@@ -8051,7 +8039,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 361.988,
-      "y": -849.2550000000001,
+      "y": -849.255,
       "z": 0
     },
     "_lrot": {
@@ -8214,7 +8202,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1080,
-      "height": 1960.0000000000002
+      "height": 1960
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

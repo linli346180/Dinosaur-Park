@@ -4,22 +4,21 @@ import { UIID } from '../common/config/GameUIConfig';
 import { EmailItem } from './EmailItem';
 import { EmailNetService } from './EmailNet';
 import { EmailEvent, EmailListData, EmailReadState, EmailRewardState, MailRecord } from './EmailDefine';
-import { console } from 'inspector';
 import { smc } from '../common/SingletonModuleComp';
 const { ccclass, property } = _decorator;
 
 @ccclass('EmailView')
 export class EmailView extends Component {
     @property(Prefab)
-    itemPrefab: Prefab = null!;
+    private itemPrefab: Prefab = null!;
     @property(Button)
-    btn_close: Button = null!;
+    private btn_close: Button = null!;
     @property(Button)
-    btn_onekey: Button = null!;
+    private btn_onekey: Button = null!;
     @property(Node)
-    content: Node = null!;
+    private content: Node = null!;
     @property(Node)
-    noMail: Node = null!;
+    private noMail: Node = null!;
 
     private emailsData: EmailListData = new EmailListData();
 
@@ -106,33 +105,26 @@ export class EmailView extends Component {
 
     /** 一键领取 */
     private async onOneKey() {
-        const readPromises = [];
-        const clampPromises = [];
+        this.btn_onekey.interactable = false;
+
         let rewardType: number[] = [];
         for (const mailRecord of this.emailsData.mailList) {
-            if (mailRecord.readState == EmailReadState.unread) {
-                readPromises.push(EmailNetService.readEmail(mailRecord.mailRecordId));
-            }
-            if (mailRecord.awardState == EmailRewardState.unreceived) {
-                clampPromises.push(EmailNetService.clampEmail(mailRecord.mailRecordId, mailRecord.mailConfigId));
-
-                if (mailRecord.rewards != null && mailRecord.rewards.length > 0) {
-                    for (const reward of mailRecord.rewards) {
-                        if (!rewardType.includes(reward.awardType))
-                            rewardType.push(reward.awardType);
-                    }
+            if (mailRecord.rewards != null && mailRecord.rewards.length > 0) {
+                for (const reward of mailRecord.rewards) {
+                    if (!rewardType.includes(reward.awardType))
+                        rewardType.push(reward.awardType);
                 }
             }
         }
 
-        await Promise.all(readPromises);
-        await Promise.all(clampPromises);
-
-        setTimeout(() => {
+        const res = await EmailNetService.batchClampEmail();
+        if (res) {
             this.initUI();
             for (const type of rewardType) {
                 smc.account.OnClaimAward(type);
             }
-        }, 1000);
+        }
+
+        this.btn_onekey.interactable = true;
     }
 }

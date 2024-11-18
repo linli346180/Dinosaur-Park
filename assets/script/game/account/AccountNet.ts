@@ -125,6 +125,9 @@ export namespace AccountNetService {
             smc.account.OnRecevieMessage(NetCmd.UserIncomeType, data);
         });
 
+        netChannel.game.on(NetCmd.UserCoinType, '', (data) => {
+            smc.account.OnRecevieMessage(NetCmd.UserCoinType, data);
+        });
 
         netChannel.game.on(NetCmd.NinstbDeathType, '', (data) => {
             smc.account.OnRecevieMessage(NetCmd.NinstbDeathType, data);
@@ -268,7 +271,7 @@ export namespace AccountNetService {
         const paramString = new URLSearchParams(params).toString();
         const response = await http.postUrl("tgapp/api/user/ninstb/swap?token=" + netConfig.Token, paramString);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.warn("位置交换成功", response.res);
+            console.warn(`位置交换成功:${stbID} ${slotId}`, response.res);
             return response.res;
         } else {
             console.error("位置交换请求异常", response);

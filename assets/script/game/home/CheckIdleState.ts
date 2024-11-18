@@ -8,7 +8,7 @@ const { ccclass, property } = _decorator;
  */
 @ccclass('CheckIdleState')
 export class CheckIdleState extends Component {
-    readonly NO_OPERATION_TIME = 3 * 60 * 1000;
+    readonly NO_OPERATION_TIME = 30 * 1000;
     private lastActivityTime = Date.now();  // 记录最后一次用户操作的时间
     private noOperationTimer: NodeJS.Timeout | null = null;  // 定时器
 

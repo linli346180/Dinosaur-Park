@@ -33,12 +33,13 @@ export namespace WalletNetService {
         };
         const paramString = new URLSearchParams(params).toString();
 
+        console.warn("验证签名参数:", paramString);
         const response = await http.postUrl(`tgapp/api/ton/check?token=${netConfig.Token}`, paramString);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("验证签名:", response.res);
             return response.res;
         } else {
-            console.error("验证签名异常", response);
+            console.error(`验证签名异常${http.url}`, response);
             return null;
         }
     }
@@ -107,6 +108,19 @@ export namespace WalletNetService {
             return response.res;
         } else {
             console.error("查询提现记录异常", response);
+            return null;
+        }
+    }
+
+     /** 支付成功返回 */
+     export async function postWithdrawBoc(boc: string) {
+        const http = createHttpManager();
+        const response = await http.postUrl(`tgapp/api/user/order/boc?token=${netConfig.Token}&boc=${boc}`);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
+            console.warn("支付成功返回:", response.res);
+            return response.res;
+        } else {
+            console.error("支付成功返回异常", response);
             return null;
         }
     }

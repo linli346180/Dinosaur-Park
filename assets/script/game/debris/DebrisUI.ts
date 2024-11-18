@@ -247,7 +247,7 @@ export class DebrisView extends Component {
             var uic: UICallbacks = {
                 onAdded: (node: Node, params: any) => {
                     const widget = node.getComponent(DebrisResult);
-                    widget?.initUI(debrisIndex, 1);
+                    widget?.initUI(debrisIndex);
                 }
             };
             let uiArgs: any;

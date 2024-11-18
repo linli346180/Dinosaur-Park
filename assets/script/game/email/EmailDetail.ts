@@ -34,11 +34,6 @@ export class EmailDetail extends Component {
     start() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_unclaimed?.node.on(Button.EventType.CLICK, this.onClaimed, this);
-        tween()
-            .target(this.node)
-            .to(0.15, { scale: v3(1.1, 1.1, 1), }, { easing: 'fade' })
-            .to(0.15, { scale: Vec3.ONE, }, { easing: 'fade' })
-            .start()
     }
 
     closeUI() {
@@ -62,7 +57,7 @@ export class EmailDetail extends Component {
 
         // 设置奖励列表
         this.rewardContainer.removeAllChildren();
-        if(this.mailRecord.rewards != null && this.mailRecord.rewards.length > 0) { 
+        if (this.mailRecord.rewards != null && this.mailRecord.rewards.length > 0) {
             this.mailRecord.rewards.forEach((reward) => {
                 let rewardItem = instantiate(this.rewardItem);
                 if (rewardItem) {
@@ -71,29 +66,29 @@ export class EmailDetail extends Component {
                 }
             });
         }
-        
     }
 
-    private onClaimed() {
-        EmailNetService.clampEmail(this.mailRecord.mailRecordId, this.mailRecord.mailConfigId).then((response) => {
-            if (response) {
-                this.mailRecord.awardState = EmailRewardState.received;
-                this.initUI(this.mailRecord);
-                oops.message.dispatchEvent(EmailEvent.receiveEmailReward, this.mailRecord.mailRecordId);
+    private async onClaimed() {
+        this.btn_unclaimed.interactable = false;
+        const response = await EmailNetService.clampEmail(this.mailRecord.mailRecordId, this.mailRecord.mailConfigId);
+        if (response) {
+            this.mailRecord.awardState = EmailRewardState.received;
+            this.initUI(this.mailRecord);
+            oops.message.dispatchEvent(EmailEvent.receiveEmailReward, this.mailRecord.mailRecordId);
 
-                // 更新用户资产
-                let rewardType: number[] = [];
-                if (this.mailRecord.rewards != null && this.mailRecord.rewards.length > 0) {
-                    for (const reward of this.mailRecord.rewards) {
-                        if (!rewardType.includes(reward.awardType))
-                            rewardType.push(reward.awardType);
-                    }
-                }
-                for (const type of rewardType) {
-                    smc.account.OnClaimAward(type);
+            // 更新用户资产
+            let rewardType: number[] = [];
+            if (this.mailRecord.rewards != null && this.mailRecord.rewards.length > 0) {
+                for (const reward of this.mailRecord.rewards) {
+                    if (!rewardType.includes(reward.awardType))
+                        rewardType.push(reward.awardType);
                 }
             }
-        });
+            for (const type of rewardType) {
+                smc.account.OnClaimAward(type);
+            }
+        }
+        this.btn_unclaimed.interactable = true;
     }
 
     private formatExpireTime(expireTime: number): string {

@@ -32,9 +32,13 @@ export class KnapsackControlle extends Component {
     private maxslotNum: number = 12;
     private fromSTBID: number = -1;
     private toSTBID: number = -1;
+    private fronSTBConfigId = -1;
+    private toSTBConfigId = -1;
     private fromSlot: KnapsackSlot | null = null;
     private toSlot: KnapsackSlot | null = null;
     private interval = 30;  // 自动领养星兽时间间隔
+
+    private canChangeSlot: boolean = true;  // 是否可以交换星
 
     protected onLoad(): void {
         KnapsackControlle.instance = this;
@@ -67,7 +71,7 @@ export class KnapsackControlle extends Component {
             this.CreateSlotItem(i);
         }
         smc.account.AccountModel.getUserNinstb().forEach(element => {
-            this.CreateSTBItem(element);
+            this.updateSTBItem(element);
         });
 
         // if (EDITOR) {
@@ -78,16 +82,16 @@ export class KnapsackControlle extends Component {
     private onHandler(event: string, args: any) {
         switch (event) {
             case AccountEvent.AddUnIncomeSTB:
-                this.CreateSTBItem(smc.account.getUserSTBData(args));
+                this.updateSTBItem(smc.account.getUserSTBData(args));
                 break;
             case AccountEvent.DelUnIncomeSTB:
                 this.RemoveSTBItem(args);
                 break;
             case AccountEvent.LevelUpUnIncomeSTB:
-                this.UpdateSTBItem(smc.account.getUserSTBData(args));
+                this.initSTBItem(smc.account.getUserSTBData(args));
                 break;
             case AccountEvent.AutoAddUnIncomeSTB:
-                this.CreateSTBItem(smc.account.getUserSTBData(args), true);
+                this.updateSTBItem(smc.account.getUserSTBData(args), true);
                 break;
             case AccountEvent.UserNoOperation:
                 this.showIdleTipAnim(true);
@@ -131,12 +135,11 @@ export class KnapsackControlle extends Component {
         }
     }
 
-    CreateSTBItem(stbData: StartBeastData | null, autoAdop: boolean = false) {
+    updateSTBItem(stbData: StartBeastData | null, autoAdop: boolean = false) {
         if (!stbData) {
             console.error("添加星兽数据为空");
             return
         }
-        // console.log("添加无收益星兽数据:",stbData);
         for (const slotNode of this.SlotNodes) {
             const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);
             if (slotComp && slotComp.slotId == stbData.stbPosition) {
@@ -144,25 +147,25 @@ export class KnapsackControlle extends Component {
                 return;
             }
         }
-        console.error("CreateSTBItem 未找到对应的背包槽");
+        console.error("添加 未找到对应的背包槽");
     }
 
     RemoveSTBItem(stbId: number) {
         for (const slotNode of this.SlotNodes) {
             const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);
             if (slotComp && slotComp.STBId == stbId) {
-                slotComp.InitUI(null);
+                slotComp.STBConfigID = 0;
                 return;
             }
         }
+        console.error("移除 未找到对应的背包槽");
     }
 
-    UpdateSTBItem(stbData: StartBeastData | null) {
+    initSTBItem(stbData: StartBeastData | null) {
         if (!stbData) {
             console.error("更新星兽数据为空");
             return
         }
-        // console.log("更新无收益星兽数据:",stbData);
         for (const slotNode of this.SlotNodes) {
             const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);
             if (slotComp && slotComp.STBId == stbData?.id) {
@@ -170,7 +173,7 @@ export class KnapsackControlle extends Component {
                 return;
             }
         }
-        console.error("UpdateSTBItem 未找到对应的背包槽");
+        console.error("升级 未找到对应的背包槽");
     }
 
     private showIdleTipAnim(show: boolean = true) {
@@ -258,78 +261,108 @@ export class KnapsackControlle extends Component {
         return slotId;
     }
 
-
     /**
      * 交换星兽规则:  1.两个星兽等级相同，合成后星兽等级+1 2.两个星兽等级不同，交互位置
-     * @param fromslotId - 移动前的槽位ID
-     * @param toslotId - 移动后的槽位ID
+     * @param fromslotId - 原槽位ID
+     * @param toslotId - 目标槽位ID
      */
     swapSlot(fromslotId: number, toslotId: number) {
         this.fromSlot = this.getKnapsackSlot(fromslotId);
         this.toSlot = this.getKnapsackSlot(toslotId);
         if (!this.fromSlot || !this.toSlot) {
-            console.error("swapSlot 未找到对应的背包槽");
+            console.error("槽位为空");
+            return;
+        }
+
+        if (!this.canChangeSlot) {
+            console.error("当前不能交换星兽");
             return;
         }
 
         this.fromSTBID = this.fromSlot.STBId;
+        this.fronSTBConfigId = this.fromSlot.STBConfigID;
         this.toSTBID = this.toSlot.STBId;
-        // console.log("移动前 星兽ID:" + this.fromSTBID + " 槽位:" + fromslotId);
-        // console.log("移动后 星兽ID:" + this.toSTBID + " 槽位:" + toslotId);
+        this.toSTBConfigId = this.toSlot.STBConfigID;
 
-        // 移动到空槽位
-        if (this.toSTBID == -1) {
-            console.log("移动到空槽位");
+        console.log(`开始槽位:${this.fromSlot.slotId} 星兽ID: ${this.fromSTBID} 星兽配置: ${this.fronSTBConfigId} `);
+        console.log(`结束槽位:${this.toSlot.slotId} 星兽ID: ${this.toSTBID} 星兽配置: ${this.toSTBConfigId}`);
+
+        if(this.toSlot.STBConfigId == -1) {
+            // 交换ConfigID
+            this.fromSlot.STBConfigID = this.toSTBConfigId;
+            this.toSlot.STBConfigID= this.fronSTBConfigId;
+
+            this.canChangeSlot = false;
+            console.log(`目标槽位为空，直接交换 ${this.fromSTBID} ${toslotId}`);
             smc.account.changeSTBSlotIdNet(this.fromSTBID, toslotId, (success) => {
-                if (!success) {
-                    console.error("移动到空槽位失败");
-                    this.recoverSlot();
-                }
-            });
-
-            let stbData = smc.account.getUserSTBData(this.fromSTBID);
-            if (stbData) {
-                this.toSlot.InitUI(stbData);
-                this.fromSlot.InitUI(null);
-            }
-            return;
-        }
-
-        // 合成星兽
-        if (this.fromSlot.STBConfigId == this.toSlot.STBConfigId) {
-            console.log("合成星兽A:" + this.fromSTBID + " B:" + this.toSTBID);
-            smc.account.mergeUnIncomeSTBNet(this.toSTBID, this.fromSTBID, (success) => {
-                if (!success) {
-                    console.error("合成星兽失败");
-                    this.recoverSlot();
-                }
-            });
-            this.fromSlot.InitUI(null);
-            return;
-        }
-
-        if (this.fromSlot.STBConfigId != this.toSlot.STBConfigId) {
-            console.log("交换位置A:" + this.fromSTBID + " B:" + this.toSTBID);
-            smc.account.changeSTBSlotIdNet(this.fromSTBID, toslotId, (success) => {
+                this.canChangeSlot = true;
                 if (!success) {
                     console.error("交换位置失败");
                     this.recoverSlot();
                 }
-                else
-                    smc.account.setUserNinstbSlot(this.toSTBID, fromslotId);
+                else {
+                    smc.account.setUserNinstbConfig(this.fromSTBID, this.toSTBConfigId);
+                    // smc.account.setUserNinstbConfig(this.toSTBID, this.fronSTBConfigId);
+                }
             })
-            let stbData = this.toSlot.stbData;
-            this.toSlot.InitUI(this.fromSlot.stbData);
-            this.fromSlot.InitUI(stbData);
             return;
+        }
+
+        // 两个星兽等级不同，交互位置
+        if (this.fromSlot.STBConfigId != this.toSlot.STBConfigId) {
+            this.fromSlot.STBConfigID = this.toSTBConfigId;
+            this.toSlot.STBConfigID= this.fronSTBConfigId;
+            this.canChangeSlot = false;
+            smc.account.changeSTBSlotIdNet(this.fromSTBID, toslotId, (success) => {
+                this.canChangeSlot = true;
+                if (!success) {
+                    console.error("交换位置失败");
+                    this.recoverSlot();
+                }
+                else {
+                    smc.account.setUserNinstbConfig(this.fromSTBID, this.toSTBConfigId);
+                    // smc.account.setUserNinstbConfig(this.toSTBID, this.fronSTBConfigId);
+                }
+            })
+        } else {
+            // 两个星兽等级相同，合成后星兽等级+1 
+            if (this.fromSlot.STBConfigId == this.toSlot.STBConfigId) {
+                // 获取下一级星兽配置
+                const config = smc.account.STBConfigMode.getNextSTBConfigData(this.toSTBConfigId);
+                if (config) {
+                    this.toSlot.stbData.stbConfigID = config.id;
+                } 
+                this.toSlot.InitUI(this.toSlot.stbData, false, true);
+                this.fromSlot.STBConfigID = 0;
+                this.canChangeSlot = false;
+                smc.account.mergeUnIncomeSTBNet(this.toSTBID, this.fromSTBID, (success, levelUp) => {
+                    this.canChangeSlot = true;
+                    if (!success) {
+                        console.error("合成星兽失败");
+                        this.recoverSlot();
+                    } else {
+                        if(levelUp) {
+                            smc.account.AccountModel.delUserUnIncomeSTB(this.fromSTBID);
+                            smc.account.AccountModel.delUserUnIncomeSTB(this.toSTBID);
+                        }
+                        else {
+                            // A数据删除 B数据更新
+                            smc.account.AccountModel.delUserUnIncomeSTB(this.fromSTBID);
+                            smc.account.setUserNinstbConfig(this.toSTBID, this.toSlot.stbData.stbConfigID);
+                        } 
+                    }
+                });
+            }
         }
     }
 
     recoverSlot() {
-        this.fromSlot?.InitUI(smc.account.getUserSTBData(this.fromSTBID));
-        this.toSlot?.InitUI(smc.account.getUserSTBData(this.toSTBID));
+        console.log("恢复槽位");
+        this.fromSlot.STBConfigID = this.fronSTBConfigId;
+        this.toSlot.STBConfigID = this.toSTBConfigId;
     }
 
+    /** 获取槽位信息 */
     getKnapsackSlot(slotId: number): KnapsackSlot | null {
         for (const slotNode of this.SlotNodes) {
             const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);

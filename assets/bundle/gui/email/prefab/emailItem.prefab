@@ -90,7 +90,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 3
@@ -265,7 +265,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 11
@@ -1299,7 +1299,7 @@
       "__id__": 43
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 51
@@ -1313,7 +1313,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 7.450000000000003,
+      "x": 103,
       "y": 0,
       "z": 0
     },
@@ -1396,7 +1396,7 @@
     },
     "_type": 0,
     "_fillType": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -1449,7 +1449,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 89.95458984375,
+      "x": 161.95458984375,
       "y": 0,
       "z": 0
     },
@@ -1599,7 +1599,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 107.9091796875,
+      "width": 179.9091796875,
       "height": 60
     },
     "_anchorPoint": {
@@ -2071,8 +2071,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 280,
-      "height": 75
+      "width": 250,
+      "height": 80
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2102,16 +2102,16 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 219,
+      "g": 208,
+      "b": 186,
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "d2ab541e-6aea-4cbf-b81b-8ae6f3f6eee2@f9941",
+      "__uuid__": "64ba7899-ef89-411b-a111-c9c1d38b1cb0@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
-    "_type": 1,
+    "_type": 0,
     "_fillType": 0,
     "_sizeMode": 0,
     "_fillCenter": {
@@ -2203,9 +2203,9 @@
     "_alignFlags": 36,
     "_target": null,
     "_left": 0,
-    "_right": 20,
+    "_right": 35,
     "_top": 0,
-    "_bottom": 15,
+    "_bottom": 12.5,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
     "_isAbsLeft": true,
@@ -2250,7 +2250,7 @@
         "__id__": 95
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 103
@@ -2271,7 +2271,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 380,
-      "y": -87.5,
+      "y": -85,
       "z": 0
     },
     "_lrot": {
@@ -2493,8 +2493,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 280,
-      "height": 75
+      "width": 250,
+      "height": 80
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2524,13 +2524,13 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 197,
+      "g": 103,
+      "b": 54,
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "151bcda0-c81c-43b2-bb37-1d7cd58af474@f9941",
+      "__uuid__": "64ba7899-ef89-411b-a111-c9c1d38b1cb0@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 1,
@@ -2595,22 +2595,10 @@
       "b": 124,
       "a": 255
     },
-    "_normalSprite": {
-      "__uuid__": "151bcda0-c81c-43b2-bb37-1d7cd58af474@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
-    "_hoverSprite": {
-      "__uuid__": "20835ba4-6145-4fbc-a58a-051ce700aa3e@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
-    "_pressedSprite": {
-      "__uuid__": "544e49d6-3f05-4fa8-9a9e-091f98fc2ce8@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
-    "_disabledSprite": {
-      "__uuid__": "951249e0-9f16-456d-8b85-a6ca954da16b@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
+    "_normalSprite": null,
+    "_hoverSprite": null,
+    "_pressedSprite": null,
+    "_disabledSprite": null,
     "_duration": 0.1,
     "_zoomScale": 1.2,
     "_target": {
@@ -2637,7 +2625,7 @@
     "_alignFlags": 36,
     "_target": null,
     "_left": 0,
-    "_right": 20,
+    "_right": 35,
     "_top": 0,
     "_bottom": 15,
     "_horizontalCenter": 0,

@@ -83,23 +83,20 @@ export class STBMergeView extends Component {
                 break;
         }
         this.upProbLabel.string = desc;
-
-        AnimUtil.playAnim_Scale(this.node);
     }
 
     start() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_sucessclose?.node.on(Button.EventType.CLICK, this.closeUI, this);
         this.btn_failclose?.node.on(Button.EventType.CLICK, this.closeUI, this);
-
         this.btn_evolve?.node.on(Button.EventType.CLICK, this.onEvolve, this);
-        this.videoPlayer.node.on(VideoPlayer.EventType.COMPLETED, this.OnVideoCompleted, this);
     }
 
     public InitUI(firstStbID: number, twoStbID: number,) {
         this.beforePanel.active = true;
         this.sucessPanel.active = false;
         this.failPanel.active = false;
+        this.btn_close.node.active = true;
 
         this.videoMsk.active = false;
         this.videoPlayer.node.active = false;
@@ -114,10 +111,12 @@ export class STBMergeView extends Component {
         oops.gui.remove(UIID.STBMerge, false);
     }
 
-    async onEvolve() {
+    private async onEvolve() {
+        this.btn_close.node.active = false;
         this.videoMsk.active = true;
         this.videoPlayer.node.active = true;
         this.videoPlayer.play();
+        this.videoPlayer.node.once(VideoPlayer.EventType.COMPLETED, this.OnVideoCompleted, this);
 
         let isUpProb = this.tog_add.isChecked ? 1 : 2;
         smc.account.mergeIncomeSTBNet(this.stbID1, this.stbID2, isUpProb, (success) => {
@@ -125,16 +124,17 @@ export class STBMergeView extends Component {
         });
     }
 
-    showMergeResult(isSucc: boolean) {
-        // console.log("showMergeResult", isSucc);
-        this.beforePanel.active = false
-        this.sucessPanel.active = isSucc ? true : false;
-        this.failPanel.active = isSucc ? false : true;
-    }
-
     OnVideoCompleted() {
         this.videoMsk.active = false;
         this.videoPlayer.node.active = false;
         this.showMergeResult(this.isSucc);
     }
+
+    showMergeResult(isSucc: boolean) {
+        this.beforePanel.active = false
+        this.sucessPanel.active = isSucc ? true : false;
+        this.failPanel.active = isSucc ? false : true;
+    }
+
+   
 }

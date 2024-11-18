@@ -33,6 +33,7 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
         // 获取星兽配置数据
         const configDataRes = await AccountNetService.getStartBeastConfig();
         if (configDataRes && configDataRes.userInstbData != null) {
+            configDataRes.userInstbData.sort((a, b) => a.id - b.id);
             entity.STBConfigMode.instbConfigData = configDataRes.userInstbData;
         }
 
@@ -48,12 +49,14 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
 
             // TODO  无收益星守过滤配置为空的星兽
             if (res.userInstbData.UserNinstb != null) {
+                console.log("无收益星兽", res.userInstbData.UserNinstb);
+                // entity.AccountModel.setUserNinstb(res.userInstbData.UserNinstb);
                 for (const stbItem of res.userInstbData.UserNinstb) {
-                    if (stbItem.stbConfigID > 0) {
-                        entity.AccountModel.addUserUnInComeSTB(stbItem);
-                    } else {
-                        console.log("星兽配置ID为空");
+                    if (stbItem.position > 12 || stbItem.position < 1) {
+                        console.error("星兽位置错误", stbItem);
+                        continue
                     }
+                    entity.AccountModel.addUserUnInComeSTB(stbItem);
                 }
             }
             else {

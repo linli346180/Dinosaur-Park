@@ -21,8 +21,8 @@ export enum AccountEvent {
     AddUnIncomeSTB = "AddUnIncomeSTB",  // 添加无收益星兽
     DelUnIncomeSTB = "DelUnIncomeSTB",  // 移除无收益星兽
     
-    LevelUpUnIncomeSTB = "UpdateUnIncomeSTB",  // 无收益星兽升级
-    EvolveUnIncomeSTB = "EvolveUnIncomeSTB",  // 无收益星兽进化
+    LevelUpUnIncomeSTB = "UpdateUnIncomeSTB",   // 无收益星兽升级
+    EvolveUnIncomeSTB = "EvolveUnIncomeSTB",    // 无收益星兽进化
     AutoAddUnIncomeSTB = "AutoAddUnIncomeSTB",  // 系统添加无收益星兽
 
     AddInComeSTB = "AddInComeSTB",  // 添加收益星兽

@@ -16,32 +16,31 @@ export enum UIID {
     Confirm,
     Notify,
     Wait,
-    Demo,
-    Main,   // 游戏主界面
-    User,    // 用户中心
-    Map,
-    Invite,
-    Task,
-    Book,   // 图鉴
-    Email,  // 邮件
+    Main,           // 游戏主界面
+    User,           // 用户中心
+    Map,            // 地图
+    Invite,         // 邀请
+    Task,           // 任务
+    Book,           // 图鉴
+    Email,          // 邮件
     EmailDetail,    // 邮件详情
-    STBShop,    // 星兽商店
-    STBMerge,    // 星兽合并商店
-    GemShop,    // 宝石商店
-    Revive,   // 复活
-    DebrisResult,    // 碎片拼图结果
-    Hatch,  // 孵化
-    RewardView,    // 奖励界面
-    HatchShop,    // 孵化次数商店
+    STBShop,        // 星兽商店
+    STBMerge,       // 星兽合并商店
+    GemShop,        // 宝石商店
+    Revive,         // 复活
+    DebrisResult,   // 碎片拼图结果
+    Hatch,          // 孵化
+    RewardView,     // 奖励界面
+    HatchShop,      // 孵化次数商店
     HatchReward,    // 孵化奖励
-    RankUI,    // 排行榜
-    LanguageUI,    // 多语言设置
-    Activity,    // USDT活动
-    Guide,    // 新手引导
+    RankUI,         // 排行榜
+    LanguageUI,     // 多语言设置
+    Activity,       // USDT活动
+    Guide,          // 新手引导
     GuideReward,    // 新手引导
-    Wallet,    // 钱包
+    Wallet,         // 钱包
     EmailVerify,    // 邮箱验证
-    WalletDetail,    // 钱包详情
+    WalletDetail,   // 钱包详情
 }
 
 /** 打开界面方式的配置数据 */
@@ -49,7 +48,6 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.Loading]: { layer: LayerType.Dialog, prefab: "gui/loading/loading" },
     [UIID.Alert]: { layer: LayerType.System, prefab: "common/prefab/alert", mask: true },
     [UIID.Confirm]: { layer: LayerType.Dialog, prefab: "common/prefab/confirm" },
-    [UIID.Demo]: { layer: LayerType.UI, prefab: "gui/demo/demo" },
     [UIID.Notify]: { layer: LayerType.Notify, prefab: "common/prefab/notify" },
     [UIID.Wait]: { layer: LayerType.Notify, prefab: "common/prefab/wait" },
 
@@ -70,7 +68,7 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.Invite]: { layer: LayerType.Dialog, prefab: "gui/invite/prefab/invite" },
     [UIID.User]: { layer: LayerType.Dialog, prefab: "gui/setting/usercenter", mask: true },
     [UIID.DebrisResult]: { layer: LayerType.Dialog, prefab: "gui/debris/prefab/debrisResult", mask: true },
-    [UIID.STBShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/stbShop", mask: true },
+    [UIID.STBShop]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/STBShop", mask: true },
     [UIID.GemShop]: { layer: LayerType.Dialog, prefab: "gui/wallet/gemShop", mask: true },
     [UIID.STBMerge]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/STBMergeUI", mask: true },
     [UIID.RewardView]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/rewardPrview", mask: true },

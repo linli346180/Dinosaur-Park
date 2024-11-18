@@ -36,6 +36,9 @@ export class WalletView extends Component {
     @property(Label)
     handlingFee: Label = null!;
 
+    @property(Button)
+    private btn_connect: Button = null!;
+
     // 验证码发送间隔
     private sendInterval: number = 60;
     private timeoutId: number | null = null;
@@ -45,6 +48,7 @@ export class WalletView extends Component {
         this.btn_detail?.node.on(Button.EventType.CLICK, this.showDetail, this);
         this.btn_checkemail?.node.on(Button.EventType.CLICK, this.checkEmail, this);
         this.btn_withdrawal?.node.on(Button.EventType.CLICK, this.withdrawal, this);
+        this.btn_connect?.node.on(Button.EventType.CLICK, this.connectTonWallet, this);
 
         this.walletaddress.string = oops.storage.get("walletaddress", '');
         this.DropDown.selectedIndex = oops.storage.getNumber("purseType", 1);
@@ -177,6 +181,14 @@ export class WalletView extends Component {
             oops.gui.toast(oops.language.getLangByID('tips_withdrawal_sucess'));
             smc.account.updateCoinData();
             this.initUI();
+        }
+    }
+
+    private connectTonWallet() {
+        console.log("连接TON钱包");
+        if(window['tonConnectUI']) {
+            window['tonConnectUI'].disconnect();
+            window['tonConnectUI'].openModal();
         }
     }
 }

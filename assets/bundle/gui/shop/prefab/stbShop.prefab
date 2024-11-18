@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "stbShop",
+    "_name": "STBShop",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "stbShop",
+    "_name": "STBShop",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -176,7 +176,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "11023c43-3f45-4a01-94f8-9cce2b263d86@f9941",
+      "__uuid__": "92da31d6-07c6-4900-9fc0-b2799a27a019@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -759,7 +759,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "4294cc42-0ed1-43ec-a3dd-13b0bad9a308@f9941",
+      "__uuid__": "069db672-268e-4216-b3ff-e628d7815e81@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 1,
@@ -1519,7 +1519,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "344eebdb-0927-4f05-83d5-c7daeae349bd@f9941",
+      "__uuid__": "c48f7af2-458c-4411-b656-cfdb7b72dea9@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,

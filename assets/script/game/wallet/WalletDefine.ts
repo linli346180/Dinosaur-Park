@@ -5,11 +5,12 @@ export class WalletConfig {
 
     // 支付目标参数
     proof: string = '';             // 验证数据
-    address: string = '';           // 发起交易的目标地址
     payload: string = '';           // 发起交易的proof
     tonNano: number = 0;            // 发起交易的金额
+    payaddress: string = '';        // 发起交易的目标地址
 
     // 钱包参数
+    address: string = '';           // 发起交易的目标地址
     name: string = '';              // 钱包名称
     publicKey: string = '';         // 公钥
     walletStateInit: string = '';   // 钱包状态
@@ -22,7 +23,7 @@ export class WalletConfig {
 
     constructor() {
         this.manifestUrl = 'https://app.unsgc.com/manifest.json';
-        this.address = 'UQD5YMPkIHwt0rDzeRa8cFL6y9WiGyKesKCfFSz7NfFe-uoS';
+        this.address;
     }
 }
 

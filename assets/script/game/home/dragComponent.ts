@@ -10,7 +10,7 @@ export class ActorDragComponent extends Component {
     /** 是否正在拖动 */
     static IsDragging: boolean = false;
 
-    @property(Node)
+    // @property(Node)
     public dragNode: Node = null!;
     public slotId: number = 0;  // 插槽ID
     private _orgParent: Node | null = null;

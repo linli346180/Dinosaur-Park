@@ -63,4 +63,21 @@ export namespace EmailNetService {
         }
     }
 
+     /** 批量领取邮件奖励 */
+    export async function batchClampEmail() { 
+        const http = new HttpManager();
+        http.server = netConfig.Server;
+        http.token = netConfig.Token;
+        http.timeout = netConfig.Timeout;
+
+        const response = await http.postUrl("tgapp/api/user/mail/batchReceive?token=" + netConfig.Token);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
+            console.warn("批量领取邮件奖励:", response.res);
+            return response.res;
+        } else {
+            console.error("批量领取邮件奖励请求异常", response);
+            return null;
+        }
+    }
+
 }

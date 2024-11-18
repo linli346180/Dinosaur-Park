@@ -5,9 +5,7 @@
     "registry": {
       "remote": {}
     },
-    "dependencies": {
-      "localization-editor": "1.0.1"
-    }
+    "dependencies": {}
   },
   "dependencies": {
     "@tonconnect/ui": "^2.0.9",

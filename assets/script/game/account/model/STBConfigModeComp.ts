@@ -5,7 +5,7 @@ const { ccclass, property } = _decorator;
 
 @ecs.register('STBConfigMode')
 export class STBConfigModeComp extends ecs.Comp {
-    
+
     instbConfigData: UserInstbConfigData[] = [];
 
     reset(): void {
@@ -13,8 +13,22 @@ export class STBConfigModeComp extends ecs.Comp {
     }
 
     /** 获取星兽配置数据 */
-    GetSTBConfigData(configId: number): UserInstbConfigData | undefined {
+    getSTBConfigData(configId: number): UserInstbConfigData | undefined {
         return this.instbConfigData.find((element) => element.id === configId);
+    }
+
+    /** 获取下一级星兽配置数据 */
+    getNextSTBConfigData(configId: number): UserInstbConfigData | undefined {
+        const index = this.instbConfigData.findIndex((element) => element.id === configId);
+        if (index !== -1) {
+            const config = this.instbConfigData[index];
+            for (const item of this.instbConfigData) {
+                if (item.stbKinds === config.stbKinds && item.stbGrade === config.stbGrade + 1) {
+                    return item;
+                }
+            }
+        }
+        return undefined;
     }
 }
 

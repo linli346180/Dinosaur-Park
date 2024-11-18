@@ -1,4 +1,4 @@
-import { _decorator, Component, Button, Label, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Component, Button, Label, Sprite, Node } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { TableSTBConfig } from '../common/table/TableSTBConfig';
@@ -15,8 +15,10 @@ export class DebrisResult extends Component {
     private btn_ok: Button = null!;
     @property(Label)
     private title: Label = null!;
-    @property(Sprite)
-    private icon: Sprite = null!;
+    @property(Node)
+    private icon_lv1: Node = null!;
+    @property(Node)
+    private icon_lv2: Node = null!;
     @property(Label)
     private desc: Label = null!;
 
@@ -25,14 +27,13 @@ export class DebrisResult extends Component {
         this.btn_ok?.node.on(Button.EventType.CLICK, this.closeUI, this);
     }
 
-    initUI(stbId: number, count: number) {
-        console.log("initUI", stbId, count);
+    initUI(stbId: number) {
         let STBConfig: TableSTBConfig = new TableSTBConfig();
         STBConfig.init(stbId);
-        oops.res.loadAsync(STBConfig.icon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
-            this.icon.spriteFrame = spriteFrame;
-        });
-        this.desc.string = STBConfig.name + "*" + count;
+        this.desc.string = STBConfig.name + "*" + 1;
+
+        this.icon_lv1.active = stbId == 301;
+        this.icon_lv2.active = stbId == 302;
     }
 
     closeUI() {

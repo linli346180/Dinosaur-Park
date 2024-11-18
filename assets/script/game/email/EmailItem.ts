@@ -65,8 +65,7 @@ export class EmailItem extends Component {
 
         this.mailTitle.string = this.mailRecord.mailTitle;
         this.mailContent.string = this.checkLabelMaxLength(this.mailRecord.mailContent, 19);
-        const date = new Date(this.mailRecord.mailTime * 1000);
-        this.mailTime.string = StringUtil.formatTimestamp(this.mailRecord.mailTime);
+        this.mailTime.string = StringUtil.formatTimestamp(this.mailRecord.mailTime*1000);
     }
 
     checkLabelMaxLength(content: string, maxLength: number) {
