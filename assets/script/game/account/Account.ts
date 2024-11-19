@@ -17,6 +17,7 @@ import { AccountCoinType, AwardType } from "./AccountDefine";
 import { AccountLoginComp } from "./system/AccountLogin";
 import { net } from "electron";
 import { netChannel } from "../../net/custom/NetChannelManager";
+import { tonConnect, TonConnect } from "../wallet/TonConnect";
 
 /** 账号模块 */
 @ecs.register('Account')
@@ -101,6 +102,7 @@ export class Account extends ecs.Entity {
             // 5. WebSocket连接成功
             case GameEvent.WebSocketConnected:
                 console.log("5.WebSocket连接成功");
+                tonConnect.initTonConnect();
                 oops.message.dispatchEvent(GameEvent.CloseLoadingUI);
                 break;
 

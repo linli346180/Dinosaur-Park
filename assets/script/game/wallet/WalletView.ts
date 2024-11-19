@@ -9,6 +9,7 @@ import { WalletNetService } from './WalletNet';
 import { WithdrawConfig, WithdrawRequest } from './WalletDefine';
 import { EditBox } from 'cc';
 import DropDown from '../common/DropDown/DropDown';
+import { tonConnect } from './TonConnect';
 const { ccclass, property } = _decorator;
 
 @ccclass('WalletView')
@@ -54,6 +55,11 @@ export class WalletView extends Component {
         this.DropDown.selectedIndex = oops.storage.getNumber("purseType", 1);
 
         this.edit_amount.node.on(EditBox.EventType.TEXT_CHANGED, this.onAmountChanged, this);
+
+        this.walletaddress.string = tonConnect.walletConfig.address;
+        tonConnect.connectStateChange = (isConnected: boolean) => { 
+            this.walletaddress.string = tonConnect.walletConfig.address;
+        };
     }
 
     onEnable() {
@@ -163,18 +169,18 @@ export class WalletView extends Component {
             return;
         }
         const parsedAmount = parseFloat(amount);
-        if (isNaN(parsedAmount) || parsedAmount <= 0) {
-            oops.gui.toast(oops.language.getLangByID('tips_withdrawal_amount_empty'));
-            return;
-        }
+        // if (isNaN(parsedAmount) || parsedAmount <= 0) {
+        //     oops.gui.toast(oops.language.getLangByID('tips_withdrawal_amount_empty'));
+        //     return;
+        // }
         oops.storage.set("walletaddress", address);
         oops.storage.set("purseType", purseType);
 
         let request: WithdrawRequest = {
-            verificationCode: '',
-            purseUrl: '',
-            purseType: 0,
-            withdrawAmount: 0
+            verificationCode: emailCode,
+            purseUrl: address,
+            purseType: purseType + 1,
+            withdrawAmount: parsedAmount
         }
         const res = await WalletNetService.createWithdrawRecord(request);
         if (res) {
@@ -186,9 +192,6 @@ export class WalletView extends Component {
 
     private connectTonWallet() {
         console.log("连接TON钱包");
-        if(window['tonConnectUI']) {
-            window['tonConnectUI'].disconnect();
-            window['tonConnectUI'].openModal();
-        }
+        tonConnect.connectTonWallet();
     }
 }

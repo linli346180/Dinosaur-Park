@@ -6,6 +6,8 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { UIID } from '../common/config/GameUIConfig';
 import { WalletNetService } from '../wallet/WalletNet';
 import { smc } from '../common/SingletonModuleComp';
+import { GameEvent } from '../common/config/GameEvent';
+import { AccountEvent } from '../account/AccountEvent';
 const { ccclass, property } = _decorator;
 
 @ccclass('EmailVerifyView')
@@ -116,6 +118,7 @@ export class EmailVerifyView extends Component {
             oops.gui.toast(oops.language.getLangByID("tips_email_verification_success"));
             oops.gui.remove(UIID.EmailVerify);
             smc.account.AccountModel.userData.email = userEmail;
+            oops.message.dispatchEvent(AccountEvent.ChangeEmail);
         } else {
             this.btn_commit.interactable = true;
         }

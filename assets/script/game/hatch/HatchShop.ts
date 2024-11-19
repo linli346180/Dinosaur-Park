@@ -4,12 +4,8 @@ import { UIID } from '../common/config/GameUIConfig';
 import { HatchNetService } from './HatchNet';
 import { HatchPriceConfig } from './HatchDefine';
 import { HatchPriceItem } from './HatchPriceItem';
-import { StringUtil } from '../common/utils/StringUtil';
 import { AccountEvent } from '../account/AccountEvent';
 import { smc } from '../common/SingletonModuleComp';
-import { tween } from 'cc';
-import { v3 } from 'cc';
-import { Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 /** 孵化商店:
@@ -17,46 +13,31 @@ const { ccclass, property } = _decorator;
 @ccclass('HatchShop')
 export class HatchShop extends Component {
     @property(Prefab)
-    hatchPriceItem: Prefab = null!;
+    private hatchPriceItem: Prefab = null!;
     @property(Button)
-    btn_close: Button = null!;
+    private btn_close: Button = null!;
     @property(Node)
-    content: Node = null!;
+    private content: Node = null!;
     @property(Label)
-    gemNum: Label = null!;
+    private  gemNum: Label = null!;
 
-    private isInit = false;
-
-    protected onEnable(): void {
-        tween()
-        .target(this.node)
-        .to(0.15, { scale: v3(1.1, 1.1, 1), }, { easing: 'fade' })
-        .to(0.15, { scale: Vec3.ONE, }, { easing: 'fade' })
-        .start()
-
-        this.initCoinData();
-        if (!this.isInit)
-            this.initPriceItem();
+    onLoad() {
+        this.initPriceItem();
+        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.HatchShop, false); }, this);
+        oops.message.on(AccountEvent.CoinDataChange, this.initCoinData, this);
     }
 
-    start() {
-        this.isInit = true;
-        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.HatchShop, false); }, this);
-        oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
+    onEnable() {
+        this.initCoinData();            
     }
 
     onDestroy() {
-        oops.message.off(AccountEvent.CoinDataChange, this.onHandler, this);
+        oops.message.off(AccountEvent.CoinDataChange, this.initCoinData, this);
     }
 
-    
-    private onHandler(event: string, args: any) {
-        switch (event) {
-            case AccountEvent.CoinDataChange:
-                this.initCoinData();
-                break
-        }
-    }
+    private initCoinData() {
+        this.gemNum.string = Math.floor(smc.account.AccountModel.CoinData.gemsCoin).toString();
+    } 
 
     /** 获取孵蛋次数价格 */
     private async initPriceItem() { 
@@ -65,20 +46,16 @@ export class HatchShop extends Component {
         if (priceDataList) {
             priceDataList.sort((a: HatchPriceConfig, b: HatchPriceConfig) => a.id - b.id);
             priceDataList.forEach((priceData: HatchPriceConfig) => {
-                this.createPriceItem(priceData);
+                this.createItem(priceData);
             });
         }
     }
 
-    private createPriceItem(priceData: HatchPriceConfig) {
+    private createItem(priceData: HatchPriceConfig) {
         const item = instantiate(this.hatchPriceItem);
         if (item) {
             item.parent = this.content;
-            item.getComponent<HatchPriceItem>(HatchPriceItem)?.initItem(priceData);
+            item.getComponent(HatchPriceItem)?.initItem(priceData);
         }
     }
-
-    initCoinData() {
-        this.gemNum.string = Math.floor(smc.account.AccountModel.CoinData.gemsCoin).toString();
-    } 
 }

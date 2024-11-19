@@ -2,7 +2,7 @@
 
 export enum RedDotCmd {
     default             = 0,
-    userCenter          = 100, // 用户中心
+    userCenter          = 99, // 用户中心
     userShop            = 101, // 商店
     UserHatchType       = 103, // 孵蛋
     InvitedType         = 104, // 邀请

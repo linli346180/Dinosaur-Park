@@ -6,6 +6,7 @@ import { UserConfigData } from '../account/AccountDefine';
 import { UIID } from '../common/config/GameUIConfig';
 import { AccountNetService } from '../account/AccountNet';
 import { AnimUtil } from '../common/utils/AnimUtil';
+import { tonConnect } from '../wallet/TonConnect';
 const { ccclass, property } = _decorator;
 
 @ccclass('usercenter')
@@ -62,6 +63,9 @@ export class usercenter extends Component {
 
         this.label_cs01.string = oops.language.getLangByID('user_customer_service') + "1";
         this.label_cs02.string = oops.language.getLangByID('user_customer_service') + "2";
+
+        this.label_purse.string = tonConnect.walletConfig.address;
+        this.label_email.string = smc.account.AccountModel.userData.email;
     }
 
     start() {
@@ -77,13 +81,11 @@ export class usercenter extends Component {
         this.toggle_music.node.on(Toggle.EventType.TOGGLE, this.onToggleMusic, this);
         this.toggle_sound.node.on(Toggle.EventType.TOGGLE, this.onToggleSound, this);
 
-        oops.message.on(AccountEvent.ChangeNickName, this.onHandler, this);
         oops.message.on(AccountEvent.ChangeEmail, this.onHandler, this);
         oops.message.on(AccountEvent.ChangeLanguage, this.onHandler, this);
     }
 
     onDestroy() {
-        oops.message.off(AccountEvent.ChangeNickName, this.onHandler, this);
         oops.message.off(AccountEvent.ChangeEmail, this.onHandler, this);
         oops.message.off(AccountEvent.ChangeLanguage, this.onHandler, this);
     }
@@ -118,11 +120,8 @@ export class usercenter extends Component {
 
     private onHandler(event: string, args: any) {
         switch (event) {
-            case AccountEvent.ChangeNickName:
-                this.label_name.string = args;
-                break;
             case AccountEvent.ChangeEmail:
-                this.label_email.string = args;
+                this.label_email.string = smc.account.AccountModel.userData.email
                 break;
             case AccountEvent.ChangeLanguage:
                 this.label_language.string = oops.language.languageNames[oops.language.current];

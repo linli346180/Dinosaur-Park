@@ -27,6 +27,13 @@ export class WalletConfig {
     }
 }
 
+/** 交易请求 */
+export class TransactionRequest { 
+    address: string;        // 转账目标地址
+    payload: string;        // 交易数据
+    amount: string;         // 交易金额
+}
+
 /** 提现配置 */
 export interface WithdrawConfig {
     userBalance: string;                // 用户余额

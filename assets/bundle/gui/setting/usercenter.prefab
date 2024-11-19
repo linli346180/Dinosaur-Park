@@ -3562,7 +3562,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 25,
-      "y": -12.931,
+      "y": -28.987,
       "z": 0
     },
     "_lrot": {
@@ -3834,8 +3834,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 289.158203125,
-      "height": 50.4
+      "width": 300,
+      "height": 60
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3873,12 +3873,12 @@
     "_string": "xx@email.com",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 44,
-    "_fontSize": 44,
+    "_actualFontSize": 40,
+    "_fontSize": 40,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
-    "_overflow": 0,
-    "_enableWrapText": true,
+    "_overflow": 1,
+    "_enableWrapText": false,
     "_font": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
@@ -4075,7 +4075,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 252.057,
-      "y": -12.931,
+      "y": -28.987,
       "z": 0
     },
     "_lrot": {
@@ -4464,7 +4464,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 25,
-      "y": -106.607,
+      "y": -128.015,
       "z": 0
     },
     "_lrot": {
@@ -4736,8 +4736,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 88,
-      "height": 50.4
+      "width": 300,
+      "height": 60
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4775,12 +4775,12 @@
     "_string": "xxxx",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 44,
-    "_fontSize": 44,
+    "_actualFontSize": 40,
+    "_fontSize": 40,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
-    "_overflow": 0,
-    "_enableWrapText": true,
+    "_overflow": 1,
+    "_enableWrapText": false,
     "_font": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
@@ -5349,7 +5349,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 252.057,
-      "y": -109.534,
+      "y": -130.942,
       "z": 0
     },
     "_lrot": {
@@ -5735,7 +5735,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 25,
-      "y": -208.647,
+      "y": -237.191,
       "z": 0
     },
     "_lrot": {
@@ -5831,8 +5831,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 91.11328125,
-      "height": 50.4
+      "width": 100.224609375,
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5870,10 +5870,10 @@
     "_string": "语言:",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 40,
-    "_fontSize": 40,
+    "_actualFontSize": 44,
+    "_fontSize": 44,
     "_fontFamily": "Arial",
-    "_lineHeight": 40,
+    "_lineHeight": 50,
     "_overflow": 0,
     "_enableWrapText": true,
     "_font": null,
@@ -6005,7 +6005,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -254.03671874999998,
+      "x": -244.92539062499998,
       "y": 0,
       "z": 0
     },
@@ -6090,7 +6090,7 @@
     "_fontFamily": "Arial",
     "_lineHeight": 40,
     "_overflow": 0,
-    "_enableWrapText": true,
+    "_enableWrapText": false,
     "_font": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
@@ -6183,8 +6183,8 @@
     },
     "_alignFlags": 40,
     "_target": null,
-    "_left": 50,
-    "_right": 0,
+    "_left": 50.00000000000002,
+    "_right": -1.4210854715202004e-14,
     "_top": 50,
     "_bottom": 50,
     "_horizontalCenter": 0,
@@ -6252,8 +6252,6 @@
       "__id__": 0
     },
     "fileId": "bbFipREjRLrJ5I8Y8yMl9L",
-    "instance": null,
-    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {
@@ -6290,7 +6288,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 249.74399999999997,
-      "y": -208.647,
+      "y": -237.191,
       "z": 0
     },
     "_lrot": {
@@ -7290,7 +7288,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
+      "width": 176,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -7329,8 +7327,8 @@
     "_string": "背景音乐",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 40,
-    "_fontSize": 40,
+    "_actualFontSize": 44,
+    "_fontSize": 44,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
     "_overflow": 0,
@@ -7511,7 +7509,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
+      "width": 176,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -7550,8 +7548,8 @@
     "_string": "按钮音效",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 40,
-    "_fontSize": 40,
+    "_actualFontSize": 44,
+    "_fontSize": 44,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
     "_overflow": 0,

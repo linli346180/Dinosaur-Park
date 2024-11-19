@@ -2,9 +2,7 @@ import { _decorator, Component, Node, Label, Button } from 'cc';
 import { CoinType, HatchPriceConfig, UserHatchEvent } from './HatchDefine';
 import { HatchNetService } from './HatchNet';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
-import { AccountEvent } from '../account/AccountEvent';
 import { NetErrorCode } from '../../net/custom/NetErrorCode';
-import { AccountNetService } from '../account/AccountNet';
 import { smc } from '../common/SingletonModuleComp';
 import { UIID } from '../common/config/GameUIConfig';
 const { ccclass, property } = _decorator;
@@ -12,26 +10,24 @@ const { ccclass, property } = _decorator;
 @ccclass('HatchPriceItem')
 export class HatchPriceItem extends Component {
     @property(Node)
-    coin_1: Node = null!;
+    private coin_1: Node = null!;
     @property(Node)
-    coin_2: Node = null!;
+    private coin_2: Node = null!;
     @property(Node)
-    coin_3: Node = null!;
+    private coin_3: Node = null!;
     @property(Node)
-    coin_4: Node = null!;
+    private coin_4: Node = null!;
     @property(Label)
-    hatchNum: Label = null!;
+    private  hatchNum: Label = null!;
     @property(Label)
-    hatchPrice: Label = null!;
+    private hatchPrice: Label = null!;
     @property(Button)
-    btn_buy: Button = null!;
-
+    private btn_buy: Button = null!;
     @property(Node)
-    maskNode: Node = null!;
-
+    private maskNode: Node = null!;
     private _priceData: HatchPriceConfig = new HatchPriceConfig();
 
-    start() {
+    onLoad() {
         this.btn_buy.node.on(Button.EventType.CLICK, this.buyHatchNum, this);
     }
 
@@ -48,7 +44,7 @@ export class HatchPriceItem extends Component {
         
         if (this._priceData.limitedNum > 0) {
             const res = await HatchNetService.getHatchPurNum(this._priceData.id);
-            if (res &&  res.purNum != null) {
+            if (res &&res.purNum) {
                 this._priceData.purNum = res.purNum;
                 this.checkLimitedNum();
             }
@@ -62,7 +58,7 @@ export class HatchPriceItem extends Component {
         }
     }
 
-    async buyHatchNum() {
+    private async buyHatchNum() {
         if (this._priceData.conCoinType === CoinType.Gems) {
             const letNum = Math.floor(smc.account.AccountModel.CoinData.gemsCoin) - Math.floor(this._priceData.purNeedCoinNum);
             console.log(`剩余宝石数量:${smc.account.AccountModel.CoinData.gemsCoin},所需宝石:${this._priceData.purNeedCoinNum}`);
@@ -74,6 +70,7 @@ export class HatchPriceItem extends Component {
             }
         }
 
+        this.btn_buy.interactable = false;
         const res = await HatchNetService.requestHatchNum(this._priceData.id);
         if (res && res.resultCode == NetErrorCode.Success) {
             this._priceData.purNum++;
@@ -82,8 +79,7 @@ export class HatchPriceItem extends Component {
             smc.account.updateCoinData(); // 刷新金币数量
             oops.message.dispatchEvent(UserHatchEvent.HatchRemailChange, res.userHatch.remainNum);
             oops.gui.toast("tips_buy_sucess", true);
-            return;
         }
-
+        this.btn_buy.interactable = true;
     }
 }

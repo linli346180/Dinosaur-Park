@@ -1707,9 +1707,9 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 248,
+      "g": 248,
+      "b": 248,
       "a": 255
     },
     "_string": "获取验证码",
@@ -1836,16 +1836,16 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 225,
+      "g": 138,
+      "b": 59,
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "450406ec-4e6a-41f0-aecf-158c45303482@f9941",
+      "__uuid__": "64ba7899-ef89-411b-a111-c9c1d38b1cb0@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
-    "_type": 1,
+    "_type": 0,
     "_fillType": 0,
     "_sizeMode": 0,
     "_fillCenter": {
@@ -1907,10 +1907,7 @@
       "b": 124,
       "a": 255
     },
-    "_normalSprite": {
-      "__uuid__": "450406ec-4e6a-41f0-aecf-158c45303482@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
+    "_normalSprite": null,
     "_hoverSprite": null,
     "_pressedSprite": null,
     "_disabledSprite": null,
@@ -1934,6 +1931,8 @@
       "__id__": 0
     },
     "fileId": "00fddTkm1HQ6IG91i2nNQh",
+    "instance": null,
+    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {
@@ -2141,7 +2140,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 100,
-      "height": 40
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2179,11 +2178,11 @@
     "_string": "提交",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 40,
-    "_fontSize": 40,
+    "_actualFontSize": 50,
+    "_fontSize": 50,
     "_fontFamily": "Arial",
-    "_lineHeight": 40,
-    "_overflow": 1,
+    "_lineHeight": 50,
+    "_overflow": 0,
     "_enableWrapText": false,
     "_font": null,
     "_isSystemFontUsed": true,
@@ -2269,8 +2268,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 282.7,
-      "height": 101.8
+      "width": 300,
+      "height": 120
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2403,7 +2402,7 @@
     "_left": 0,
     "_right": 0,
     "_top": 0,
-    "_bottom": 75.71399999999997,
+    "_bottom": 66.61399999999998,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
     "_isAbsLeft": true,

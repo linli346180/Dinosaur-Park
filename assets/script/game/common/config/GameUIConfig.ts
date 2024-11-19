@@ -41,6 +41,7 @@ export enum UIID {
     Wallet,         // 钱包
     EmailVerify,    // 邮箱验证
     WalletDetail,   // 钱包详情
+    STBDetail,      // 星兽详情
 }
 
 /** 打开界面方式的配置数据 */
@@ -63,7 +64,9 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.Wallet]: { layer: LayerType.UI, prefab: "gui/wallet/walletUI", mask: true },
     [UIID.WalletDetail]: { layer: LayerType.UI, prefab: "gui/wallet/walletDetailUI", mask: true },
 
-    [UIID.Book]: { layer: LayerType.Dialog, prefab: "gui/book/prefab/stbReportUI", mask: true, vacancy: true },
+    [UIID.Book]: { layer: LayerType.PopUp, prefab: "gui/book/prefab/stbReportUI", mask: true, vacancy: true },
+    [UIID.STBDetail]: { layer: LayerType.Dialog, prefab: "gui/book/prefab/stbDetail", mask: true, vacancy: true },
+
     [UIID.Task]: { layer: LayerType.Dialog, prefab: "gui/task/prefab/task" },
     [UIID.Invite]: { layer: LayerType.Dialog, prefab: "gui/invite/prefab/invite" },
     [UIID.User]: { layer: LayerType.Dialog, prefab: "gui/setting/usercenter", mask: true },

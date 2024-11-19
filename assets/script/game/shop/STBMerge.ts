@@ -6,40 +6,34 @@ import { VideoPlayer } from 'cc';
 import { AccountNetService } from '../account/AccountNet';
 import { Label } from 'cc';
 import { STBSynthConfig } from './MergeDefine';
-import { AnimUtil } from '../common/utils/AnimUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('STBMergeView')
 export class STBMergeView extends Component {
     @property(Button)
-    btn_close: Button = null!;
-
+    private btn_close: Button = null!;
     @property(Node)
-    beforePanel: Node = null!;
+    private beforePanel: Node = null!;
     @property(Toggle)
-    tog_add: Toggle = null!;
+    private tog_add: Toggle = null!;
     @property(Button)
-    btn_evolve: Button = null!;
-    
+    private btn_evolve: Button = null!;
     @property(Node)
-    sucessPanel: Node = null!;
+    private sucessPanel: Node = null!;
     @property(Button)
-    btn_sucessclose: Button = null!;
-
+    private btn_sucessclose: Button = null!;
     @property(Node)
-    failPanel: Node = null!;
+    private failPanel: Node = null!;
     @property(Button)
-    btn_failclose: Button = null!
-
+    private btn_failclose: Button = null!
     @property(VideoPlayer)
-    videoPlayer: VideoPlayer = null!;
+    private videoPlayer: VideoPlayer = null!;
     @property(Node)
-    videoMsk: Node = null!;
-
+    private videoMsk: Node = null!;
     @property(Label)
-    baseProbLabel: Label = null!;
+    private baseProbLabel: Label = null!;
     @property(Label)
-    upProbLabel: Label = null!;
+    private upProbLabel: Label = null!;
 
     private stbID1: number = 0;
     private stbID2: number = 0;
@@ -58,6 +52,11 @@ export class STBMergeView extends Component {
             this.synthConfig.conCoinNum = res.synthProb.conCoinNum;
             this.synthConfig.conCoinType = res.synthProb.conCoinType;
         }
+
+        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
+        this.btn_sucessclose?.node.on(Button.EventType.CLICK, this.closeUI, this);
+        this.btn_failclose?.node.on(Button.EventType.CLICK, this.closeUI, this);
+        this.btn_evolve?.node.on(Button.EventType.CLICK, this.onEvolve, this);
     }
 
     // 刷新多语言
@@ -85,13 +84,6 @@ export class STBMergeView extends Component {
         this.upProbLabel.string = desc;
     }
 
-    start() {
-        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.btn_sucessclose?.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.btn_failclose?.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.btn_evolve?.node.on(Button.EventType.CLICK, this.onEvolve, this);
-    }
-
     public InitUI(firstStbID: number, twoStbID: number,) {
         this.beforePanel.active = true;
         this.sucessPanel.active = false;
@@ -112,29 +104,36 @@ export class STBMergeView extends Component {
     }
 
     private async onEvolve() {
+        let isUpProb = this.tog_add.isChecked ? 1 : 2;
+        if(this.tog_add.isChecked && smc.account.AccountModel.CoinData.gemsCoin < this.synthConfig.conCoinNum) {
+            oops.gui.toast("tips_gem_noenough", true);
+            oops.gui.open(UIID.GemShop);
+            this.closeUI();
+            return;
+        }
+
+        this.btn_evolve.interactable = false;
         this.btn_close.node.active = false;
         this.videoMsk.active = true;
         this.videoPlayer.node.active = true;
         this.videoPlayer.play();
-        this.videoPlayer.node.once(VideoPlayer.EventType.COMPLETED, this.OnVideoCompleted, this);
+        this.videoPlayer.node.once(VideoPlayer.EventType.COMPLETED, this.onVideoCompleted, this);
 
-        let isUpProb = this.tog_add.isChecked ? 1 : 2;
         smc.account.mergeIncomeSTBNet(this.stbID1, this.stbID2, isUpProb, (success) => {
+            this.btn_evolve.interactable = true;
             this.isSucc = success;
         });
     }
 
-    OnVideoCompleted() {
+    private onVideoCompleted() {
         this.videoMsk.active = false;
         this.videoPlayer.node.active = false;
         this.showMergeResult(this.isSucc);
     }
 
-    showMergeResult(isSucc: boolean) {
+    private showMergeResult(isSucc: boolean) {
         this.beforePanel.active = false
         this.sucessPanel.active = isSucc ? true : false;
         this.failPanel.active = isSucc ? false : true;
     }
-
-   
 }

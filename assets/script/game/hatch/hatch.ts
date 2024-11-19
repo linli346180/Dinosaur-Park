@@ -16,33 +16,30 @@ const { ccclass, property } = _decorator;
 @ccclass('HatchView')
 export class HatchView extends Component {
     @property(Button)
-    btn_close: Button = null!;
+    private btn_close: Button = null!;
     @property(Button)
-    btn_RewardView: Button = null!;
+    private  btn_RewardView: Button = null!;
     @property(Button)
-    btn_HatchOneTime: Button = null!;
+    private  btn_HatchOneTime: Button = null!;
     @property(Button)
-    btn_HatchTenTimes: Button = null!;
+    private btn_HatchTenTimes: Button = null!;
     @property(Button)
-    btn_BuyHatchTime: Button = null!;
+    private btn_BuyHatchTime: Button = null!;
     @property(Label)
-    label_remainNum: Label = null!;
+    private label_remainNum: Label = null!;
     @property(Label)
-    label_hatchNum: Label = null!;
+    private label_hatchNum: Label = null!;
     @property(Label)
-    label_guaranteedNum: Label = null!;
+    private label_guaranteedNum: Label = null!;
 
     // 抽奖视频
     @property(VideoPlayer)
-    videoPlayer: VideoPlayer = null!;
+    private videoPlayer: VideoPlayer = null!;
     @property(Node)
-    videoMask: Node = null!;
+    private videoMask: Node = null!;
 
-    private isInit = false;
-    private canHatch: boolean = true;
     private _userData: UserHatchData = new UserHatchData();
-
-    private rewardConfig: RewardConfig[] = [];
+    private userHatchResult: RewardConfig[] = [];
 
     onLoad() {
         this.getHatchMinNum();
@@ -53,14 +50,11 @@ export class HatchView extends Component {
     }
 
     start() {
-        this.isInit = true;
         this.btn_close?.node.on(Button.EventType.CLICK, () => oops.gui.remove(UIID.Hatch, false), this);
         this.btn_RewardView?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.RewardView) }, this);
         this.btn_HatchOneTime?.node.on(Button.EventType.CLICK, () => { this.userHatch(1) }, this);
         this.btn_HatchTenTimes?.node.on(Button.EventType.CLICK, () => { this.userHatch(10) }, this);
         this.btn_BuyHatchTime?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.HatchShop) }, this);
-
-        this.videoPlayer.node.on(VideoPlayer.EventType.COMPLETED, this.OnAnimFinish, this);
         oops.message.on(UserHatchEvent.HatchRemailChange, this.onHandler, this);
     }
 
@@ -81,7 +75,6 @@ export class HatchView extends Component {
 
     /* 获取用户孵化次数 */
     private async getUserHatchNum() {
-        this.canHatch = true;
         const res = await HatchNetService.getUserHatchNum();
         if (res && res.userHatch != null) {
             this._userData.remainNum = res.userHatch.remainNum;
@@ -107,34 +100,34 @@ export class HatchView extends Component {
             return
         }
 
-        if (!this.canHatch) {
-            return;
-        }
+        this.btn_HatchOneTime.interactable = false;
+        this.btn_HatchTenTimes.interactable = false;
 
         // 播放抽奖视频:
         this.videoMask.active = true;
         this.videoPlayer.node.active = true;
         this.videoPlayer.play();
-        this.canHatch = false;
+        this.videoPlayer.node.once(VideoPlayer.EventType.COMPLETED, this.OnAnimFinish, this);
 
+        // 请求抽奖
         const res = await HatchNetService.requestUserHatch(num);
         if (res && res.userHatch != null) {
-            this.rewardConfig = res.userHatch;
+            this.userHatchResult = res.userHatch;
         }
     }
 
     private OnAnimFinish() {
-
-        console.log("抽奖动画播放完成");
         var uic: UICallbacks = {
             onAdded: (node: Node, params: any) => {
-                node.getComponent(HatchReward)?.InitUI(this.rewardConfig);
+                node.getComponent(HatchReward)?.InitUI(this.userHatchResult);
             },
         };
         let uiArgs: any;
         oops.gui.open(UIID.HatchReward, uiArgs, uic);
 
-        this.canHatch = true;
+        this.btn_HatchOneTime.interactable = true;
+        this.btn_HatchTenTimes.interactable = true;
+
         this.videoPlayer.stop();
         this.videoPlayer.node.active = false;
         this.getUserHatchNum();

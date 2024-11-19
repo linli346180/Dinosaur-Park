@@ -20,7 +20,7 @@ class NetConfig {
         return this.ServerConfigList[this.curEnvironment].BotToken;
     }
 
-    private curEnvironment: EnvironmentType = EnvironmentType.PreRelease;
+    private curEnvironment: EnvironmentType = EnvironmentType.Development;
     private ServerConfigList = {
         [EnvironmentType.Development]: {
             Server: "https://konglong.live/",
@@ -39,7 +39,7 @@ class NetConfig {
         }
     };
 
-    public ExampleLogin: boolean = false;   // 是否使用测试账号登陆
+    public ExampleLogin: boolean = true;   // 是否使用测试账号登陆
     public API: string = "/tgapp/api";
     public VERSION: string = "/v1";
     public PATH: string = "/login";

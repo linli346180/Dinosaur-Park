@@ -89,6 +89,8 @@ export namespace WalletNetService {
             'withdrawAmount': request.withdrawAmount.toString(),
         }
         const paramString = new URLSearchParams(params).toString();
+
+        console.warn("创建提现信息参数:", paramString);
         const response = await http.postUrl(`tgapp/api/presell/createWithdrawRecord?token=${netConfig.Token}`, paramString);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("创建提现信息:", response.res);

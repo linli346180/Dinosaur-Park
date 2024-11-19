@@ -23,15 +23,15 @@ export class InviteItemView extends Component {
         if (!url || url.length === 0) {
             return;
         }
-        assetManager.loadRemote<ImageAsset>(url, (err, imageAsset) => {
-            if (!err) {
-                const texture = new Texture2D();
-                texture.image = imageAsset;
-                const spriteFrame = new SpriteFrame();
-                spriteFrame.texture = texture;
-                this.userIcon.spriteFrame = spriteFrame;
-            }
-        });
+        // assetManager.loadRemote<ImageAsset>(url, (err, imageAsset) => {
+        //     if (!err) {
+        //         const texture = new Texture2D();
+        //         texture.image = imageAsset;
+        //         const spriteFrame = new SpriteFrame();
+        //         spriteFrame.texture = texture;
+        //         this.userIcon.spriteFrame = spriteFrame;
+        //     }
+        // });
     }
 }
 
