@@ -4,18 +4,28 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { UIID } from '../common/config/GameUIConfig';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { STBDetail } from './STBDetail';
+import { Sprite } from 'cc';
+import { Label } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('STBItem')
 export class STBItem extends Component {
     @property(Button)   
-    btn_detail:Button = null!;
+    private btn_detail:Button = null!;
+    @property(Sprite)
+    private icon: Sprite = null!;
+    @property(Label)
+    private num: Label = null!;
 
-    start() {
-        this.btn_detail.node.on(Button.EventType.CLICK, this.onDetail, this);
+    public initItem(num: number) {
+        this.num.string = num.toString();
     }
 
-    onDetail() {
+    onLoad() {
+        this.btn_detail.node.on(Button.EventType.CLICK, this.onDetailClick, this);
+    }
+
+    private onDetailClick() {
         var uic: UICallbacks = {
             onAdded: (node: Node, params: any) => {
                 node.getComponent(STBDetail)?.InitUI(parseInt(this.node.name));

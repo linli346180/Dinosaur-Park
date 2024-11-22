@@ -4,20 +4,36 @@ import { StartBeastData } from "./model/AccountModelComp";
 
 /** 用户货币数据 */
 export class UserCoinData {
-    id: number = 0;
-    userID: number = 0; // 用户ID
-    goldCoin: number = 0; // 金币(金币星兽产出)
-    gemsCoin: number = 0; // 宝石(宝石星兽产出)
-    usdt: number = 0; // USDT(钻石星兽产出)
-    starBeastCoin: number = 0; // 星兽币(sbpc,至尊星兽产出)
+    id: number              = 0;
+    userID: number          = 0;      // 用户ID
+    goldCoin: number        = 1000;      // 金币(金币星兽产出)
+    gemsCoin: number        = 1000;      // 宝石(宝石星兽产出)
+    usdt: number            = 1000;      // USDT(钻石星兽产出)
+    starBeastCoin: number   = 1000;      // 星兽币(sbpc,至尊星兽产出)
 }
 
-//收益星兽合成返回
-export interface IMergeResponse {
-    isSucc: boolean;
-    resultCode: NetErrorCode;
-    resultMsg: string;
-    userInStb: StartBeastData
+/** 货币池数量 */
+export class UserCoinIncome {
+    goldCoin: number        = 1000; // 金币
+    gemsCoin: number        = 1000; // 宝石数量
+}
+
+export class UserData {
+    id: number =            0; // 用户ID
+    createdAt: string       = ''; // 创建时间
+    updatedAt: string       = ''; // 更新时间
+    deletedAt: string       = ''; // 删除时间
+    name: string            = ''; // 名称
+    email: string           = ''; // 邮箱
+    mobile: string          = ''; // 手机号
+    account: string         = ''; // 账号
+    registerType: RegisterType = RegisterType.Unknow; // 注册类型
+    externalAccountType: AccountType = AccountType.Unknow; // 外部账号类型
+    externalAccountUid: string = ''; // 用户外部ID
+    avatarPath: string      = ''; // 头像路径
+    state: number           = 0; // 用户状态
+    prohibitionState: number = 0; // 用户封禁状态
+    releaseAt: string | null = null; // 解禁时间
 }
 
 
@@ -45,30 +61,6 @@ export enum RegisterType {
     AgentInvite = 3   // 代理商邀请
 }
 
-export class UserData {
-    id: number = 0; // 用户ID
-    createdAt: string = ''; // 创建时间
-    updatedAt: string = ''; // 更新时间
-    deletedAt: string = ''; // 删除时间
-    name: string = ''; // 名称
-    email: string = ''; // 邮箱
-    mobile: string = ''; // 手机号
-    account: string = ''; // 账号
-    registerType: RegisterType = RegisterType.Unknow; // 注册类型
-    externalAccountType: AccountType = AccountType.Unknow; // 外部账号类型
-    externalAccountUid: string = ''; // 用户外部ID
-    avatarPath: string = ''; // 头像路径
-    state: number = 0; // 用户状态
-    prohibitionState: number = 0; // 用户封禁状态
-    releaseAt: string | null = null; // 解禁时间
-}
-
-/** 货币池数量 */
-export class UserCoinIncome {
-    goldCoin: number = 0; // 金币
-    gemsCoin: number = 0; // 宝石数量
-}
-
 export enum AwardType {
     Unknow = 0,         // 未知
     Coin = 1,           // 货币
@@ -76,8 +68,7 @@ export enum AwardType {
     StarBeastDebris = 3 // 星兽碎片
 }
 
-export interface UserConfigData {
-    typeKey: string,
-    languageKey: string,
-    description: string,
+export class MergeRespose {
+    isSucc: boolean = false;    //合成是否成功，false：合成失败，true：合成成功，并且userInStb会返回新星兽数据
+    isGainNum: boolean = false;      //合成成功后，获得的星兽数量
 }

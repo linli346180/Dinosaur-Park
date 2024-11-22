@@ -1,7 +1,16 @@
+import { DEBUG } from "cc/env";
 
 
 /** 网络配置 */
-class NetConfig {
+export class NetConfig {
+
+    constructor() { 
+        if(DEBUG) {
+            this.curEnvironment = EnvironmentType.Development;
+            this.ExampleLogin = true;   
+        }
+    }
+
     public get Server() {
         if (this.dynamicRoute) {
             return `https://${this.Route}/`
@@ -20,7 +29,7 @@ class NetConfig {
         return this.ServerConfigList[this.curEnvironment].BotToken;
     }
 
-    private curEnvironment: EnvironmentType = EnvironmentType.Development;
+    private curEnvironment: EnvironmentType = EnvironmentType.PreRelease;
     private ServerConfigList = {
         [EnvironmentType.Development]: {
             Server: "https://konglong.live/",
@@ -39,7 +48,7 @@ class NetConfig {
         }
     };
 
-    public ExampleLogin: boolean = true;   // 是否使用测试账号登陆
+    public ExampleLogin: boolean = false;   // 是否使用测试账号登陆
     public API: string = "/tgapp/api";
     public VERSION: string = "/v1";
     public PATH: string = "/login";

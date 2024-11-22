@@ -1050,7 +1050,7 @@
         "__id__": 125
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 135
@@ -3506,7 +3506,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -120,
+      "y": -150,
       "z": 0
     },
     "_lrot": {
@@ -4325,7 +4325,7 @@
         "__id__": 207
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 223
@@ -4529,7 +4529,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -120,
+      "y": -150,
       "z": 0
     },
     "_lrot": {
@@ -4751,7 +4751,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 571.2109375,
+      "width": 208.92578125,
       "height": 63
     },
     "_anchorPoint": {
@@ -4787,7 +4787,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "Dragon egg hatching times x1",
+    "_string": "孵化次数 *1",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 40,
@@ -5413,6 +5413,9 @@
     },
     "upProbLabel": {
       "__id__": 91
+    },
+    "GainNode": {
+      "__id__": 199
     },
     "_id": ""
   },

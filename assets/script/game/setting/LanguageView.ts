@@ -10,19 +10,22 @@ const { ccclass, property } = _decorator;
 
 @ccclass('LanguageView')
 export class LanguageView extends Component {
-    @property(Prefab)
-    itemPrefab: Prefab = null!;
     @property(Button)
-    btn_ok: Button = null!;
+    private btn_close: Button = null!;
+    @property(Prefab)
+    private itemPrefab: Prefab = null!;
+    @property(Button)
+    private btn_ok: Button = null!;
     @property(Node)
-    content: Node = null!;
+    private content: Node = null!;
 
     private _language: string = "";
 
     start() {
         this.content.removeAllChildren();
         this.initView();
-        this.btn_ok?.node.on(Button.EventType.CLICK, this.closeUI, this);
+        this.btn_ok?.node.on(Button.EventType.CLICK, this.changeLanguage, this);
+        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
     }
 
     initView() {
@@ -46,20 +49,23 @@ export class LanguageView extends Component {
         }
     }
 
-    onItemClicked(name: string) {
+    private onItemClicked(name: string) {
         this._language = name;
     }
 
-    closeUI() {
+    private changeLanguage() {
+        this.btn_ok.interactable = false;
         oops.language.setLanguage(this._language, (success) => {
             if (success) {
-                oops.storage.set("language", this._language);
+                oops.storage.setCommon("language", this._language);
                 oops.message.dispatchEvent(AccountEvent.ChangeLanguage);
-                console.log("切换多语言" + name);
             }
+            this.btn_ok.interactable = true;
+            this.closeUI();
         });
+    }
+
+    private closeUI() {
         oops.gui.remove(UIID.LanguageUI, false);
     }
 }
-
-

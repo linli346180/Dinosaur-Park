@@ -270,7 +270,8 @@ export class HttpManager {
             }
         }
         else {
-            oops.message.dispatchEvent(GameEvent.WebRequestFail, oops.language.getLangByID("net_tips_fetch_fail"));
+            // oops.message.dispatchEvent(GameEvent.WebRequestFail, oops.language.getLangByID("net_tips_fetch_fail"));
+            oops.message.dispatchEvent(GameEvent.NetConnectFail)
             ret.err = value;
         }
         urls.delete(url);

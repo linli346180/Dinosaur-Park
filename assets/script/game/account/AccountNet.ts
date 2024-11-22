@@ -9,6 +9,7 @@ import { Logger } from '../../Logger';
 import { netChannel } from '../../net/custom/NetChannelManager';
 import { smc } from '../common/SingletonModuleComp';
 import { GameEvent } from '../common/config/GameEvent';
+import { StringUtil } from '../common/utils/StringUtil';
 
 export namespace AccountNetService {
     /** 登录TG账号 */
@@ -38,12 +39,12 @@ export namespace AccountNetService {
             inviteSign: data.inviteSign,
             inviteType: data.inviteType,
             deviceCode: data.DeviceCode,
+            'Time-Zone': StringUtil.formatDateToCustomFormat(new Date()),
             // loginEquipMent: data.LoginEquipMent
         });
 
         netConfig.deviceCode = data.DeviceCode;
-        console.warn("登录参数:" + params);
-
+        Logger.logNet("发起登录:" + JSON.stringify(params));
         const response = await http.postUrlNoHead("tgapp/api/login", params);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn(`TG账号登录成功${http.url}`, response.res);
@@ -76,6 +77,7 @@ export namespace AccountNetService {
 
     /** 登录测试账号 */
     export async function LoginTestAccount() {
+        const now = new Date();
         const http = new HttpManager();
         http.server = netConfig.Server;
         http.timeout = netConfig.Timeout;
@@ -83,9 +85,11 @@ export namespace AccountNetService {
             'loginType': 3,
             'account': netConfig.Account,
             'password': netConfig.Password,
+            'Time-Zone': StringUtil.formatDateToCustomFormat(new Date()),
             // 'loginEquipMent': TGWebAppInitData.GenerateGUID()
         };
         // const paramString = new URLSearchParams(params).toString();
+        Logger.logNet("发起登录:" + JSON.stringify(params));
         const response = await http.postUrlNoHead("tgapp/api/login", JSON.stringify(params));
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             netConfig.Token = response.res.token;

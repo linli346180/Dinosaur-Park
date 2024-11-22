@@ -84,12 +84,11 @@ export class InitResSystem extends ecs.ComblockSystem implements ecs.IEntityEnte
     private loadLanguage(queue: AsyncQueue) {
         queue.push((next: NextFunction, params: any, args: any) => {
             // 设置默认语言
-            let lan = oops.storage.get("language");
+            let lan = oops.storage.getCommon("language");
             if (lan == null || lan == "") {
-                lan = "zh";
-                oops.storage.set("language", lan);
+                lan = "en";
+                oops.storage.setCommon("language", lan);
             }
-
             // 加载语言包资源
             oops.language.setLanguage(lan, next);
         });
@@ -98,7 +97,7 @@ export class InitResSystem extends ecs.ComblockSystem implements ecs.IEntityEnte
     /** 加载公共资源（必备） */
     private loadCommon(queue: AsyncQueue) {
         queue.push((next: NextFunction, params: any, args: any) => {
-            oops.res.loadDir("common", next);
+            oops.res.loadDir("common/prefab", next);
         });
     }
 

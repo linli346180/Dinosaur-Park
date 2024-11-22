@@ -21,8 +21,8 @@ export class StringUtil {
 
 
     /**
-     * Combines two numbers with leading zeros.
-     * 
+     * 合并两个数字，并在前面添加0 比如:101
+     *  * 
      * @param first - The first number.
      * @param second - The second number.
      * @param zeroCount - The number of leading zeros to add.
@@ -37,6 +37,12 @@ export class StringUtil {
         return combinedNumber;
     }
 
+    /**
+     * Formats a given timestamp as a string.
+     * 输出个时间格式 2024-01-01 00:00:00
+     * @param timestamp - The timestamp to format.
+     * @returns The formatted timestamp string.
+     */
     static formatTimestamp(timestamp: number): string {
         const date = new Date(timestamp);
         const year = date.getFullYear();
@@ -51,4 +57,22 @@ export class StringUtil {
     static padZero(num: number): string {
         return num < 10 ? `0${num}` : num.toString();
     }
+
+
+    static formatDateToCustomFormat(date: Date): string {
+        const pad = (num: number, size: number = 2) => String(num).padStart(size, "0");
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1);
+        const day = pad(date.getDate());
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+        const seconds = pad(date.getSeconds());
+        const milliseconds = pad(date.getMilliseconds(), 3);
+        const timezoneOffset = -date.getTimezoneOffset(); // Minutes offset
+        const sign = timezoneOffset >= 0 ? "+" : "-";
+        const absOffset = Math.abs(timezoneOffset);
+        const timezone = `${sign}${pad(Math.floor(absOffset / 60))}${pad(absOffset % 60)}`;
+      
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}${timezone}`;
+      }
 }

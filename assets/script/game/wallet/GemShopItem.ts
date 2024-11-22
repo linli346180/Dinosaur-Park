@@ -14,7 +14,6 @@ export class GemShopItem extends Component {
     private rebate: Label = null!;
     @property(Button)
     private btn_buy: Button = null!;
-
     @property({ type: Node })
     private level1: Node = null!;
     @property({ type: Node })

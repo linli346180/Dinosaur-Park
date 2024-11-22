@@ -5,6 +5,9 @@ import { InviteNetService } from './InviteNet';
 import { InviteItemView } from './InviteItemView';
 import qr from 'qrcode-generator';
 import { InviteRewardItem } from './InviteRewardItem';
+import { InviteRewardConfig } from './InviteData';
+import { Label } from 'cc';
+import { StringUtil } from '../common/utils/StringUtil';
 
 const { ccclass, property } = _decorator;
 
@@ -12,45 +15,41 @@ const { ccclass, property } = _decorator;
 @ccclass('InviteVeiw')
 export class InviteVeiw extends Component {
     @property(Prefab)
-    inviteItem: Prefab = null!;
+    private inviteItem: Prefab = null!;
     @property(Button)
-    btn_close: Button = null!;
+    private btn_close: Button = null!;
     @property(Button)
-    btn_invite: Button = null!;
+    private btn_invite: Button = null!;
     @property(Button)
-    btn_copy: Button = null!;
+    private btn_copy: Button = null!;
     @property(Node)
-    inviteContent: Node = null!;
+    private inviteContent: Node = null!;
     @property(Node)
-    nofriend: Node = null!;
+    private nofriend: Node = null!;
     @property(Sprite)
-    icon: Sprite = null!;
+    private icon: Sprite = null!;
 
     // 邀请奖励
     @property(Node)
-    rewardContainer: Node = null!;
+    private rewardContainer: Node = null!;
     @property(Prefab)
-    rewardItem: Prefab = null!;
+    private rewardItem: Prefab = null!;
+    @property(Label)
+    private inviteNum:Label = null!;
 
     private inviteLink: string = "";
 
     onLoad() {
+        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.Invite, false) }, this);
+        this.btn_invite?.node.on(Button.EventType.CLICK, this.openInviteLink, this);
+        this.btn_copy?.node.on(Button.EventType.CLICK, this.copyInviteLink, this);
+
         this.initQRCode();
         this.initRewardList();
     }
 
-    start() {
-        this.setupButtonHandlers();
-    }
-
     onEnable() {
         this.initInviteList();
-    }
-
-    private setupButtonHandlers() {
-        this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.Invite, false) }, this);
-        this.btn_invite?.node.on(Button.EventType.CLICK, this.openInviteLink, this);
-        this.btn_copy?.node.on(Button.EventType.CLICK, this.copyInviteLink, this);
     }
 
     private async initQRCode() {
@@ -68,19 +67,30 @@ export class InviteVeiw extends Component {
     /** 初始化奖励列表 */
     private async initRewardList() {
         this.rewardContainer.removeAllChildren();
-        try {
-            const res = await InviteNetService.getInviteRewardConfig();
-            if (res && res.inviteConfigList != null) {
-                for (const item of res.inviteConfigList) {
-                    const itemNode = instantiate(this.rewardItem);
-                    if (itemNode) {
-                        itemNode.setParent(this.rewardContainer);
-                        itemNode.getComponent(InviteRewardItem)?.initItem(item);
-                    }
+        const res = await InviteNetService.getInviteReward();
+        if (res && res.inviteInfo) {
+            const inviteInfo = res.inviteInfo;
+            let rewardConfig = new InviteRewardConfig();
+            rewardConfig.inveteNum = inviteInfo.inviteNum;
+            this.inviteNum.string = `${rewardConfig.inveteNum}`;
+
+            for (const item of inviteInfo.getInviteTaskList) {
+                rewardConfig.rewards.push({ 
+                    id: item.inviteCompleteId,
+                    clamed: !item.state,
+                    inviteNum: item.requiredNum, 
+                    awardNum: item.rewards[0]?.awardQuantity,
+                    awardType: StringUtil.combineNumbers(item.rewards[0]?.awardType, item.rewards[0]?.awardResourceId, 2)
+                });
+            }
+            rewardConfig.rewards.sort((a, b) => a.inviteNum - b.inviteNum);
+            for (const item of rewardConfig.rewards) {
+                const itemNode = instantiate(this.rewardItem);
+                if (itemNode) {
+                    itemNode.setParent(this.rewardContainer);
+                    itemNode.getComponent(InviteRewardItem)?.initItem(rewardConfig.inveteNum, item);
                 }
             }
-        } catch (error) {
-            console.error("Failed to initialize reward list:", error);
         }
     }
 

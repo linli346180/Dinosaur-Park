@@ -7,6 +7,7 @@ import { SpriteFrame } from 'cc';
 import { smc } from '../common/SingletonModuleComp';
 import { Sprite } from 'cc';
 import { RichText } from 'cc';
+import { TableSTBConfig } from '../common/table/TableSTBConfig';
 const { ccclass, property } = _decorator;
 
 @ccclass('STBDetail')
@@ -20,21 +21,25 @@ export class STBDetail extends Component {
     @property(RichText)
     private configDesc: RichText = null!;
 
+    private STBConfig: TableSTBConfig = new TableSTBConfig();
+
     public InitUI(stbType : number){    
-        console.log("stbType", stbType);
         const configData = smc.account.getSTBConfigByType(stbType);
         if(configData) {
             this.configName.string = configData.stbName;
             this.configDesc.string = configData.desc;
         }
+        this.STBConfig.init(stbType);
+        if (this.STBConfig.bigicon) {
+            oops.res.loadAsync(this.STBConfig.bigicon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
+                if (spriteFrame)
+                    this.configIcon.spriteFrame = spriteFrame;
+            });
+        }
     }
 
     onLoad() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.onClose, this);
-    }
-
-    onEnable() {
-        this.getComponent(Animation)?.play('open');
     }
 
     onClose() {

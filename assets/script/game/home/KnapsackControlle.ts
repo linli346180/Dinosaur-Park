@@ -248,18 +248,18 @@ export class KnapsackControlle extends Component {
     // };
 
     /** 获取第一个空闲的背包槽 */
-    getEmptySlot(): number {
-        let slotId = -1;
-        for (let i = 0; i < this.SlotNodes.length; i++) {
-            const slotNode = this.SlotNodes[i];
-            const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);
-            if (slotComp && slotComp.IsSlotEmpty()) {
-                slotId = slotComp.slotId;
-                break;
-            }
-        }
-        return slotId;
-    }
+    // getEmptySlot(): number {
+    //     let slotId = -1;
+    //     for (let i = 0; i < this.SlotNodes.length; i++) {
+    //         const slotNode = this.SlotNodes[i];
+    //         const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);
+    //         if (slotComp && slotComp.IsSlotEmpty()) {
+    //             slotId = slotComp.slotId;
+    //             break;
+    //         }
+    //     }
+    //     return slotId;
+    // }
 
     /**
      * 交换星兽规则:  1.两个星兽等级相同，合成后星兽等级+1 2.两个星兽等级不同，交互位置

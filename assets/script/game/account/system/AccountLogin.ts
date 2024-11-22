@@ -22,7 +22,7 @@ export class AccountLoginData extends ecs.ComblockSystem implements ecs.IEntityE
     }
 
     async entityEnter(entity: Account): Promise<void> {
-        console.log(`【当前平台】'+ ${sys.platform}【运行系统】${sys.os} 【浏览器类型】${sys.browserType}`);
+        console.log(`【当前平台】'+ ${sys}【运行系统】${sys.os} 【浏览器类型】${sys.browserType}`);
         if (netConfig.ExampleLogin) {
             console.log("使用测试登陆")
             await AccountNetService.LoginTestAccount().then((response) => {

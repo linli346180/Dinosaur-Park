@@ -3,7 +3,7 @@ import { _decorator, Component, Node } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { WalletNetService } from './WalletNet';
-import { WithdrawRecord } from './WalletDefine';
+import { ExchangeRecord, USDTRecordType, WithdrawRecord } from './WalletDefine';
 import { Prefab } from 'cc';
 import { instantiate } from 'cc';
 import { WalletDetailItem } from './WalletDetailItem';
@@ -20,34 +20,52 @@ export class WalletDetail extends Component {
     @property(Prefab)
     private itemPrefab: Prefab = null!;
     @property(Label)
-    private userBalance:Label = null!;
+    private userBalance: Label = null!;
+    @property(Button)
+    private btn_withdraw: Button = null!;
+    @property(Button)
+    private btn_exchange: Button = null!;
 
     onLoad() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.initUI();
-    }
-
-    closeUI() {
-        oops.gui.remove(UIID.WalletDetail)
-    }
-
-    async initUI() {
+        this.btn_withdraw?.node.on(Button.EventType.CLICK, () => this.loadRecords(USDTRecordType.Withdraw), this);
+        this.btn_exchange?.node.on(Button.EventType.CLICK, () => this.loadRecords(USDTRecordType.Exchange), this);
+        this.loadRecords(USDTRecordType.Withdraw);
         this.userBalance.string = smc.account.AccountModel.CoinData.usdt.toString();
+    }
+
+    private closeUI() {
+        oops.gui.remove(UIID.WalletDetail);
+    }
+
+    private async loadRecords(type: USDTRecordType) {
         this.containNode.removeAllChildren();
-        const res = await WalletNetService.searchWithdrawRecords();
-        if (res && res.withdrawRecords) {
-            const records: WithdrawRecord[] = res.withdrawRecords;
-            for (const record of records) {
-                this.createItem(record);
+        let records: WithdrawRecord[] | ExchangeRecord[] = [];
+        if (type === USDTRecordType.Withdraw) {
+            const res = await WalletNetService.searchWithdrawRecords();
+            if (res && res.withdrawRecords) {
+                records = res.withdrawRecords;
+                records.sort((a, b) => b.withdrawTime - a.withdrawTime);
+            }
+        } else{
+            const res = await WalletNetService.getGemsExchangeRecord();
+            if (res && res.exchangeList) {
+                records = res.exchangeList;
+                records.sort((a, b) => b.exchangeTime - a.exchangeTime);
             }
         }
-    }
 
-    createItem(record: WithdrawRecord) {
-        const itemNode = instantiate(this.itemPrefab);
-        if (itemNode) {
-            this.containNode.addChild(itemNode);
-            itemNode.getComponent(WalletDetailItem)?.initItem(record);
+        for (const record of records) {
+            const itemNode = instantiate(this.itemPrefab);
+            if (itemNode) {
+                this.containNode.addChild(itemNode);
+                const itemComponent = itemNode.getComponent(WalletDetailItem);
+                if (type === USDTRecordType.Withdraw) {
+                    itemComponent?.withdrawItem(record as WithdrawRecord);
+                } else {
+                    itemComponent?.exchangeItem(record as ExchangeRecord);
+                }
+            }
         }
     }
 }

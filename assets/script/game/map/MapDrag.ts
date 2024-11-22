@@ -36,6 +36,7 @@ export class MapDrag extends Component {
         this.node.on(Node.EventType.TOUCH_CANCEL, this.onNodeTouchEnd, this);
         this.btn_right?.node.on(Button.EventType.CLICK, this.onRightClick, this);
         this.btn_left?.node.on(Button.EventType.CLICK, this.onLeftClick, this);
+        this.switchMap(this.currentMapID);
     }
 
     private onRightClick() {

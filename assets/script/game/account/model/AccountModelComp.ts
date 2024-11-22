@@ -6,9 +6,9 @@ import { AccountType, RegisterType, UserCoinData, UserCoinIncome, UserData } fro
  */
 @ecs.register('AccountModel')
 export class AccountModelComp extends ecs.Comp {
-    userData: UserData = new UserData(); // 用户数据
-    coinPoolData: UserCoinIncome = new UserCoinIncome(); // 户货币数据(待领取)
-    CoinData: UserCoinData = new UserCoinData(); // 户货币数据
+    userData: UserData              = new UserData(); // 用户数据
+    coinPoolData: UserCoinIncome    = new UserCoinIncome(); // 户货币数据(待领取)
+    CoinData: UserCoinData          = new UserCoinData(); // 户货币数据
 
     private UserInstb: StartBeastData[] = [];    //用户收益星兽列表
     private UserNinstb: StartBeastData[] = [];  //用户无收益星兽列表
@@ -95,7 +95,7 @@ export class AccountModelComp extends ecs.Comp {
 
 /** 星兽数据 */
 export class StartBeastData {
-    id: number = 0;                //星兽ID
+    readonly id: number = 0;                //星兽ID
     readonly createdAt: string = '';        //创建时间
     readonly userID: number = 0;            //用户ID
     stbConfigID: number = 0;                //星兽配置ID

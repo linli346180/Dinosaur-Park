@@ -34,10 +34,13 @@ export class STBMergeView extends Component {
     private baseProbLabel: Label = null!;
     @property(Label)
     private upProbLabel: Label = null!;
+    @property(Node)
+    private GainNode:Node = null!;
 
     private stbID1: number = 0;
     private stbID2: number = 0;
-    private isSucc: boolean = false;
+    private isSucc: boolean = false;    // 是否合成成功
+    private isGainNum: boolean = false; // 是否获得孵蛋次数
     private synthConfig: STBSynthConfig = new STBSynthConfig();
 
     async onLoad() {
@@ -119,9 +122,10 @@ export class STBMergeView extends Component {
         this.videoPlayer.play();
         this.videoPlayer.node.once(VideoPlayer.EventType.COMPLETED, this.onVideoCompleted, this);
 
-        smc.account.mergeIncomeSTBNet(this.stbID1, this.stbID2, isUpProb, (success) => {
+        smc.account.mergeIncomeSTBNet(this.stbID1, this.stbID2, isUpProb, (success, isGainNum) => {
             this.btn_evolve.interactable = true;
             this.isSucc = success;
+            this.isGainNum = isGainNum;
         });
     }
 
@@ -133,7 +137,8 @@ export class STBMergeView extends Component {
 
     private showMergeResult(isSucc: boolean) {
         this.beforePanel.active = false
-        this.sucessPanel.active = isSucc ? true : false;
-        this.failPanel.active = isSucc ? false : true;
+        this.sucessPanel.active = isSucc;
+        this.failPanel.active = !isSucc;
+        this.GainNode.active = this.isGainNum;
     }
 }

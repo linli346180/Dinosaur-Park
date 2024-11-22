@@ -2,13 +2,9 @@ import { _decorator, Component, Node, Button, Label } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { ReportNetService } from './ReportNet';
-import { Logger } from '../../Logger';
 import { smc } from '../common/SingletonModuleComp';
 import { StringUtil } from '../common/utils/StringUtil';
-import { tween } from 'cc';
-import { v3 } from 'cc';
-import { Vec3 } from 'cc';
-import { AnimUtil } from '../common/utils/AnimUtil';
+import { STBItem } from './STBItem';
 const { ccclass, property } = _decorator;
 
 interface CodexData {
@@ -19,40 +15,35 @@ interface CodexData {
 @ccclass('STBReportView')
 export class STBReportView extends Component {
     @property(Button)
-    btn_close: Button = null!;
+    private btn_close: Button = null!;
     @property(Node)
-    goldCntainer: Node = null!;
+    private goldCntainer: Node = null!;
     @property(Node)
-    superContainer: Node = null!;
+    private superContainer: Node = null!;
     @property(Node)
-    gamContainer: Node = null!;
+    private gamContainer: Node = null!;
     @property(Node)
-    diamondContainer: Node = null!;
+    private diamondContainer: Node = null!;
 
     private stbData: CodexData = {};
 
-    onEnable() {
-        this.stbData = {};
-        ReportNetService.getStartBeastStatData().then((res) => {
-            if (res && res.codexData != null) {
-                for (const key in res.codexData) {
-                    const num = res.codexData[key];
-                    const config = smc.account.getSTBConfigById(Number(key));
-                    if (config) {
-                        const stbType = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
-                        this.stbData[stbType] = num;
-                    }
-                }
-                this.InitUI();
-                console.log("图鉴数据", this.stbData);
-            }
-        });
-
-        AnimUtil.playAnim_Scale(this.node);
+    onLoad() {
+        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
     }
 
-    start() {
-        this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
+    async onEnable() {
+        this.stbData = {};
+        const res = await ReportNetService.getStartBeastStatData();
+        if (res && res.codexData) {
+            for (const key in res.codexData) {
+                const num = res.codexData[key];
+                const config = smc.account.getSTBConfigById(Number(key));
+                if (config) {
+                    this.stbData[StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2)] = num;
+                }
+            }
+            this.InitUI();
+        }
     }
 
     closeUI() {
@@ -74,12 +65,9 @@ export class STBReportView extends Component {
         });
     }
 
-    InitItem(child: Node) {
-        const stbId = parseInt(child.name);
-        const numLabel = child.getChildByPath("Sprite/num")?.getComponent(Label);
-        if (numLabel) {
-            const count = this.stbData[stbId];
-            if (count) { numLabel.string = count.toString(); }
+    private InitItem(child: Node) {
+        if(this.stbData[child.name]) {
+            child.getComponent(STBItem)?.initItem(this.stbData[child.name]);
         }
     }
 }

@@ -23,6 +23,10 @@ export class TableSTBConfig {
     get icon(): string {
         return this.data.icon;
     }
+    /** 大图标 */
+    get bigicon(): string {
+        return this.data.bigicon;
+    }
     /** 围栏 */
     get map(): number {
         return this.data.map;

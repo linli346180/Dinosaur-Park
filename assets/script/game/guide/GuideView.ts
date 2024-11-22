@@ -13,15 +13,15 @@ const { ccclass, property } = _decorator;
 @ccclass('GuideView')
 export class GuideView extends Component {
     @property(Button)
-    btn_close: Button = null!;
+    private btn_close: Button = null!;
     @property(Button)
-    btn_continue: Button = null!;
+    private btn_continue: Button = null!;
     @property(Button)
-    btn_joinChannel: Button = null!;
+    private btn_joinChannel: Button = null!;
     @property(Button)
-    btn_joinGroup: Button = null!;
+    private btn_joinGroup: Button = null!;
     @property(Button)
-    btn_joinX: Button = null!;
+    private btn_joinX: Button = null!;
 
     private presellInfo = new PresellInfo();
     private userOfficial = new UserOfficial();
@@ -76,6 +76,11 @@ export class GuideView extends Component {
 
     private joinChannel(url: string) {
         console.log('跳转链接:', url);
+
+        setTimeout(() => { 
+
+         }, 1000);
+
         window.open(url);
     }
 

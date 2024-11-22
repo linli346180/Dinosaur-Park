@@ -294,7 +294,7 @@ export class NetNode {
                 }
             }, this._reconnetTimeOut);
         } else {
-            oops.message.dispatchEvent(GameEvent.WebSocketConnectFail)
+            oops.message.dispatchEvent(GameEvent.NetConnectFail)
             console.log("重连失败,网络已断开");
         }
     }

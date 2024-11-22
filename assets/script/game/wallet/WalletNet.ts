@@ -162,6 +162,34 @@ export namespace WalletNetService {
         }
     }
 
+
+    /** USDT兑换宝石 */
+    export async function createGemsExchange(usdtNumber: number) {
+        const http = createHttpManager();
+        const response = await http.postUrl(`tgapp/api/user/exchange/createGemsExchange?token=${netConfig.Token}&usdtNumber=${usdtNumber}`);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
+            console.warn("USDT兑换宝石:", response.res);
+            return response.res;
+        } else {
+            console.error("USDT兑换宝石异常", response);
+            return null;
+        }
+    }
+
+    /** 查询宝石兑换记录 */
+    export async function getGemsExchangeRecord() {
+        const http = createHttpManager();
+        const response = await http.getUrl(`tgapp/api/user/exchange/searchExchange?token=${netConfig.Token}`);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
+            console.warn("USDT兑换宝石:", response.res);
+            return response.res;
+        } else {
+            console.error("USDT兑换宝石异常", response);
+            return null;
+        }
+    }
+
+
     /** 创建 HttpManager 实例并进行配置 */
     function createHttpManager(): HttpManager {
         const http = new HttpManager();

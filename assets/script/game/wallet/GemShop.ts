@@ -10,6 +10,8 @@ import { WalletNetService } from './WalletNet';
 import { TransactionRequest, WalletConfig } from './WalletDefine';
 import { tonConnect } from './TonConnect';
 import { CryptoDefine } from './Crypto';
+import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
+import { WalletPaySelect } from './WalletPaySelect';
 
 const { ccclass, property } = _decorator;
 
@@ -24,27 +26,17 @@ export class GemShop extends Component {
     private itemContent: Node = null!;
     @property(Prefab)
     private itemPrefab: Prefab = null!;
-    @property(Button)
-    private btn_connect: Button = null!;
-    @property(Button)
-    private btn_disconnect: Button = null!;
+
     private gemConfigs: BuyGemsConfig[] = [];
 
     onLoad() {
         this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.GemShop, false); }, this);
-        this.btn_connect?.node.on(Button.EventType.CLICK, this.connectTonWallet, this);
-        this.btn_disconnect?.node.on(Button.EventType.CLICK, this.disConnectTonWallet, this);
         this.initUI();
-        this.initTonConnectUI();
         oops.message.on(AccountEvent.CoinDataChange, this.updateUI, this);
     }
 
     onEnable() {
         this.updateUI();
-    }
-
-    onDestroy() {
-        oops.message.off(AccountEvent.CoinDataChange, this.updateUI, this);
     }
 
     /** 初始化购买选项 */
@@ -76,10 +68,18 @@ export class GemShop extends Component {
     }
 
     private async onItemClicked(configId: number) {
-       if (!tonConnect.isConnected()) {
-            this.connectTonWallet();
-            return;
-         }   
+        var uic: UICallbacks = {
+            onAdded: (node: Node, params: any) => {
+                node.getComponent(WalletPaySelect)?.initConfig(configId);
+                oops.gui.remove(UIID.GemShop, false);
+            },
+            onRemoved: (node: Node | null, params: any) => {
+                oops.gui.open(UIID.GemShop);
+            }
+        };
+        let uiArgs: any;
+        oops.gui.open(UIID.WalletPaySelect, uiArgs, uic);
+        return;
 
         const order = await WalletNetService.getUserOrder(configId);
         if (order && order.payload) {
@@ -88,7 +88,6 @@ export class GemShop extends Component {
             request.payload = order.payload.payLoad;
             request.amount = order.payload.tonNano;
      
-
             try {
                 const message = `address=${order.payload.address}
                 &expired=${order.payload.expired}
@@ -123,29 +122,8 @@ export class GemShop extends Component {
         }  
     }
 
-    /** 初始化钱包 */
-    private async initTonConnectUI() {
-        tonConnect.connectStateChange = (isConnect: boolean) => { 
-            this.updateButtonState(isConnect);
-        }
-    }
-
     private updateUI() {
-        this.updateButtonState(tonConnect.isConnected())
         this.gemNum.string = Math.floor(smc.account.AccountModel.CoinData.gemsCoin).toString();
-    }
-
-    private connectTonWallet() {
-        tonConnect.connectTonWallet();
-    }
-
-    private disConnectTonWallet() {
-        tonConnect.disConnectTonWallet();
-    }
-    
-    private updateButtonState(isConnect: boolean) {
-        this.btn_connect.node.active = !isConnect;
-        this.btn_disconnect.node.active = isConnect;
     }
 
 }

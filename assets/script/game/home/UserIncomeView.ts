@@ -29,14 +29,14 @@ export class UserIncomeView extends Component {
         this.btn_collectGold.node.on(Button.EventType.CLICK, this.UseCollectGold, this);
         this.btn_collectGem.node.on(Button.EventType.CLICK, this.UseCollectGem, this);
 
-        oops.message.on(GameEvent.WebSocketConnectFail, this.onHandler, this);
+        oops.message.on(GameEvent.NetConnectFail, this.onHandler, this);
 
         coinPoolVM.Init();
         this.initUI();
     }
 
     protected onDestroy(): void {
-        oops.message.off(GameEvent.WebSocketConnectFail, this.onHandler, this);
+        oops.message.off(GameEvent.NetConnectFail, this.onHandler, this);
     }
 
     private onHandler() {

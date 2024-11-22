@@ -10,7 +10,7 @@ export class WalletConfig {
     payaddress: string = '';        // 发起交易的目标地址
 
     // 钱包参数
-    address: string = '';           // 发起交易的目标地址
+    address: string = '';           // 钱包地址
     name: string = '';              // 钱包名称
     publicKey: string = '';         // 公钥
     walletStateInit: string = '';   // 钱包状态
@@ -41,6 +41,7 @@ export interface WithdrawConfig {
     handlingFee: string;                // 提现手续费(百分比)
     miniHandlingFee: string;            // 最小提现手续费(金额)
     isAllowedWithdrawal: number;        // 是否允许提现
+    gemsExchangeRate:number;            // 宝石兑换比例
 }
 
 /** 提现请求 */
@@ -51,9 +52,47 @@ export interface WithdrawRequest {
     withdrawAmount: number;
 }
 
+
+export enum USDTRecordType {
+    Withdraw = 1,   // 提现 = 1
+    Exchange = 2,   // 兑换 = 2
+}
+
 /** 提现记录 */
 export interface WithdrawRecord {
-    withdrawTime: number;  // 提现记录
+    withdrawTime: number;   // 提现记录
     withdrawNum: number;    // 提现金额
-    withdrawStatus: number; // 提现状态 1-审批中 2-已同意 3-已拒绝
+    withdrawStatus: number; // 提现状态 0-未知 1-审批中 2-已同意 3-已拒绝
 } 
+
+/** 兑换记录 */
+export interface ExchangeRecord {
+    exchangeTime: number;   // 兑换时间
+    usdtNumber: number;     // USDT数量
+    gemsNumber: number;     // 宝石数量
+ }
+
+/** 支付类型 */
+export enum PayType { 
+    TonWallet = 'TON钱包',
+    TrcUsdtWallet = 'TRC-USDT钱包',
+    ErcUsdtWallet = 'ERC-USDT钱包',
+    TonUsdtWallet = 'TON-USDT钱包',
+    EthUsdtWallet = 'ETH-USDT钱包'
+}
+
+/** 支付参数 */
+export interface PaymentMethod {
+    type: PayType;      // 支付方式类型，例如 'TON币支付'
+    chain: string;      // 链名称，例如 'TON'
+    ratio: number;      // 比例
+}
+
+// 允许的支付列表
+export const paymentMethods: PaymentMethod[] = [
+    { type: PayType.TonWallet, chain: 'TON', ratio: 0.179918 },
+    { type: PayType.TrcUsdtWallet, chain: 'TRC20', ratio: 0.179918 },
+    { type: PayType.ErcUsdtWallet, chain: 'ERC20', ratio: 0.179918 },
+    { type: PayType.TonUsdtWallet, chain: 'TON', ratio: 0.179918 },
+    { type: PayType.EthUsdtWallet, chain: 'ETH', ratio: 0.179918 }
+];

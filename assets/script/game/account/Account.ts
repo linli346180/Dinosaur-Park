@@ -15,9 +15,8 @@ import { netConfig } from "../../net/custom/NetConfig";
 import { StringUtil } from "../common/utils/StringUtil";
 import { AccountCoinType, AwardType } from "./AccountDefine";
 import { AccountLoginComp } from "./system/AccountLogin";
-import { net } from "electron";
 import { netChannel } from "../../net/custom/NetChannelManager";
-import { tonConnect, TonConnect } from "../wallet/TonConnect";
+import { tonConnect } from "../wallet/TonConnect";
 
 /** 账号模块 */
 @ecs.register('Account')
@@ -44,7 +43,7 @@ export class Account extends ecs.Entity {
         oops.message.on(GameEvent.DataInitialized, this.onHandler, this);
         oops.message.on(GameEvent.GuideFinish, this.onHandler, this);
         oops.message.on(GameEvent.WebSocketConnected, this.onHandler, this);
-        oops.message.on(GameEvent.WebSocketConnectFail, this.onHandler, this);
+        oops.message.on(GameEvent.NetConnectFail, this.onHandler, this);
         oops.message.on(GameEvent.WebRequestFail, this.onHandler, this);
     }
 
@@ -54,7 +53,7 @@ export class Account extends ecs.Entity {
         oops.message.off(GameEvent.DataInitialized, this.onHandler, this);
         oops.message.off(GameEvent.GuideFinish, this.onHandler, this);
         oops.message.off(GameEvent.WebSocketConnected, this.onHandler, this);
-        oops.message.off(GameEvent.WebSocketConnectFail, this.onHandler, this);
+        oops.message.off(GameEvent.NetConnectFail, this.onHandler, this);
         oops.message.off(GameEvent.WebRequestFail, this.onHandler, this);
         super.destroy();
     }
@@ -72,7 +71,6 @@ export class Account extends ecs.Entity {
                 console.log("2.登陆成功");
                 oops.storage.setUser(this.AccountModel.userData.id.toString());
                 oops.audio.load();
-                this.loadUserLanguage();
 
                 // 检查是否已完成新手引导
                 if (!await this.isGuideFinish()) {
@@ -106,8 +104,8 @@ export class Account extends ecs.Entity {
                 oops.message.dispatchEvent(GameEvent.CloseLoadingUI);
                 break;
 
-            // 6. WebSocket连接失败
-            case GameEvent.WebSocketConnectFail:
+            // 6. 网络连接失败
+            case GameEvent.NetConnectFail:
                 tips.alert(oops.language.getLangByID('net_tips_fetch_fail'), () => {
                     // (window as any).Telegram.WebApp.close();
                 });
@@ -129,19 +127,6 @@ export class Account extends ecs.Entity {
             return isFinish;
         }
         return false;
-    }
-
-    /** 加载化语言包（可选） */
-    private loadUserLanguage() {
-        // 设置默认语言
-        let lan = oops.storage.get("language");
-        if (lan == null || lan == "") {
-            lan = "zh";
-            oops.storage.set("language", lan);
-        }
-
-        // 加载语言包资源
-        oops.language.setLanguage(lan, (a) => { });
     }
 
     /** 领取奖励 */
@@ -312,7 +297,7 @@ export class Account extends ecs.Entity {
      * @param callback - 合成结果回调
      * @returns void
      */
-    async mergeIncomeSTBNet(stbID1: number, stbID2: number, isUpProb: number, callback: (success: boolean) => void) {
+    async mergeIncomeSTBNet(stbID1: number, stbID2: number, isUpProb: number, callback: (success: boolean, isGainNum:boolean) => void) {
         let res = await AccountNetService.mergeGoldSTB(stbID1, stbID2, isUpProb);
         if (res) {
             // 删除合成的两个星兽
@@ -326,15 +311,17 @@ export class Account extends ecs.Entity {
                 this.updateCoinData();
             }
 
+            const isGainNum:boolean = res.isGainNum;
+
             //合成是否成功，false：合成失败，true：合成成功，并且userInStb会返回新星兽数据
             if (res.isSucc) {
                 this.AccountModel.addInComeSTBData(res.userInStb);
                 oops.message.dispatchEvent(AccountEvent.AddInComeSTB, res.userInStb.id);
             }
-            callback(res.isSucc);
+            callback(res.isSucc, isGainNum);
             return;
         }
-        callback(false);
+        callback(false, false);
     }
 
 

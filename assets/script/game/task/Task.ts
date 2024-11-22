@@ -27,8 +27,8 @@ export class TaskView extends Component {
 
     private curGroupIndex = 1;
     private taskGroup: { [key: number]: TaskType[] } = {
-        1: [TaskType.daily, TaskType.basic, TaskType.achievement],
-        2: [TaskType.guide, TaskType.timed]
+        1: [TaskType.daily, TaskType.basic],
+        2: [TaskType.guide, TaskType.timed,TaskType.achievement]
     }
     private curTaskType: TaskType = TaskType.daily;
     private taskList: TaskDataList = new TaskDataList();
