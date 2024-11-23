@@ -6,8 +6,7 @@ import { ReviveNetService } from './ReviveNet';
 import { DebrisConfig, DebrisDetail, PuzzleID, UserDebris } from './DebrisData';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { DebrisResult } from './DebrisResult';
-import { NetErrorCode } from '../../net/custom/NetErrorCode';
-import { StartBeastData } from '../account/model/AccountModelComp';
+
 import { smc } from '../common/SingletonModuleComp';
 import { AccountEvent } from '../account/AccountEvent';
 import { StringUtil } from '../common/utils/StringUtil';

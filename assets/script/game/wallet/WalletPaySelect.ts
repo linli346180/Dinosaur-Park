@@ -53,27 +53,34 @@ export class WalletPaySelect extends Component {
     }
 
     private async onItemClicked(method: PaymentMethod) {
-        if (method.type == PayType.TonWallet) {
-            if (!tonConnect.isConnected) {
-                tonConnect.connectTonWallet();
-                return;
-            }
+        if (!tonConnect.IsConnected) {
+            tonConnect.connectTonWallet();
+            return;
+        }
 
-        const order = await WalletNetService.getUserOrder(this.configId);
+        let coinType: number = 100;
+        if (method.type != PayType.TonWallet) {
+            coinType = 101;
+        }
+
+        const order = await WalletNetService.getUserOrder(this.configId, coinType);
         if (order && order.payload) {
             let request: TransactionRequest = new TransactionRequest();
             request.address = order.payload.address;
             request.payload = order.payload.payLoad;
             request.amount = order.payload.tonNano;
-    
-            tonConnect.sendTransaction(request);
-        }  
 
-            // const order = await WalletNetService.getUserOrder(configId);
-            // if (order && order.payload) {
-            //     tonConnect.sendTransaction(request);
-            // }  
+            request.expired = order.payload.expired;
+            request.minterAddress = order.payload.minterAddress;
+
+            if (method.type == PayType.TonWallet){
+                tonConnect.sendTonTransaction(request);
+            }else {
+                tonConnect.sendUSDT(request);
+            }
         }
+
+        this.onClose();
     }
 }
 

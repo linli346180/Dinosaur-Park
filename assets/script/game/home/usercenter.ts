@@ -77,9 +77,6 @@ export class usercenter extends Component {
         oops.message.on(AccountEvent.ChangeEmail, this.onHandler, this);
         oops.message.on(AccountEvent.ChangeLanguage, this.onHandler, this);
 
-        tonConnect.addListener((isConnected: boolean)=>{
-            this.label_purse.string = tonConnect.walletConfig.address;
-        });
         console.log("onLoad 结束")
     }
 
@@ -99,8 +96,14 @@ export class usercenter extends Component {
 
         this.label_purse.string = tonConnect.walletConfig.address;
         this.label_email.string = smc.account.AccountModel.userData.email;
+        this.label_purse.string = tonConnect.walletConfig.address;
+        tonConnect.onStateChange = this.onConnectStateChange.bind(this);
         // TODO: 加载图片
         // this.loadAvatar(userData.avatarPath);
+    }
+
+    private onConnectStateChange(isConnected: boolean) {
+        this.label_purse.string = tonConnect.walletConfig.address;
     }
 
     private loadAvatar(url: string) {

@@ -64,12 +64,12 @@ export class WithdrawWidget extends Component {
         this.edit_address.string = oops.storage.get("walletaddress", '');
         this.DropDown.selectedIndex = oops.storage.getNumber("purseType", 1);
         this.edit_address.string = tonConnect.walletConfig.address;
-        tonConnect.addListener(this.onConnectStateChange);
     }
 
     onEnable() {
         this.HandlingFee = this.handlingFee;
         this.MiniWithdraw = this.miniWithdraw;
+        tonConnect.onStateChange = this.onConnectStateChange.bind(this);
     }
 
     /** 获取邮箱验证码 */

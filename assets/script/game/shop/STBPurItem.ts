@@ -36,8 +36,8 @@ export class STBPurItem extends Component {
 
         const stbType = StringUtil.combineNumbers(config.stbKinds, config.stbGrade, 2);
         this.STBConfig.init(stbType);
-        if (this.STBConfig.puricon != undefined && this.STBConfig.puricon != '') {
-            oops.res.loadAsync(this.STBConfig.puricon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
+        if (this.STBConfig.bigicon) {
+            oops.res.loadAsync(this.STBConfig.bigicon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
                 if (spriteFrame)
                     this.icon.spriteFrame = spriteFrame;
             });

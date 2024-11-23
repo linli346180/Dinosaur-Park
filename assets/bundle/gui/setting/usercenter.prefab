@@ -3992,7 +3992,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
+      "width": 80,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -4028,7 +4028,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "连接钱包",
+    "_string": "钱包",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 40,
@@ -4087,7 +4087,7 @@
       "__id__": 167
     },
     "_params": [],
-    "_dataID": "user_tips_connectwallet",
+    "_dataID": "user_wallet",
     "_id": ""
   },
   {
@@ -7174,7 +7174,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -366.148,
+      "x": -370,
       "y": 61.483,
       "z": 0
     },
@@ -7580,14 +7580,14 @@
     "node": {
       "__id__": 302
     },
-    "_enabled": true,
+    "_enabled": false,
     "__prefab": {
       "__id__": 318
     },
     "_alignFlags": 32,
     "_target": null,
     "_left": 0,
-    "_right": -579.593,
+    "_right": 0,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -7751,7 +7751,7 @@
     },
     "_alignFlags": 8,
     "_target": null,
-    "_left": 33.851999999999975,
+    "_left": 30,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
@@ -7819,7 +7819,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -366.148,
+      "x": -370,
       "y": -58.816,
       "z": 0
     },
@@ -8225,14 +8225,14 @@
     "node": {
       "__id__": 330
     },
-    "_enabled": true,
+    "_enabled": false,
     "__prefab": {
       "__id__": 346
     },
     "_alignFlags": 32,
     "_target": null,
     "_left": 0,
-    "_right": -577.808,
+    "_right": 0,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -8396,7 +8396,7 @@
     },
     "_alignFlags": 8,
     "_target": null,
-    "_left": 33.851999999999975,
+    "_left": 30,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,

@@ -1,15 +1,10 @@
 import { _decorator, Component, Node, Button, Label, Prefab, instantiate } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
-import { StringUtil } from '../common/utils/StringUtil';
 import { IsPur, PurConCoin, UserInstbConfigData } from '../account/model/STBConfigModeComp';
 import { STBPurItem } from './STBPurItem';
 import { smc } from '../common/SingletonModuleComp';
 import { AccountEvent } from '../account/AccountEvent';
-import { tween } from 'cc';
-import { v3 } from 'cc';
-import { Vec3 } from 'cc';
-import { AnimUtil } from '../common/utils/AnimUtil';
 const { ccclass, property } = _decorator;
 
 /** 

@@ -1,85 +1,140 @@
 import { WalletNetService } from './WalletNet';
 import { TransactionRequest, WalletConfig } from './WalletDefine';
 import { smc } from '../common/SingletonModuleComp';
+import TonWeb from '../../../libs/tonweb.js';
 
 /** 钱包连接 */
-class TonConnect {
+export default class TonConnect {
     public tonConnectUI: any;
+    // public tonweb: any;
     public walletConfig: WalletConfig;
     private listeners: ((isConnected: boolean) => void)[] = [];
-    private isInit: boolean = false;
+
+    // 钱包连接状态变化监听器
+    public onStateChange: (isConnected: boolean) => void;
 
     constructor() {
         this.walletConfig = new WalletConfig();
         this.tonConnectUI = window['tonConnectUI'];
+        // this.tonweb = window['tonWeb'];
     }
 
     public async initTonConnect() {
-        if (this.isInit) return;
-        const res = await WalletNetService.getTonProof();
-        if (res && res.proof) {
-            this.walletConfig.proof = res.proof;
-        }
-        if (this.tonConnectUI) {
-            this.tonConnectUI.setConnectRequestParameters({
-                state: 'ready',
-                value: { tonProof: this.walletConfig.proof }
-            });
-            this.tonConnectUI.onStatusChange(async wallet => {
-                if (wallet && wallet.connectItems?.tonProof && 'proof' in wallet.connectItems.tonProof) {
-                    console.log("钱包信息:", wallet);
-                    this.walletConfig.address = wallet.account.address;
-                    this.walletConfig.netWork = wallet.account.chain;
-                    this.walletConfig.state_init = wallet.account.walletStateInit;
-                    this.walletConfig.publicKey = wallet.account.publicKey;
-                    this.walletConfig.name = wallet.connectItems.tonProof.name;
-                    this.walletConfig.payload = wallet.connectItems.tonProof.proof.payload;
-                    this.walletConfig.signature = wallet.connectItems.tonProof.proof.signature;
-                    this.walletConfig.timestamp = wallet.connectItems.tonProof.proof.timestamp;
-                    this.walletConfig.value = wallet.connectItems.tonProof.proof.domain.value;
-                    this.walletConfig.lengthBytes = wallet.connectItems.tonProof.proof.domain.lengthBytes;
+        try {
+            const res = await WalletNetService.getTonProof();
+            if (res && res.proof) {
+                this.walletConfig.proof = res.proof;
+            }
+            if (this.tonConnectUI) {
+                // 初始化 TonConnectUI
+                this.tonConnectUI.setConnectRequestParameters({
+                    state: 'ready',
+                    value: { tonProof: this.walletConfig.proof }
+                });
 
-                    const res = await WalletNetService.getTonCheck(this.walletConfig);
-                    if (res && res.isPass == true) {
-                        this.isInit = true;
-                        console.log("验证签名成功");
-                        this.notifyStateChange(true);
-                    } else {
-                        console.error("验证签名失败");
-                        this.disConnectTonWallet();
-                        this.notifyStateChange(false);
+                // 监听连接状态的变化
+                this.tonConnectUI.onStatusChange((status) => {
+                    console.log("钱包连接状态改变:", status,);
+                    if (status && status.connectItems?.tonProof && 'proof' in status.connectItems.tonProof) {
+                        this.walletConfig.address = status.account.address;
+                        this.walletConfig.netWork = status.account.chain;
+                        this.walletConfig.state_init = status.account.walletStateInit;
+                        this.walletConfig.publicKey = status.account.publicKey;
+                        this.walletConfig.name = status.connectItems.tonProof.name;
+                        this.walletConfig.payload = status.connectItems.tonProof.proof.payload;
+                        this.walletConfig.signature = status.connectItems.tonProof.proof.signature;
+                        this.walletConfig.timestamp = status.connectItems.tonProof.proof.timestamp;
+                        this.walletConfig.value = status.connectItems.tonProof.proof.domain.value;
+                        this.walletConfig.lengthBytes = status.connectItems.tonProof.proof.domain.lengthBytes;
+                        this.getTonCheck(); // 验证签名
+                        return;
                     }
-                } else {
+                    console.log("发送钱包断开通知");
                     this.walletConfig = new WalletConfig();
                     this.notifyStateChange(false);
-                }
-            });
-        }
+                });
+            }
 
-        if (this.isConnected) {
-            this.walletConfig.address = this.tonConnectUI.account.address;
+            if (this.IsConnected) {
+                console.log("钱包已连接", this.tonConnectUI);
+                this.walletConfig.address = this.tonConnectUI.account.address;
+            }
+
+        } catch (error) {
+            console.error("初始化TonConnect失败", error);
+        }
+    }
+
+    async getTonCheck() {
+        const res = await WalletNetService.getTonCheck(this.walletConfig);
+        if (res && res.isPass == true) {
+            console.log("验证签名成功");
+            this.notifyStateChange(true);
+        } else {
+            console.error("验证签名失败");
+            this.connectTonWallet(false);
+            this.notifyStateChange(false);
         }
     }
 
     // 连接钱包
-    public connectTonWallet() {
+    public connectTonWallet(connect: boolean = true) {
         if (this.tonConnectUI) {
-            console.log("连接钱包");
-            this.tonConnectUI.disconnect();
-            this.tonConnectUI.openModal();
+            if (connect) {
+                console.log("连接钱包");
+                this.tonConnectUI.disconnect();
+                this.tonConnectUI.openModal();
+            } else {
+                console.log("断开钱包连接");
+                this.tonConnectUI.disconnect();
+            }
         }
     }
 
-    // 断开钱包连接
-    public disConnectTonWallet() {
-        if (this.tonConnectUI) {
-            console.log("断开钱包连接");
-            this.tonConnectUI.disconnect();
+    async sendUSDT(request: TransactionRequest) {
+        try {
+            console.log("USDT支付请求", request);
+            // 初始化 Jetton Minter 实例
+            const webTON = new TonWeb();
+            const jettonMinter = new webTON.constructor.token.jetton.JettonMinter(webTON.provider, { address: request.minterAddress });
+            const jettonMinterAddress = await jettonMinter.getJettonWalletAddress(new TonWeb.utils.Address(this.walletConfig.address));
+            const jettonWallet = new webTON.constructor.token.jetton.JettonWallet(webTON.provider, { address: jettonMinterAddress });
+            const comment = new Uint8Array([... new Uint8Array(4), ... new TextEncoder().encode(request.payload)]);
+            const jettonBody = {
+                    jettonAmount: request.amount,
+                    toAddress: new TonWeb.utils.Address(request.address),
+                    responseAddress: new TonWeb.utils.Address(this.walletConfig.address),
+                    forwardPayload: comment
+                };    
+            let payload = await jettonWallet.createTransferBody(jettonBody);
+            const transaction = {
+                validUntil: request.expired,
+                messages: [
+                    {
+                        address: request.minterAddress,
+                        payload: TonWeb.utils.bytesToBase64(await payload.toBoc()),
+                        amount: '5000000',
+                    }
+                ]
+            };
+            await this.tonConnectUI.sendTransaction(transaction)
+                .then(async (response) => {
+                    console.log("交易成功", response);
+                    const res = await WalletNetService.postWithdrawBoc(response.boc, this.walletConfig.payload);
+                    if (res) {
+                        smc.account.updateCoinData();
+                    }
+                })
+                .catch((error) => {
+                    console.error("交易失败", error);
+                });            
+        } catch (error) {
+            console.error("处理交易时出错", error);
         }
     }
 
     // 发起交易
-    public async sendTransaction(request: TransactionRequest) {
+    public async sendTonTransaction(request: TransactionRequest) {
         const transaction = {
             validUntil: Math.floor(Date.now() / 1000) + 60,
             messages: [
@@ -93,7 +148,7 @@ class TonConnect {
         await this.tonConnectUI.sendTransaction(transaction)
             .then(async (response) => {
                 console.log("交易成功", response);
-                const res = await WalletNetService.postWithdrawBoc(response.boc);
+                const res = await WalletNetService.postWithdrawBoc(response.boc, request.payload);
                 if (res) {
                     smc.account.updateCoinData();
                 }
@@ -103,30 +158,61 @@ class TonConnect {
             });
     }
 
-    public get isConnected() {
+    public get IsConnected() {
         let isConnected = false;
         if (this.tonConnectUI && this.tonConnectUI.connected) {
             isConnected = true;
         }
-        console.log("钱包连接状态:", isConnected);
         return isConnected;
-    }
-
-    // 添加连接状态变化监听器
-    public addListener(listener: (isConnected: boolean) => void) {
-        this.listeners.push(listener);
-    }
-
-    // 移除连接状态变化监听器
-    public removeListener(listener: (isConnected: boolean) => void) {
-        this.listeners = this.listeners.filter(l => l !== listener);
     }
 
     // 通知所有连接状态变化监听器
     private notifyStateChange(isConnected: boolean) {
-        this.listeners.forEach(listener => listener(isConnected));
+        if (this.onStateChange) {
+            this.onStateChange(isConnected);
+        }
     }
 }
 
 export const tonConnect = new TonConnect();
 
+
+// const order = await WalletNetService.getUserOrder(configId, 100);
+//         if (order && order.payload) {
+//             let request: TransactionRequest = new TransactionRequest();
+//             request.address = order.payload.address;
+//             request.payload = order.payload.payLoad;
+//             request.amount = order.payload.tonNano;
+     
+//             try {
+//                 const message = `address=${order.payload.address}
+//                 &expired=${order.payload.expired}
+//                 &payLoad${order.payload.payLoad}
+//                 &randomStr=${order.payload.randomStr.substring(0,6)}
+//                 &signture=
+//                 &timeStamp=${order.payload.timeStamp}
+//                 &tonNano=${order.payload.tonNano}`;
+
+//                 const signature = order.payload.signture;
+//                 const publicKeyPem = `-----BEGIN PUBLIC KEY-----
+//                 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyTZ7cz2AMvd6OCcF2a8k
+//                 CroTrLDRrkXc1AYQd3WCAtxq4SZqmqmyUE67u4takFzvpN41s0lCiZ+gcJ933XeE
+//                 a9Nc5jXHknC/Ib4KpLsfcutIQrkW/4HI3i2/vAQs8npn4xNjPHr4/rTsYBSoxegJ
+//                 q1GfK9nZLya32ZYc57LmrEKXBuj8dgzCqb1f2XXB7gb1jg+fOAH1RJc9rQltyiB5
+//                 7uVA8W9jiY4fot5XnfOaCH/6qov6NWBZbQO3DzTcbrW+0Mi6rrLUB50sxHfOaxwk
+//                 sWqEeEBf3XjoCGMncB0N7assXsbdYnTayGDQScqZk4eBZJnMEd4f1ukLIarVHTEk
+//                 mQIDAQAB
+//                 -----END PUBLIC KEY-----`;
+
+//                 // 验签
+//                 console.log(`publicKeyPem: ${publicKeyPem} message:${message}  signature:${signature}`);
+//                 CryptoDefine.verifySignature(publicKeyPem, message, signature).then(isValid => {
+//                     console.warn(`验证结果: ${isValid}`);
+//                 }).catch(error => {
+//                     console.error("Error verifying signature:", error);
+//                 });
+//             } catch (error) {
+//                 console.log(`error: ${error}`);
+//             }
+//             tonConnect.sendTonTransaction(request);
+//         }  

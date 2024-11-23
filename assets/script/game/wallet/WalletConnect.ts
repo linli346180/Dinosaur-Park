@@ -1,34 +1,42 @@
-import { Button } from 'cc';
-import { Sprite } from 'cc';
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Button, Node } from 'cc';
 import { tonConnect } from './TonConnect';
 const { ccclass, property } = _decorator;
 
 @ccclass('WalletConnect')
 export class WalletConnect extends Component {
-    @property(Sprite)
-    private icon:Sprite = null!;
     @property(Button)
-    private btn_connect:Button = null!;
-  
-    protected onLoad(): void {
-        this.btn_connect.node.on(Button.EventType.CLICK, this.onConnectClick, this);
-      
-        // 添加连接状态变化监听器
-        tonConnect.addListener(this.onConnectStateChange);
-        this.onConnectStateChange(tonConnect.isConnected);
+    private btn_connect: Button = null!;
+    @property(Button)
+    private btn_disconnect: Button = null!;
+
+    start() {
+        this.btn_connect.node.on(Button.EventType.CLICK, this.connect, this);
+        this.btn_disconnect.node.on(Button.EventType.CLICK, this.disconnect, this);
     }
 
-    private onConnectClick() {
-        if(tonConnect.isConnected) {
-            tonConnect.disConnectTonWallet();
-        } else {
-            tonConnect.connectTonWallet()
-        }
+    onEnable() {
+        this.onConnectStateChange(tonConnect.IsConnected);
+        tonConnect.onStateChange = this.onConnectStateChange.bind(this);
+    }
+
+    private connect() {
+        tonConnect.connectTonWallet(true);
+    }
+
+    private disconnect() {
+        tonConnect.connectTonWallet(false);
+        this.onConnectStateChange(false);
     }
 
     private onConnectStateChange(isConnect: boolean) {
-        this.icon.grayscale = !isConnect;
+        console.log("收到消息:", isConnect);
+        if (isConnect) {
+            this.btn_disconnect.node.active = true;
+            this.btn_connect.node.active = false;
+        } else {
+            this.btn_disconnect.node.active = false;
+            this.btn_connect.node.active = true;
+        }
     }
 }
 

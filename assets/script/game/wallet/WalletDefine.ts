@@ -31,7 +31,10 @@ export class WalletConfig {
 export class TransactionRequest { 
     address: string;        // 转账目标地址
     payload: string;        // 交易数据
-    amount: string;         // 交易金额
+    amount: number;         // 交易金额
+
+    expired:number;         // 过期时间
+    minterAddress:string;   // 合约地址
 }
 
 /** 提现配置 */
@@ -75,6 +78,7 @@ export interface ExchangeRecord {
 /** 支付类型 */
 export enum PayType { 
     TonWallet = 'TON钱包',
+    TonUSDT = 'TRC-USDT钱包',
     TrcUsdtWallet = 'TRC-USDT钱包',
     ErcUsdtWallet = 'ERC-USDT钱包',
     TonUsdtWallet = 'TON-USDT钱包',
@@ -91,8 +95,9 @@ export interface PaymentMethod {
 // 允许的支付列表
 export const paymentMethods: PaymentMethod[] = [
     { type: PayType.TonWallet, chain: 'TON', ratio: 0.179918 },
-    { type: PayType.TrcUsdtWallet, chain: 'TRC20', ratio: 0.179918 },
-    { type: PayType.ErcUsdtWallet, chain: 'ERC20', ratio: 0.179918 },
-    { type: PayType.TonUsdtWallet, chain: 'TON', ratio: 0.179918 },
-    { type: PayType.EthUsdtWallet, chain: 'ETH', ratio: 0.179918 }
+    { type: PayType.TonUSDT, chain: 'TonUSDT', ratio: 0.179918 },
+    // { type: PayType.TrcUsdtWallet, chain: 'TRC20', ratio: 0.179918 },
+    // { type: PayType.ErcUsdtWallet, chain: 'ERC20', ratio: 0.179918 },
+    // { type: PayType.TonUsdtWallet, chain: 'TON', ratio: 0.179918 },
+    // { type: PayType.EthUsdtWallet, chain: 'ETH', ratio: 0.179918 }
 ];

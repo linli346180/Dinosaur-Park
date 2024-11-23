@@ -78,7 +78,7 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.STBShop]: { layer: LayerType.PopUp, prefab: "gui/shop/prefab/STBShop", mask: true },
     
     [UIID.GemShop]: { layer: LayerType.PopUp, prefab: "gui/wallet/gemShop", mask: true, vacancy: true },
-    [UIID.WalletPaySelect]: { layer: LayerType.PopUp, prefab: "gui/wallet/prefab/walletPaySelect", mask: true, vacancy: true },
+    [UIID.WalletPaySelect]: { layer: LayerType.PopUp, prefab: "gui/wallet/prefab/walletPaySelect", mask: true},
 
     [UIID.STBMerge]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/STBMergeUI", mask: true },
     [UIID.RewardView]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/rewardPrview", mask: true },

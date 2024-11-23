@@ -45,13 +45,13 @@ export namespace WalletNetService {
     }
 
     /** 获取预支付订单 */
-    export async function getUserOrder(goodID: number) {
+    export async function getUserOrder(goodID: number,  coinType: number) {
         const http = createHttpManager();
         const params = {
             'goodID': goodID.toString(),
             'source': '1',
             'channel': '1',
-            'coinType': '2',
+            'coinType': coinType.toString(),
             'timeStamp': Date.now().toString()
         }
         const paramString = new URLSearchParams(params).toString();
@@ -115,9 +115,9 @@ export namespace WalletNetService {
     }
 
      /** 支付成功返回 */
-     export async function postWithdrawBoc(boc: string) {
+     export async function postWithdrawBoc(boc: string, payLoad: string) {
         const http = createHttpManager();
-        const response = await http.postUrl(`tgapp/api/user/order/boc?token=${netConfig.Token}&boc=${boc}`);
+        const response = await http.postUrl(`tgapp/api/user/order/boc?token=${netConfig.Token}&boc=${boc}&payLoad=${payLoad}`);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("支付成功返回:", response.res);
             return response.res;

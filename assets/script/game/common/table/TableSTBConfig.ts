@@ -27,6 +27,10 @@ export class TableSTBConfig {
     get bigicon(): string {
         return this.data.bigicon;
     }
+    /** 购买图标 */
+    get puricon(): string {
+        return this.data.puricon;
+    }
     /** 围栏 */
     get map(): number {
         return this.data.map;
@@ -58,10 +62,6 @@ export class TableSTBConfig {
     /** 购买消耗货币类型 */
     get purcoin(): number {
         return this.data.purcoin;
-    }
-    /** 购买图标 */
-    get puricon(): string {
-        return this.data.puricon;
     }
     /** 预制体 */
     get perfab(): string {
