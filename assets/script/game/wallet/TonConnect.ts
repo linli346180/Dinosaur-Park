@@ -2,6 +2,7 @@ import { WalletNetService } from './WalletNet';
 import { TransactionRequest, WalletConfig } from './WalletDefine';
 import { smc } from '../common/SingletonModuleComp';
 import TonWeb from '../../../libs/tonweb.js';
+import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 
 /** 钱包连接 */
 export default class TonConnect {
@@ -91,37 +92,58 @@ export default class TonConnect {
         }
     }
 
-    async sendUSDT(request: TransactionRequest) {
+    /** 发起USDT支付 */
+    async sendUSDTTransaction(request: TransactionRequest) {
         try {
             console.log("USDT支付请求", request);
+            console.log("this.walletConfig", this.walletConfig);
+
             // 初始化 Jetton Minter 实例
             const webTON = new TonWeb();
+
+            if(request.minterAddress != 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs') {
+                console.error("minterAddress不匹配", request.minterAddress);
+            }
+
             const jettonMinter = new webTON.constructor.token.jetton.JettonMinter(webTON.provider, { address: request.minterAddress });
             const jettonMinterAddress = await jettonMinter.getJettonWalletAddress(new TonWeb.utils.Address(this.walletConfig.address));
             const jettonWallet = new webTON.constructor.token.jetton.JettonWallet(webTON.provider, { address: jettonMinterAddress });
             const comment = new Uint8Array([... new Uint8Array(4), ... new TextEncoder().encode(request.payload)]);
+
+            if(request.address != 'UQAhLYn0c5MtoSjSre38RXtcpBBOKiuJtx_ISBmk3HyUKlOi') {
+                console.error("address不匹配", request.address);
+            }
+
             const jettonBody = {
+                    queryId: Date.now(),
                     jettonAmount: request.amount,
                     toAddress: new TonWeb.utils.Address(request.address),
                     responseAddress: new TonWeb.utils.Address(this.walletConfig.address),
                     forwardPayload: comment
                 };    
+            console.log("JettonBody", jettonBody);
             let payload = await jettonWallet.createTransferBody(jettonBody);
+            console.log("payload", payload);
+            const tonFee = '50000000' //多了就会自动退回的手续费
             const transaction = {
-                validUntil: request.expired,
+                validUntil: Math.floor(Date.now() / 1000) + 6000,
                 messages: [
                     {
-                        address: request.minterAddress,
+                        address: jettonMinterAddress.toString(true),
                         payload: TonWeb.utils.bytesToBase64(await payload.toBoc()),
-                        amount: '5000000',
+                        amount: tonFee,
                     }
                 ]
             };
+
+            console.error("jettonMinterAddress", jettonMinterAddress.toString(true));
+            console.log("USDT交易请求", transaction);
             await this.tonConnectUI.sendTransaction(transaction)
                 .then(async (response) => {
                     console.log("交易成功", response);
                     const res = await WalletNetService.postWithdrawBoc(response.boc, this.walletConfig.payload);
                     if (res) {
+                        oops.gui.toast("支付成功");
                         smc.account.updateCoinData();
                     }
                 })

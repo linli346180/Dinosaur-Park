@@ -69,14 +69,15 @@ export class WalletPaySelect extends Component {
             request.address = order.payload.address;
             request.payload = order.payload.payLoad;
             request.amount = order.payload.tonNano;
-
             request.expired = order.payload.expired;
+            request.timeStamp = order.payload.timeStamp;
+
             request.minterAddress = order.payload.minterAddress;
 
             if (method.type == PayType.TonWallet){
                 tonConnect.sendTonTransaction(request);
             }else {
-                tonConnect.sendUSDT(request);
+                tonConnect.sendUSDTTransaction(request);
             }
         }
 

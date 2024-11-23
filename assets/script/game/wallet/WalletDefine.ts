@@ -10,7 +10,7 @@ export class WalletConfig {
     payaddress: string = '';        // 发起交易的目标地址
 
     // 钱包参数
-    address: string = '';           // 钱包地址
+    address: string = '';           // 自己钱包地址
     name: string = '';              // 钱包名称
     publicKey: string = '';         // 公钥
     walletStateInit: string = '';   // 钱包状态
@@ -32,7 +32,7 @@ export class TransactionRequest {
     address: string;        // 转账目标地址
     payload: string;        // 交易数据
     amount: number;         // 交易金额
-
+    timeStamp: number;      // 时间戳
     expired:number;         // 过期时间
     minterAddress:string;   // 合约地址
 }

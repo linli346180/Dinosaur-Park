@@ -66,7 +66,10 @@
     "tips_remail_gem" :"剩余宝石",
     "tips_firstbuy_reward" :"首次返利",
     "tips_gem_noenough" :"宝石不足,请购买",
-
+    "tips_transaction_sucess":"支付成功",
+    "tips_transaction_fail":"支付失败",
+    "tips_transaction_cancel":"支付取消",
+    
     "user_setting":"设置",
     "user_setting_music":"音乐",
     "user_setting_sound_effect":"音效",
