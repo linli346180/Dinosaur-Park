@@ -38,9 +38,26 @@
 
     "stb_codex":"星兽图鉴",
     "stb_gold":"黄金星兽",
+    "stb_gold_lv1":"黄金星兽Lv1",
+    "stb_gold_lv2":"黄金星兽Lv2",
+    "stb_gold_lv3":"黄金星兽Lv3",
+    "stb_gold_lv4":"黄金星兽Lv4",
+    "stb_gold_lv5":"黄金星兽Lv5",
+    "stb_gold_lv6":"黄金星兽Lv6",
+    "stb_gold_lv7":"黄金星兽Lv7",
+    "stb_gold_lv8":"黄金星兽Lv8",
+    "stb_gold_lv9":"黄金星兽Lv9",
+    "stb_gold_lv10":"黄金星兽Lv10",
     "stb_gem":"宝石星兽",
     "stb_diamond":"钻石星兽",
     "stb_super":"至尊星兽",
+    "stb_super_lv1":"初级至尊星兽",
+    "stb_super_lv2":"中级至尊星兽",
+    "stb_super_lv3":"高级至尊星兽",
+    "stb_debris":"碎片",
+    "stb_debris_lv1":"初级碎片",
+    "stb_debris_lv2":"中级碎片",
+    "stb_debris_lv3":"高级碎片",
 
     "coin_gold":"金币",
     "coin_gems":"宝石",
@@ -64,7 +81,7 @@
     "tips_buy_fail":"购买失败",
     "tips_buy_gem":"购买宝石",
     "tips_remail_gem" :"剩余宝石",
-    "tips_firstbuy_reward" :"首次返利",
+    "tips_firstbuy_reward" :"首冲",
     "tips_gem_noenough" :"宝石不足,请购买",
     "tips_transaction_sucess":"支付成功",
     "tips_transaction_fail":"支付失败",
@@ -86,7 +103,6 @@
     "user_tips_guide":"新手引导",
     "user_tips_connectwallet":"连接钱包",
     "user_tips_disconnectwallet":"断开连接",
-
 
     "mail_tips_box":"邮箱",
     "mail_tips_nomail":"暂无邮件",
@@ -170,8 +186,8 @@
     "activity_usdt_incomedetail":"领取详情",
     "activity_usdt_total":"USDT数量",
     "activity_usdt_remain":"剩余USDT",
-    "activity_redpacket_total":"红包总量",
-    "activity_redpacket_remain":"红包剩余",
+    "activity_redpacket_total":"福利总量",
+    "activity_redpacket_remain":"福利剩余",
 
     "guide_join_channel":"加入频道",
     "guide_join_group":"加入群组",
@@ -188,7 +204,7 @@
     "tips_emailcode_empty":"输入验证码",
     "tips_emailcode_inputerror":"验证码格式错误",
     "tips_emailcode_sentsuccess":"邮箱验证码已发送,请注意查收",
-    "tips_emailcode_get":"获取验证码",
+    "tips_emailcode_get":"发送",
     
     "tips_account_usdt":"USDT账户",
     "tips_account_balance":"账户余额",
@@ -229,7 +245,7 @@
 
     "tips_Wallet_type":"钱包类型",
     "tips_Wallet_address":"钱包地址",
-    "tips_Wallet_address_empty":"请输入钱包地址...",
+    "tips_Wallet_address_empty":"请连接钱包",
     "tips_Wallet_address_connect":"连接钱包",
 
     "End":"结束"
