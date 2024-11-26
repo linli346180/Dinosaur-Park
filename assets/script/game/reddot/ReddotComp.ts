@@ -20,6 +20,22 @@ const RedDotCmdEnum = Enum({
     提现: RedDotCmd.WithDrawalType, // 提现
     星兽图鉴: RedDotCmd.StbBookType, // 星兽图鉴
     星兽活动: RedDotCmd.USDTActivity, // 星兽活动
+
+    黄金1级: RedDotCmd.STB_101, // 星兽活动 
+    黄金2级: RedDotCmd.STB_102, // 星兽活动
+    黄金3级: RedDotCmd.STB_103, // 星兽活动
+    黄金4级: RedDotCmd.STB_104, // 星兽活动
+    黄金5级: RedDotCmd.STB_105, // 星兽活动
+    黄金6级: RedDotCmd.STB_106, // 星兽活动
+    黄金7级: RedDotCmd.STB_107, // 星兽活动
+    黄金8级: RedDotCmd.STB_108, // 星兽活动
+    黄金9级: RedDotCmd.STB_109, // 星兽活动
+    黄金10级: RedDotCmd.STB_110, // 星兽活动
+    初级至尊星兽: RedDotCmd.STB_111, // 星兽活动
+    中级至尊星兽: RedDotCmd.STB_112, // 星兽活动
+    高级至尊星兽: RedDotCmd.STB_113, // 星兽活动
+    宝石星兽: RedDotCmd.STB_114, // 星兽活动
+    砖石星兽: RedDotCmd.STB_115, // 星兽活动
 });
 
 @ccclass('ReddotComp')
@@ -31,14 +47,10 @@ export class ReddotComp extends Component {
         const isRead = oops.storage.getBoolean(this.cmd.toString());
         this.node.active = !isRead;
         oops.message.on(AccountEvent.RedDotCmd, this.onHandler, this);
-    }
-
-    onEnable() {
         this.playScaleAnimation(this.node);
     }
 
-    onDisable() {
-        // 设置红点为已读
+    public setRead() {
         oops.storage.set(this.cmd.toString(), true);
     }
 

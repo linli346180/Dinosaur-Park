@@ -8,32 +8,43 @@ const { ccclass, property } = _decorator;
 @ccclass('RewardItem')
 export class RewardItem extends Component {
     @property(Sprite)
-    icon: Sprite = null!;
+    private icon: Sprite = null!;
     @property(Label)
-    goodName: Label = null!;
-    @property(Label)
-    levelName: Label = null!;
-
+    private goodName: Label = null!;
+    
     private itemConfig: TableItemConfig = new TableItemConfig();
+    private rewardConfig: RewardConfig = null;
 
     async initItem(rewardConfig: RewardConfig) {
+        this.rewardConfig = rewardConfig;
         let itemId = StringUtil.combineNumbers(rewardConfig.rewardType, rewardConfig.rewardGoodsID, 2);
         this.itemConfig.init(itemId);
-        this.goodName.string = rewardConfig.goodName;
-        if (rewardConfig.rewardNum > 1)
-            this.goodName.string = rewardConfig.rewardNum.toString();
 
         // 加载图标
-        oops.res.loadAsync(this.itemConfig.icon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
-            this.icon.spriteFrame = spriteFrame;
-        });
+        if (this.itemConfig.icon) {
+            oops.res.loadAsync(this.itemConfig.icon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
+                this.icon.spriteFrame = spriteFrame;
+            });
+        }
+        // 显示名称
+        this.updateName();
+    }
 
-        // 显示星兽碎片等级
-        const parent = this.levelName.node.getParent();
-        parent.active = false;
-        if (rewardConfig.rewardType == RewardType.StarBeastFragment) {
-            parent.active = true;
-            this.levelName.string = rewardConfig.standbyID == 1 ? "Novice" : "Middle";
+    onEnable() {
+        this.updateName();
+    }
+
+    private updateName() {
+        if (this.rewardConfig) {
+            if (this.rewardConfig.rewardNum > 1)
+                this.goodName.string = this.rewardConfig.rewardNum.toString();
+            else {
+                const name: string[] = this.itemConfig.name.split("|");
+                this.goodName.string = `${oops.language.getLangByID(name[0])}`;
+                if (name.length > 1) {
+                    this.goodName.string = `${oops.language.getLangByID(name[0])} ${name[1]}`;
+                }
+            }
         }
     }
 }

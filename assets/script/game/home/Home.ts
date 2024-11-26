@@ -10,6 +10,7 @@ import { Label } from 'cc';
 import { AnimUtil } from '../common/utils/AnimUtil';
 import { smc } from '../common/SingletonModuleComp';
 import { RedDotCmd } from '../reddot/ReddotDefine';
+import { ReddotComp } from '../reddot/ReddotComp';
 const { ccclass, property } = _decorator;
 
 @ccclass('HomeView')
@@ -61,7 +62,7 @@ export class HomeView extends Component {
     private buttonMap: { [key: string]: Button } = {};
 
     start() {
-        oops.audio.playMusicLoop("audios/nocturne");
+        // oops.audio.playMusicLoop("audios/nocturne");
         this.initializeButtonMap();
         this.addEventListeners();
         oops.message.on(AccountEvent.EvolveUnIncomeSTB, this.onHandler, this);
@@ -106,13 +107,20 @@ export class HomeView extends Component {
     }
 
     private OpenUI(uid: UIID) {
-        oops.gui.open(uid);
         const targetNode = this.buttonMap[uid]?.node;
         if (!targetNode) return;
         const redDot = targetNode.getChildByName("reddot");
         if (redDot) {
+            redDot.getComponent(ReddotComp)?.setRead();
             redDot.active = false;
         }
+        
+        if(uid == UIID.Invite) { 
+            oops.gui.toast(oops.language.getLangByID("common_tips_Not_Enabled"));
+            return;
+        }
+
+        oops.gui.open(uid);
     }
 
     private onHandler(event: string, args: any) {
@@ -153,7 +161,6 @@ export class HomeView extends Component {
 
     private showStartAnim(stbId: number) {
         // oops.gui.toast("星兽进化成功");
-        
         const endPos = this.btn_book.node.worldPosition;
         for (const slotNode of KnapsackControlle.instance.SlotNodes) {
             const slotComp = slotNode.getComponent<KnapsackSlot>(KnapsackSlot);

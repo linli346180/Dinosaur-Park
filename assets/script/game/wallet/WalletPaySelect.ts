@@ -71,6 +71,7 @@ export class WalletPaySelect extends Component {
             request.amount = order.payload.tonNano;
             request.expired = order.payload.expired;
             request.timeStamp = order.payload.timeStamp;
+            request.coinType = order.payload.coinType;
 
             request.minterAddress = order.payload.minterAddress;
 

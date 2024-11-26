@@ -21,20 +21,16 @@ export class RankView extends Component {
     selfRankItem: RankItem = null!;
     @property(Node)
     toggleGroup: Node = null!;
-
     @property(Button)
     btn_left: Button = null!;
     @property(Button)
     btn_right: Button = null!;
-
     @property(Label)
     title: Label = null!;
-
     @property(Node)
     emptyNode: Node = null!;
 
-
-    private curRankGroup = RankGroup.Invite;
+    private curRankGroup = RankGroup.Rich;
     private curRankType = RankType.day;
     private rankData: UserRankData | null = null;
 

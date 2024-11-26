@@ -5,6 +5,7 @@ import { WalletNetService } from './WalletNet';
 import { smc } from '../common/SingletonModuleComp';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { Label } from 'cc';
+import { AccountEvent } from '../account/AccountEvent';
 const { ccclass, property } = _decorator;
 
 @ccclass('ExchangeWidget')
@@ -15,6 +16,8 @@ export class ExchangeWidget extends Component {
     private edit_amount: EditBox = null!;
     @property(Label)
     private label_rate: Label = null
+    @property(Label)
+    private gemNum: Label = null
 
     // 设置兑换比例
     private exchangeRate: number = 99;
@@ -26,10 +29,16 @@ export class ExchangeWidget extends Component {
     start() {
         this.btn_exchange.node.on(Button.EventType.CLICK, this.exchange, this);
         this.edit_amount.node.on(EditBox.EventType.TEXT_CHANGED, this.onAmountChanged, this);
+        oops.message.on(AccountEvent.CoinDataChange, this.updateUI, this);
     }
 
     onEnable() {
         this.ExchangeRate = this.exchangeRate;
+        this.updateUI();
+    }
+
+    private updateUI() {
+        this.gemNum.string = Math.floor(smc.account.AccountModel.CoinData.gemsCoin).toString();
     }
 
     private async exchange() {

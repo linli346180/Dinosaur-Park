@@ -6,7 +6,7 @@ import { coinPoolVM } from '../account/viewModel/CoinPoolViewModel';
 import { smc } from '../common/SingletonModuleComp';
 import { tween } from 'cc';
 import { STBTypeID } from '../character/STBDefine';
-import { IncomeType } from '../account/model/STBConfigModeComp';
+import { IncomeType, UserInstbConfigData } from '../account/model/STBConfigModeComp';
 import { AccountCoinType } from '../account/AccountDefine';
 import { GameEvent } from '../common/config/GameEvent';
 const { ccclass, property } = _decorator;
@@ -24,6 +24,10 @@ export class UserIncomeView extends Component {
     gold_speed: Label = null!;
     @property(Label)
     gem_num: Label = null!;
+
+
+    private goldConfig: UserInstbConfigData = null;
+    private gemConfig: UserInstbConfigData = null;
 
     start() {
         this.btn_collectGold.node.on(Button.EventType.CLICK, this.UseCollectGold, this);
@@ -46,14 +50,16 @@ export class UserIncomeView extends Component {
     }
 
     private initUI() {
-        let config = smc.account.getSTBConfigByType(STBTypeID.STB_Gold_Level10);
-        if(config == null) return;
-        this.schedule(this.updateGoldPool, config.incomeCycle, macro.REPEAT_FOREVER, config.incomeCycle);
+        this.goldConfig = smc.account.getSTBConfigByType(STBTypeID.STB_Gold_Level10);
+        if (this.goldConfig == null) return;
+        this.schedule(this.updateGoldPool, this.goldConfig.incomeCycle + 5, macro.REPEAT_FOREVER, this.goldConfig.incomeCycle);
         this.playAnim(this.gold_num, coinPoolVM.GoldNum);
 
-        config = smc.account.getSTBConfigByType(STBTypeID.STB_Gem);
-        if(config == null) return;
-        this.schedule(this.updateGenPool, config.incomeCycle, macro.REPEAT_FOREVER, config.incomeCycle);
+        this.gemConfig = smc.account.getSTBConfigByType(STBTypeID.STB_Gem);
+        if (this.gemConfig == null) return;
+
+        this.schedule(this.updateGenPool, this.gemConfig.incomeCycle + 5, macro.REPEAT_FOREVER, this.gemConfig.incomeCycle);
+
         this.btn_collectGem.node.active = coinPoolVM.GemNum > 0;
         this.playAnim(this.gem_num, coinPoolVM.GemNum, () => {
             this.btn_collectGem.node.active = coinPoolVM.GemNum > 0;
@@ -65,9 +71,13 @@ export class UserIncomeView extends Component {
         if (coinPoolVM.GoldNum <= 0) return;
         coinPoolVM.GoldNum = 0;
         smc.account.UseCollectCoin(AccountCoinType.Gold);
+        this.playAnim(this.gold_num, coinPoolVM.GoldNum);
         // 通知主界面播放金币动画
         oops.message.dispatchEvent(AccountEvent.UserCollectGold);
-        this.playAnim(this.gold_num, coinPoolVM.GoldNum);
+
+        // 重启定时器
+        this.unschedule(this.updateGoldPool);
+        this.schedule(this.updateGoldPool, this.goldConfig.incomeCycle + 5, macro.REPEAT_FOREVER, this.goldConfig.incomeCycle);
     }
 
     /** 点击收集宝石 */
@@ -78,6 +88,10 @@ export class UserIncomeView extends Component {
         this.playAnim(this.gem_num, coinPoolVM.GemNum, () => {
             this.btn_collectGem.node.active = false;
         });
+
+        // 重启定时器
+        this.unschedule(this.updateGenPool);
+        this.schedule(this.updateGenPool, this.gemConfig.incomeCycle + 5, macro.REPEAT_FOREVER, this.gemConfig.incomeCycle);
     }
 
     /** 更新金币池 */

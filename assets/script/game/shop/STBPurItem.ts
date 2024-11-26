@@ -18,6 +18,8 @@ export class STBPurItem extends Component {
     private num: Label = null!;
     @property(Label)
     private stbName: Label = null!;
+    @property(Label)
+    private level: Label = null!;
 
     private config: UserInstbConfigData;
     private configId: number = 0;
@@ -42,6 +44,7 @@ export class STBPurItem extends Component {
                     this.icon.spriteFrame = spriteFrame;
             });
         }
+        this.level.string = config.stbGrade.toString();
     }
 
     onBuySTB() {

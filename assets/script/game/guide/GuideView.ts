@@ -76,12 +76,10 @@ export class GuideView extends Component {
 
     private joinChannel(url: string) {
         console.log('跳转链接:', url);
-
-        setTimeout(() => { 
-
-         }, 1000);
-
         window.open(url);
+        setTimeout(() => { 
+            this.updateUI();
+        }, 6000);
     }
 
     private onPresellLeave() {

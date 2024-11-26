@@ -6,16 +6,19 @@ import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets
 import { STBDetail } from './STBDetail';
 import { Sprite } from 'cc';
 import { Label } from 'cc';
+import { ReddotComp } from '../reddot/ReddotComp';
 const { ccclass, property } = _decorator;
 
 @ccclass('STBItem')
 export class STBItem extends Component {
-    @property(Button)   
-    private btn_detail:Button = null!;
+    @property(Button)
+    private btn_detail: Button = null!;
     @property(Sprite)
     private icon: Sprite = null!;
     @property(Label)
     private num: Label = null!;
+
+    private desc: string = '';
 
     public initItem(num: number) {
         this.num.string = num.toString();
@@ -26,6 +29,12 @@ export class STBItem extends Component {
     }
 
     private onDetailClick() {
+        const redDot = this.btn_detail.node.getChildByName("reddot");
+        if (redDot) {
+            redDot.getComponent(ReddotComp)?.setRead();
+            redDot.active = false;
+        }
+
         var uic: UICallbacks = {
             onAdded: (node: Node, params: any) => {
                 node.getComponent(STBDetail)?.InitUI(parseInt(this.node.name));

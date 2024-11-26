@@ -83,6 +83,13 @@ export class Account extends ecs.Entity {
                 this.add(AccountNetDataComp);
                 break;
 
+            // 2.1 登陆失败
+            case GameEvent.LoginSuccess:
+                tips.alert(oops.language.getLangByID('net_tips_fetch_fail'), () => {
+                    // (window as any).Telegram.WebApp.close();
+                });
+                break;
+
             // 3. 新手教程完成
             case GameEvent.GuideFinish:
                 console.log("3.新手教程完成");
@@ -106,6 +113,7 @@ export class Account extends ecs.Entity {
 
             // 6. 网络连接失败
             case GameEvent.NetConnectFail:
+                console.error("收到网络请求失败")
                 tips.alert(oops.language.getLangByID('net_tips_fetch_fail'), () => {
                     // (window as any).Telegram.WebApp.close();
                 });
@@ -297,7 +305,7 @@ export class Account extends ecs.Entity {
      * @param callback - 合成结果回调
      * @returns void
      */
-    async mergeIncomeSTBNet(stbID1: number, stbID2: number, isUpProb: number, callback: (success: boolean, isGainNum:boolean) => void) {
+    async mergeIncomeSTBNet(stbID1: number, stbID2: number, isUpProb: number, callback: (success: boolean, isGainNum: boolean) => void) {
         let res = await AccountNetService.mergeGoldSTB(stbID1, stbID2, isUpProb);
         if (res) {
             // 删除合成的两个星兽
@@ -311,7 +319,7 @@ export class Account extends ecs.Entity {
                 this.updateCoinData();
             }
 
-            const isGainNum:boolean = res.isGainNum;
+            const isGainNum: boolean = res.isGainNum;
 
             //合成是否成功，false：合成失败，true：合成成功，并且userInStb会返回新星兽数据
             if (res.isSucc) {
@@ -459,7 +467,6 @@ export class Account extends ecs.Entity {
         return null;
     }
 
-
     /** 收集金币 */
     public async UseCollectCoin(coinType: AccountCoinType) {
         let res: any = null;
@@ -468,7 +475,7 @@ export class Account extends ecs.Entity {
         if (coinType == AccountCoinType.Gems)
             res = await AccountNetService.UseCollectGem();
 
-        if (res && res.userCoin != null) {
+        if (res && res.userCoin) {
             this.AccountModel.CoinData = res.userCoin;
             oops.message.dispatchEvent(AccountEvent.CoinDataChange);
         }

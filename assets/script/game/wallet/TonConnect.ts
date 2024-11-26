@@ -4,6 +4,8 @@ import { smc } from '../common/SingletonModuleComp';
 import TonWeb from '../../../libs/tonweb.js';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 
+// const {JettonMinter, JettonWallet} = TonWeb.token.jetton;
+
 /** 钱包连接 */
 export default class TonConnect {
     public tonConnectUI: any;
@@ -53,12 +55,15 @@ export default class TonConnect {
                     console.log("发送钱包断开通知");
                     this.walletConfig = new WalletConfig();
                     this.notifyStateChange(false);
+                    localStorage.removeItem("USDTTransactionID");
                 });
             }
 
             if (this.IsConnected) {
                 console.log("钱包已连接", this.tonConnectUI);
                 this.walletConfig.address = this.tonConnectUI.account.address;
+            } else {
+                localStorage.removeItem("USDTTransactionID");
             }
 
         } catch (error) {
@@ -96,24 +101,12 @@ export default class TonConnect {
     async sendUSDTTransaction(request: TransactionRequest) {
         try {
             console.log("USDT支付请求", request);
-            console.log("this.walletConfig", this.walletConfig);
-
-            // 初始化 Jetton Minter 实例
             const webTON = new TonWeb();
-
-            if(request.minterAddress != 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs') {
-                console.error("minterAddress不匹配", request.minterAddress);
-            }
-
             const jettonMinter = new webTON.constructor.token.jetton.JettonMinter(webTON.provider, { address: request.minterAddress });
             const jettonMinterAddress = await jettonMinter.getJettonWalletAddress(new TonWeb.utils.Address(this.walletConfig.address));
             const jettonWallet = new webTON.constructor.token.jetton.JettonWallet(webTON.provider, { address: jettonMinterAddress });
-            const comment = new Uint8Array([... new Uint8Array(4), ... new TextEncoder().encode(request.payload)]);
-
-            if(request.address != 'UQAhLYn0c5MtoSjSre38RXtcpBBOKiuJtx_ISBmk3HyUKlOi') {
-                console.error("address不匹配", request.address);
-            }
-
+            const comment = new Uint8Array(new TextEncoder().encode(request.payload));
+            console.log("comment:", comment);
             const jettonBody = {
                     queryId: Date.now(),
                     jettonAmount: request.amount,
@@ -125,7 +118,14 @@ export default class TonConnect {
             let payload = await jettonWallet.createTransferBody(jettonBody);
             console.log("payload", payload);
             const tonFee = '50000000' //多了就会自动退回的手续费
+            // 记录交易ID
+            let localValue: string | null = localStorage.getItem("USDTTransactionID");
+            if (localValue == null || localValue == '') {
+                localValue = '0';
+            }
+            const localId = Number(localValue);
             const transaction = {
+                id: localId,
                 validUntil: Math.floor(Date.now() / 1000) + 6000,
                 messages: [
                     {
@@ -135,48 +135,45 @@ export default class TonConnect {
                     }
                 ]
             };
-
-            console.error("jettonMinterAddress", jettonMinterAddress.toString(true));
-            console.log("USDT交易请求", transaction);
-            await this.tonConnectUI.sendTransaction(transaction)
-                .then(async (response) => {
-                    console.log("交易成功", response);
-                    const res = await WalletNetService.postWithdrawBoc(response.boc, this.walletConfig.payload);
-                    if (res) {
-                        oops.gui.toast("支付成功");
-                        smc.account.updateCoinData();
-                    }
-                })
-                .catch((error) => {
-                    console.error("交易失败", error);
-                });            
+            localStorage.setItem("USDTTransactionID", (Number(localId) + 1).toString());
+            const response = await this.tonConnectUI.sendTransaction(transaction);
+            if(response) {
+                const res = await WalletNetService.postWithdrawBoc(response.boc, request.payload, request.coinType);
+                if (res) {
+                    oops.gui.toast(oops.language.getLangByID("tips_transaction_sucess"));
+                    smc.account.updateCoinData();
+                }
+            }
         } catch (error) {
-            console.error("处理交易时出错", error);
+            console.error("USDT支付异常", error);   
         }
     }
 
     // 发起交易
     public async sendTonTransaction(request: TransactionRequest) {
+        const address = request.address;
+        const num = request.amount;
         const transaction = {
-            validUntil: Math.floor(Date.now() / 1000) + 60,
+            validUntil: Math.floor(Date.now() / 1000) + 6000,
             messages: [
                 {
-                    address: request.address,
+                    address: address,
                     payload: request.payload,
-                    amount: request.amount.toString(),
+                    amount: num,
                 }
             ]
         };
+        console.warn("Ton交易请求", transaction);
         await this.tonConnectUI.sendTransaction(transaction)
             .then(async (response) => {
-                console.log("交易成功", response);
-                const res = await WalletNetService.postWithdrawBoc(response.boc, request.payload);
+                const res = await WalletNetService.postWithdrawBoc(response.boc, request.payload, request.coinType);
                 if (res) {
+                    oops.gui.toast(oops.language.getLangByID("tips_transaction_sucess"));
                     smc.account.updateCoinData();
                 }
             })
             .catch((error) => {
-                console.error("交易失败", error);
+                console.error("Ton交易失败", error);
             });
     }
 
@@ -188,7 +185,6 @@ export default class TonConnect {
         return isConnected;
     }
 
-    // 通知所有连接状态变化监听器
     private notifyStateChange(isConnected: boolean) {
         if (this.onStateChange) {
             this.onStateChange(isConnected);

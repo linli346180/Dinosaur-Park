@@ -41,11 +41,8 @@ export class HatchView extends Component {
     private _userData: UserHatchData = new UserHatchData();
     private userHatchResult: RewardConfig[] = [];
 
-    onLoad() {
-        this.getHatchMinNum();
-    }
-
     onEnable() {
+        this.getHatchMinNum();
         this.getUserHatchNum();
     }
 

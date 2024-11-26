@@ -288,7 +288,7 @@ export namespace AccountNetService {
         const http = createHttpManager();
         const response = await http.postUrl("tgapp/api/user/goldc/receive?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            Logger.logNet("领取金币:" + response.res);
+            console.warn("点击领取金币:", response.res);
             return response.res;
         } else {
             console.error("领取金币异常:", response);
@@ -302,7 +302,7 @@ export namespace AccountNetService {
 
         const response = await http.postUrl("tgapp/api/user/gemsc/receive?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            Logger.logNet("领取宝石:" + response.res);
+            console.warn("点击领取宝石:", response.res);
             return response.res;
         } else {
             console.error("领取宝石异常", response);
@@ -315,7 +315,7 @@ export namespace AccountNetService {
         const http = createHttpManager();
         const response = await http.getUrl("tgapp/api/user/stb/synth/prob?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.warn("获取收益星兽合成概率:" + response.res);
+            console.warn("获取收益星兽合成概率:", response.res);
             return response.res;
         } else {
             console.error("获取收益星兽合成概率异常", response);
@@ -328,7 +328,7 @@ export namespace AccountNetService {
         const http = createHttpManager();
         const response = await http.getUrl("tgapp/api/user/stb/synth/prob?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.warn("获取合成提升概率配置:" + response.res);
+            console.warn("获取合成提升概率配置:", response.res);
             return response.res;
         } else {
             console.error("获取合成提升概率配置异常", response);

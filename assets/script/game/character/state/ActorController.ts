@@ -166,11 +166,11 @@ export class ActorController extends Component {
     }
 
     private randomRunInterval() {
-        this.runInterval = math.randomRange(3, 5); // 生成 3 到 7 秒之间的随机值
+        this.runInterval = math.randomRange(1, 5); // 生成 3 到 7 秒之间的随机值
     }
 
     private randomIdleInterval() {
-        this.idleInterval = math.randomRange(5, 10); // 生成 3 到 7 秒之间的随机值
+        this.idleInterval = math.randomRange(10, 15); // 生成 3 到 7 秒之间的随机值
     }
 
     /** 随机移动 */

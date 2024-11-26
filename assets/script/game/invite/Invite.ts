@@ -3,11 +3,11 @@ import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/O
 import { UIID } from '../common/config/GameUIConfig';
 import { InviteNetService } from './InviteNet';
 import { InviteItemView } from './InviteItemView';
-import qr from 'qrcode-generator';
 import { InviteRewardItem } from './InviteRewardItem';
 import { InviteRewardConfig } from './InviteData';
 import { Label } from 'cc';
 import { StringUtil } from '../common/utils/StringUtil';
+import qr from 'qrcode-generator';
 
 const { ccclass, property } = _decorator;
 
@@ -28,22 +28,18 @@ export class InviteVeiw extends Component {
     private nofriend: Node = null!;
     @property(Sprite)
     private icon: Sprite = null!;
-
-    // 邀请奖励
     @property(Node)
     private rewardContainer: Node = null!;
     @property(Prefab)
     private rewardItem: Prefab = null!;
     @property(Label)
-    private inviteNum:Label = null!;
-
+    private inviteNum: Label = null!;
     private inviteLink: string = "";
 
     onLoad() {
         this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.Invite, false) }, this);
         this.btn_invite?.node.on(Button.EventType.CLICK, this.openInviteLink, this);
         this.btn_copy?.node.on(Button.EventType.CLICK, this.copyInviteLink, this);
-
         this.initQRCode();
         this.initRewardList();
     }
@@ -53,14 +49,10 @@ export class InviteVeiw extends Component {
     }
 
     private async initQRCode() {
-        try {
-            const res = await InviteNetService.getCopyLink();
-            if (res && res.copyInviteLinkReturn.inviteLink != null) {
-                this.inviteLink = res.copyInviteLinkReturn.inviteLink;
-                this.generateQRCode(this.inviteLink);
-            }
-        } catch (error) {
-            console.error("Failed to initialize QR code:", error);
+        const res = await InviteNetService.getCopyLink();
+        if (res && res.copyInviteLinkReturn.inviteLink != null) {
+            this.inviteLink = res.copyInviteLinkReturn.inviteLink;
+            this.generateQRCode(this.inviteLink);
         }
     }
 
@@ -75,10 +67,10 @@ export class InviteVeiw extends Component {
             this.inviteNum.string = `${rewardConfig.inveteNum}`;
 
             for (const item of inviteInfo.getInviteTaskList) {
-                rewardConfig.rewards.push({ 
+                rewardConfig.rewards.push({
                     id: item.inviteCompleteId,
                     clamed: !item.state,
-                    inviteNum: item.requiredNum, 
+                    inviteNum: item.requiredNum,
                     awardNum: item.rewards[0]?.awardQuantity,
                     awardType: StringUtil.combineNumbers(item.rewards[0]?.awardType, item.rewards[0]?.awardResourceId, 2)
                 });
@@ -115,24 +107,23 @@ export class InviteVeiw extends Component {
     }
 
     private openInviteLink() {
+        oops.gui.toast(oops.language.getLangByID("common_tips_Not_Enabled"));
+        return;
         const url = `https://t.me/share/url?url=${this.inviteLink}`;
-        console.log('打开邀请链接:', url);
         window.open(url);
-        // const WebApp = (window as any).Telegram.WebApp;
-        // WebApp.openLink(url);
     }
 
     private copyInviteLink() {
+        oops.gui.toast(oops.language.getLangByID("common_tips_Not_Enabled"));
+        return;
         if (navigator.clipboard) {
             navigator.clipboard.writeText(this.inviteLink).then(() => {
                 oops.gui.toast("invite_tips_copytoclipboard", true);
             }).catch(err => {
                 console.error("无法拷贝到剪切板", err);
-                // oops.gui.toast("Invite link copied to clipboard fail.");
             });
         } else {
             console.error("当前浏览器不支持 Clipboard API");
-            // oops.gui.toast("当前浏览器不支持 Clipboard API");
         }
     }
 
@@ -140,11 +131,9 @@ export class InviteVeiw extends Component {
         const qrCode = qr(0, 'M');
         qrCode.addData(qrCodeUrl);
         qrCode.make();
-
         const dataURL = qrCode.createDataURL(4, 4);
         const img = new Image();
         img.src = dataURL;
-
         assetManager.loadRemote(dataURL, { ext: '.png' }, (err, imageAsset: ImageAsset) => {
             if (!err) {
                 const spriteFrame = new SpriteFrame();

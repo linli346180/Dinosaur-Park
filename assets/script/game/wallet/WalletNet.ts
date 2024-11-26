@@ -115,14 +115,14 @@ export namespace WalletNetService {
     }
 
      /** 支付成功返回 */
-     export async function postWithdrawBoc(boc: string, payLoad: string) {
+     export async function postWithdrawBoc(boc: string, payLoad: string, coinType: number) {
         const http = createHttpManager();
-        const response = await http.postUrl(`tgapp/api/user/order/boc?token=${netConfig.Token}&boc=${boc}&payLoad=${payLoad}`);
+        const response = await http.postUrl(`tgapp/api/user/order/boc?token=${netConfig.Token}&boc=${boc}&payLoad=${payLoad}&coinType=${coinType}`);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
-            console.warn("支付成功返回:", response.res);
+            console.warn(`支付成功返回 ${http.url}:`, response.res);
             return response.res;
         } else {
-            console.error("支付成功返回异常", response);
+            console.error(`支付异常 ${http.url}:`, response);
             return null;
         }
     }

@@ -29,6 +29,7 @@ export namespace ReviveNetService {
         http.token = netConfig.Token;
         http.timeout = netConfig.Timeout;
 
+        console.log("请求用户拼图碎片数据");
         const response = await http.getUrl("tgapp/api/user/debris?token=" + netConfig.Token);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
             console.warn("用户拼图碎片数据请求成功:", response.res);

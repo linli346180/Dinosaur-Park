@@ -16,8 +16,8 @@ export class WithdrawWidget extends Component {
     @property({ type: DropDown })
     private DropDown: DropDown = null!;
 
-    @property(EditBox)
-    private edit_address: EditBox = null!;
+    // @property(EditBox)
+    // private edit_address: EditBox = null!;
     @property(EditBox)
     private edit_email: EditBox = null!;
     @property(EditBox)
@@ -35,12 +35,16 @@ export class WithdrawWidget extends Component {
     @property(Label)
     private handlingFeeLabel: Label = null!;
 
+    @property(Label)
+    private label_purse: Label = null!;
+
+
     // 设置提现手续费
     private handlingFee: string = '0';
     public set HandlingFee(value: string) {
         console.log(`设置提现手续费: ${value}`);
         this.handlingFee = value;
-        this.handlingFeeLabel.string = `${oops.language.getLangByID('tips_withdrawal_handling_fee')}:${value}%`; ;
+        this.handlingFeeLabel.string = `${oops.language.getLangByID('tips_withdrawal_handling_fee')}:${value}%`;;
     }
 
     // 最低提现金额
@@ -60,10 +64,11 @@ export class WithdrawWidget extends Component {
         this.btn_withdrawal?.node.on(Button.EventType.CLICK, this.withdrawal, this);
         this.btn_connect?.node.on(Button.EventType.CLICK, this.connectTonWallet, this);
         this.edit_amount.node.on(EditBox.EventType.TEXT_CHANGED, this.onAmountChanged, this);
+        // this.edit_address.string = oops.storage.get("walletaddress", '');
+        // this.DropDown.selectedIndex = oops.storage.getNumber("purseType", 1);
 
-        this.edit_address.string = oops.storage.get("walletaddress", '');
-        this.DropDown.selectedIndex = oops.storage.getNumber("purseType", 1);
-        this.edit_address.string = tonConnect.walletConfig.address;
+        this.showPurchase();
+        // this.edit_address.string = tonConnect.walletConfig.address;
     }
 
     onEnable() {
@@ -112,7 +117,7 @@ export class WithdrawWidget extends Component {
     }
 
     private async withdrawal() {
-        const address = this.edit_address.string.trim();
+        const address = tonConnect.walletConfig.address;
         const emailCode = this.edit_email.string.trim();
         const purseType = this.DropDown.selectedIndex;
         const amount = this.edit_amount.string.trim();
@@ -130,8 +135,8 @@ export class WithdrawWidget extends Component {
             return;
         }
         const parsedAmount = parseFloat(amount);
-        oops.storage.set("walletaddress", address);
-        oops.storage.set("purseType", purseType);
+        // oops.storage.set("walletaddress", address);
+        // oops.storage.set("purseType", purseType);
 
         let request: WithdrawRequest = {
             verificationCode: emailCode,
@@ -149,7 +154,8 @@ export class WithdrawWidget extends Component {
     }
 
     private onConnectStateChange(isConnected: boolean) {
-        this.edit_address.string = tonConnect.walletConfig.address;
+        // this.edit_address.string = tonConnect.walletConfig.address;
+        this.showPurchase();  
     }
 
     private connectTonWallet() {
@@ -169,6 +175,19 @@ export class WithdrawWidget extends Component {
             editBox.string = sanitizedInput;
         }
         editBox.focus();
+    }
+
+    private showPurchase() { 
+        // 获取地址
+        const address = tonConnect.walletConfig.address;
+        if(tonConnect.IsConnected && address.length > 0) {
+            // 格式化地址为前5个字符 + 中间省略号 + 后5个字符
+            const formattedAddress = `${address.slice(0, 5)}...${address.slice(-5)}`;
+            // 设置标签文本
+            this.label_purse.string = formattedAddress;
+        } else {
+            this.label_purse.string = oops.language.getLangByID('tips_Wallet_address_empty');
+        }
     }
 }
 

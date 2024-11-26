@@ -5,6 +5,8 @@ import { ReportNetService } from './ReportNet';
 import { smc } from '../common/SingletonModuleComp';
 import { StringUtil } from '../common/utils/StringUtil';
 import { STBItem } from './STBItem';
+import { UserConfigData } from '../home/UserConfigDefine';
+import { AccountNetService } from '../account/AccountNet';
 const { ccclass, property } = _decorator;
 
 interface CodexData {
@@ -26,6 +28,7 @@ export class STBReportView extends Component {
     private diamondContainer: Node = null!;
 
     private stbData: CodexData = {};
+    private configData: UserConfigData[] = [];
 
     onLoad() {
         this.btn_close?.node.on(Button.EventType.CLICK, this.closeUI, this);
@@ -51,23 +54,17 @@ export class STBReportView extends Component {
     }
 
     InitUI() {
-        this.goldCntainer?.children.forEach(child => {
-            this.InitItem(child);
-        });
-        this.superContainer?.children.forEach(child => {
-            this.InitItem(child);
-        });
-        this.gamContainer?.children.forEach(child => {
-            this.InitItem(child);
-        });
-        this.diamondContainer?.children.forEach(child => {
-            this.InitItem(child);
-        });
+        this.goldCntainer?.children.forEach(child => { this.InitItem(child); });
+        this.superContainer?.children.forEach(child => { this.InitItem(child); });
+        this.gamContainer?.children.forEach(child => { this.InitItem(child); });
+        this.diamondContainer?.children.forEach(child => { this.InitItem(child); });
     }
 
     private InitItem(child: Node) {
-        if(this.stbData[child.name]) {
-            child.getComponent(STBItem)?.initItem(this.stbData[child.name]);
+        let num = 0;
+        if (this.stbData[child.name]) {
+            num = this.stbData[child.name];
         }
+        child.getComponent(STBItem)?.initItem(num);
     }
 }

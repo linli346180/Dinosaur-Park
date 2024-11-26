@@ -11,13 +11,13 @@ const { ccclass, property } = _decorator;
 @ccclass('UserCoinView')
 export class UserCoinView extends Component {
     @property(Node)
-    status_gold: Node = null!;
+    private status_gold: Node = null!;
     @property(Node)
-    status_gem: Node = null!;
+    private status_gem: Node = null!;
     @property(Node)
-    status_dinosaur: Node = null!;
+    private status_dinosaur: Node = null!;
     @property(Node)
-    status_usdt: Node = null!;
+    private status_usdt: Node = null!;
 
     private goldCoin: Label = null!;
     private gemsCoin: Label = null!;
@@ -37,7 +37,7 @@ export class UserCoinView extends Component {
         this.btn_buygem = this.status_gem.getChildByName("btn_buy")?.getComponent(Button)!;
         this.btn_buyusdt = this.status_usdt.getChildByName("btn_buy")?.getComponent(Button)!;
         this.btn_buygem?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.GemShop) }, this);
-        this.btn_buyusdt?.node.on(Button.EventType.CLICK, () => { oops.gui.open(UIID.Wallet) }, this);
+        this.btn_buyusdt?.node.on(Button.EventType.CLICK, this.openWallet, this);
 
         this.setupButtonHandler(this.status_gold, AccountCoinType.Gold);
         this.setupButtonHandler(this.status_gem, AccountCoinType.Gems);
@@ -45,7 +45,6 @@ export class UserCoinView extends Component {
         this.setupButtonHandler(this.status_usdt, AccountCoinType.USDT);
 
         oops.message.on(AccountEvent.CoinDataChange, this.onHandler, this);
-
         this.initUI();
     }
 
@@ -54,12 +53,17 @@ export class UserCoinView extends Component {
     }
 
     private initUI() {
-        // smc.account.AccountModel.CoinData.usdt = 0.0001;
         Object.assign(this.coinData, smc.account.AccountModel.CoinData);
         this.goldCoin.string = StringUtil.formatMoney(this.coinData.goldCoin);
         this.gemsCoin.string = StringUtil.formatMoney(this.coinData.gemsCoin);
         this.starBeastCoin.string = StringUtil.formatMoney(this.coinData.starBeastCoin);
         this.usdtCoin.string = StringUtil.formatMoney(this.coinData.usdt);
+    }
+
+    private openWallet() {
+        oops.gui.toast(oops.language.getLangByID("common_tips_Not_Enabled"));
+        return;
+        oops.gui.open(UIID.Wallet)
     }
 
     private setupButtonHandler(statusNode: Node, coinType: AccountCoinType, holdSec: number = 1) {
@@ -99,7 +103,7 @@ export class UserCoinView extends Component {
                 this.usdtCoin.string = StringUtil.formatMoney(this.coinData.usdt);
             });
         }
-        
+
         Object.assign(this.coinData, smc.account.AccountModel.CoinData);
     }
 

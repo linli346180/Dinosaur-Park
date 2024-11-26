@@ -230,6 +230,7 @@ export class HttpManager {
 
             var ri: RequestInit = {
                 method: 'GET',
+                headers: headers,
             }
             fetch(this.url, ri).then((response: Response): any => {
                 clearTimeout(timeoutId);
@@ -247,9 +248,9 @@ export class HttpManager {
                             return response.formData();
                     }
                 }
-                else {
-                    this.setReturn(this.url, resolve, false, response);
-                }
+                // else {
+                //     this.setReturn(this.url, resolve, false, response);
+                // }
             }).then((value: any) => {
                 this.setReturn<T>(this.url, resolve, true, value);
             }).catch((reason: any) => {
@@ -270,7 +271,7 @@ export class HttpManager {
             }
         }
         else {
-            // oops.message.dispatchEvent(GameEvent.WebRequestFail, oops.language.getLangByID("net_tips_fetch_fail"));
+            console.error("网络请求失败",url);
             oops.message.dispatchEvent(GameEvent.NetConnectFail)
             ret.err = value;
         }

@@ -35,7 +35,7 @@ export var MapConfigData: { [key: number]: IMapConfig } = {
             { x: -350, y: 400 }, { x: -100, y: 400 }, { x: 150, y: 400 }, { x: 350, y: 400 },
             { x: -350, y: 200 }, { x: -100, y: 200 }, { x: 150, y: 200 }, { x: 350, y: 200 },
         ],
-        widthLimit: new Vec2(-350, 350),
+        widthLimit: new Vec2(-300, 300),
         heightLimit: new Vec2(-400, 500),
         ItemLimit: 10
     },
@@ -44,7 +44,8 @@ export var MapConfigData: { [key: number]: IMapConfig } = {
             { x: 350, y: 600 }, { x: 100, y: 600 }, { x: -150, y: 600 },
             { x: 350, y: 300 }, { x: 100, y: 300 }, { x: -150, y: 300 },
             { x: 350, y: 0 }, { x: 100, y: 0 }, { x: -150, y: 0 },],
-        widthLimit: new Vec2(-350, 350), heightLimit: new Vec2(-400, 500),
+        widthLimit: new Vec2(-300, 300), 
+        heightLimit: new Vec2(-400, 500),
         ItemLimit: 10
     },
 }

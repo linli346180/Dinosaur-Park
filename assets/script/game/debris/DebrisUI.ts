@@ -6,7 +6,6 @@ import { ReviveNetService } from './ReviveNet';
 import { DebrisConfig, DebrisDetail, PuzzleID, UserDebris } from './DebrisData';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { DebrisResult } from './DebrisResult';
-
 import { smc } from '../common/SingletonModuleComp';
 import { AccountEvent } from '../account/AccountEvent';
 import { StringUtil } from '../common/utils/StringUtil';
@@ -19,28 +18,26 @@ const { ccclass, property } = _decorator;
 @ccclass('DebrisView')
 export class DebrisView extends Component {
     @property(Prefab)
-    itemPrefab: Prefab = null!;
+    private itemPrefab: Prefab = null!;
     @property(Button)
-    btn_close: Button = null!;
-
+    private btn_close: Button = null!;
     @property(Node)
-    debrisViewPanel: Node = null!;   // 碎片预览界面
+    private debrisViewPanel: Node = null!;   
     @property(Button)
-    btn_left: Button = null!;
+    private btn_left: Button = null!;
     @property(Button)
-    btn_right: Button = null!;
+    private btn_right: Button = null!;
     @property(Label)
-    debrisName: Label = null!;
-
+    private debrisName: Label = null!;
     @property(Button)
-    btn_onekey: Button = null!;
+    private  btn_onekey: Button = null!;
     @property(Node)
-    debrisPiecesPanel: Node = null!;
+    private debrisPiecesPanel: Node = null!;
 
     private isInit = false;
 
     // 碎片配置数据
-    private curDebris: number = 301;
+    private curDebris: number = 301;    // 当前拼图
     private DebrisType: { [key: number]: { debrisNode: Node | null, config: DebrisConfig | null } } = {
         301: { debrisNode: null, config: null },
         302: { debrisNode: null, config: null },
@@ -89,7 +86,9 @@ export class DebrisView extends Component {
                         return;
                     }
                     const stbConfigType = StringUtil.combineNumbers(stbConfig.stbKinds, stbConfig.stbGrade, 2);
-                    this.DebrisType[stbConfigType].config = debrisConfig;
+                    if(this.DebrisType[stbConfigType]) {
+                        this.DebrisType[stbConfigType].config = debrisConfig;
+                    }
                 }
                 return this.updateDebrisView(this.curDebris);
             }
@@ -103,7 +102,8 @@ export class DebrisView extends Component {
         this.debrisPiecesPanel.removeAllChildren();
         if (debrisType && debrisType.debrisNode && debrisType.config) {
             this.curDebris = index;
-            this.debrisName.string = debrisType.config.name;
+            // console.error("更新拼图", debrisType.config.name);
+            // this.debrisName.string = debrisType.config.name;
             debrisType.config.debrisDetailsArr.forEach((debrisDetail) => { this.createDebrisItem(debrisDetail); });
         } else {
             console.error("debrisType is null", index);

@@ -30,7 +30,7 @@ export class DebrisResult extends Component {
     initUI(stbId: number) {
         let STBConfig: TableSTBConfig = new TableSTBConfig();
         STBConfig.init(stbId);
-        this.desc.string = STBConfig.name + "*" + 1;
+        this.desc.string = `${oops.language.getLangByID(STBConfig.name)} x1`;
 
         this.icon_lv1.active = stbId == 301;
         this.icon_lv2.active = stbId == 302;

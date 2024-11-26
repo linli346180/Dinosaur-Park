@@ -69,7 +69,7 @@ export var UIConfigData: { [key: number]: UIConfig } = {
 
     [UIID.Guide]: { layer: LayerType.PopUp, prefab: "gui/guide/guideUI", mask: true },
     [UIID.Book]: { layer: LayerType.PopUp, prefab: "gui/book/prefab/stbReportUI", mask: true, vacancy: true },
-    [UIID.STBDetail]: { layer: LayerType.PopUp, prefab: "gui/book/prefab/stbDetail", mask: true, vacancy: true },
+    [UIID.STBDetail]: { layer: LayerType.Dialog, prefab: "gui/book/prefab/stbDetail", mask: true, vacancy: true },
 
     [UIID.Task]: { layer: LayerType.UI, prefab: "gui/task/prefab/task" },
     [UIID.Invite]: { layer: LayerType.UI, prefab: "gui/invite/prefab/invite" },
@@ -77,7 +77,7 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.DebrisResult]: { layer: LayerType.PopUp, prefab: "gui/debris/prefab/debrisResult", mask: true },
     [UIID.STBShop]: { layer: LayerType.PopUp, prefab: "gui/shop/prefab/STBShop", mask: true },
     
-    [UIID.GemShop]: { layer: LayerType.PopUp, prefab: "gui/wallet/gemShop", mask: true, vacancy: true },
+    [UIID.GemShop]: { layer: LayerType.PopUp, prefab: "gui/wallet/gemShop", mask: true },
     [UIID.WalletPaySelect]: { layer: LayerType.PopUp, prefab: "gui/wallet/prefab/walletPaySelect", mask: true},
 
     [UIID.STBMerge]: { layer: LayerType.Dialog, prefab: "gui/shop/prefab/STBMergeUI", mask: true },

@@ -6,13 +6,9 @@ import { UIID } from '../common/config/GameUIConfig';
 import { AccountNetService } from '../account/AccountNet';
 import { tonConnect } from '../wallet/TonConnect';
 import { sys } from 'cc';
+import { UserConfigData } from './UserConfigDefine';
+import { ReddotComp } from '../reddot/ReddotComp';
 const { ccclass, property } = _decorator;
-
-interface UserConfigData {
-    typeKey: string,
-    languageKey: string,
-    description: string,
-}
 
 @ccclass('usercenter')
 export class usercenter extends Component {
@@ -55,9 +51,7 @@ export class usercenter extends Component {
     private configData: UserConfigData[] = [];
 
     onLoad() {
-        console.log("onLoad 开始")
         AccountNetService.getUserConfig('external_link').then((res) => {
-            console.log("获取配置")
             if (res && res.languageConfigArr) {
                 this.configData = res.languageConfigArr;
             }
@@ -76,12 +70,9 @@ export class usercenter extends Component {
 
         oops.message.on(AccountEvent.ChangeEmail, this.onHandler, this);
         oops.message.on(AccountEvent.ChangeLanguage, this.onHandler, this);
-
-        console.log("onLoad 结束")
     }
 
     onEnable() {
-        console.log("onEnable")
         this.initUI();
     }
 
@@ -93,17 +84,15 @@ export class usercenter extends Component {
         this.toggle_music.isChecked = oops.audio.switchMusic;
         this.toggle_sound.isChecked = oops.audio.switchEffect;
         this.label_language.string = oops.language.languageNames[oops.language.current];
-
-        this.label_purse.string = tonConnect.walletConfig.address;
         this.label_email.string = smc.account.AccountModel.userData.email;
-        this.label_purse.string = tonConnect.walletConfig.address;
         tonConnect.onStateChange = this.onConnectStateChange.bind(this);
-        // TODO: 加载图片
+        this.showPurchase();
+        // TODO 头像需要上传到服务器
         // this.loadAvatar(userData.avatarPath);
     }
 
     private onConnectStateChange(isConnected: boolean) {
-        this.label_purse.string = tonConnect.walletConfig.address;
+        this.showPurchase();
     }
 
     private loadAvatar(url: string) {
@@ -132,44 +121,44 @@ export class usercenter extends Component {
         }
     }
 
-    changeEmail() {
+    private changeEmail() {
         oops.gui.open(UIID.EmailVerify);
     }
 
-    changeLanguage() {
+    private changeLanguage() {
         oops.gui.open(UIID.LanguageUI);
     }
 
-    closeUI() {
+    private closeUI() {
         oops.gui.remove(UIID.User, false);
     }
 
-    connectPurse() {
+    private connectPurse() {
         tonConnect.connectTonWallet();
     }
 
-    openMailBox() {
+    private openMailBox() {
         oops.gui.open(UIID.Email);
         this.closeUI();
         this.redDotReaded(this.btn_mailbox.node);
     }
 
-    onIntroduce() {
-        window.open('https://admin.starbeastpark.com/');
-        
+    private onIntroduce() {
+        const url = 'https://explanation.starbeastpark.com';
+        window.open(url);
     }
 
-    onGuide() { 
+    private onGuide() {
 
     }
 
-    onService() { 
+    private onService() {
         const serviceKey = `customer_service${Math.floor(Math.random() * 2) + 1}`;
         console.log("serviceKey", serviceKey)
         this.customerService(serviceKey);
     }
 
-    onToggleMusic(toggle: Toggle) {
+    private onToggleMusic(toggle: Toggle) {
         oops.audio.switchMusic = toggle.isChecked;
         oops.audio.save();
         if (toggle.isChecked) {
@@ -179,7 +168,7 @@ export class usercenter extends Component {
         }
     }
 
-    onToggleSound(toggle: Toggle) {
+    private onToggleSound(toggle: Toggle) {
         oops.audio.switchEffect = toggle.isChecked;
         oops.audio.save();
     }
@@ -189,12 +178,10 @@ export class usercenter extends Component {
         for (const item of this.configData) {
             if (item.languageKey === kye) {
                 window.open(item.description);
-
-                if(sys.os == sys.OS.IOS) {
-
-                } 
-                // const WebApp = (window as any).Telegram.WebApp;
-                // WebApp.openLink(item.description);
+                if (sys.platform == 'DESKTOP_BROWSER') {
+                    // const WebApp = (window as any).Telegram.WebApp;
+                    // WebApp.openLink(item.description);
+                }
             }
         }
     }
@@ -202,7 +189,18 @@ export class usercenter extends Component {
     private redDotReaded(targetNode: Node) {
         const redDot = targetNode.getChildByName("reddot");
         if (redDot) {
+            redDot.getComponent(ReddotComp)?.setRead();
             redDot.active = false;
+        }
+    }
+
+    private showPurchase() {
+        const address = tonConnect.walletConfig.address;
+        if (tonConnect.IsConnected && address.length > 0) {
+            const formattedAddress = `${address.slice(0, 5)}...${address.slice(-5)}`;
+            this.label_purse.string = formattedAddress;
+        } else {
+            this.label_purse.string = oops.language.getLangByID('tips_Wallet_address_empty');
         }
     }
 }

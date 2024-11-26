@@ -35,6 +35,7 @@ export class TransactionRequest {
     timeStamp: number;      // 时间戳
     expired:number;         // 过期时间
     minterAddress:string;   // 合约地址
+    coinType: number;       // 币种类型
 }
 
 /** 提现配置 */

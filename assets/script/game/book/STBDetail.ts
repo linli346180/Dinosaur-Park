@@ -1,5 +1,5 @@
 import { Button } from 'cc';
-import { _decorator, Component, Node,Animation } from 'cc';
+import { _decorator, Component, Node, Animation } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { Label } from 'cc';
@@ -8,33 +8,38 @@ import { smc } from '../common/SingletonModuleComp';
 import { Sprite } from 'cc';
 import { RichText } from 'cc';
 import { TableSTBConfig } from '../common/table/TableSTBConfig';
+import { ReportNetService } from './ReportNet';
 const { ccclass, property } = _decorator;
 
 @ccclass('STBDetail')
 export class STBDetail extends Component {
     @property(Button)
-    private btn_close:Button = null!;
+    private btn_close: Button = null!;
     @property(Sprite)
     private configIcon: Sprite = null!;
     @property(Label)
-    private configName:Label = null!;
+    private configName: Label = null!;
     @property(RichText)
     private configDesc: RichText = null!;
 
     private STBConfig: TableSTBConfig = new TableSTBConfig();
 
-    public InitUI(stbType : number){    
-        const configData = smc.account.getSTBConfigByType(stbType);
-        if(configData) {
-            this.configName.string = configData.stbName;
-            this.configDesc.string = configData.desc;
-        }
+    public async InitUI(stbType: number) {
         this.STBConfig.init(stbType);
         if (this.STBConfig.bigicon) {
             oops.res.loadAsync(this.STBConfig.bigicon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
                 if (spriteFrame)
                     this.configIcon.spriteFrame = spriteFrame;
             });
+        }
+        // this.configName.string = oops.language.getLangByID(this.STBConfig.name);
+        let stbConfig = smc.account.getSTBConfigByType(stbType);
+        if (stbConfig) {
+            const res = await ReportNetService.getStartBeastDesc(stbConfig.id);
+            if (res && res.stbDesc) {
+                this.configName.string = res.stbDesc.stbName
+                this.configDesc.string = res.stbDesc.stbDesc;
+            }
         }
     }
 

@@ -6,10 +6,7 @@ import { smc } from '../common/SingletonModuleComp';
 import { AccountEvent } from '../account/AccountEvent';
 import { GemShopItem } from './GemShopItem';
 import { BuyGemsConfig } from '../shop/MergeDefine';
-import { WalletNetService } from './WalletNet';
-import { TransactionRequest, WalletConfig } from './WalletDefine';
-import { tonConnect } from './TonConnect';
-import { CryptoDefine } from './Crypto';
+
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { WalletPaySelect } from './WalletPaySelect';
 
