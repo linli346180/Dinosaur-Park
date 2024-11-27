@@ -11,8 +11,6 @@ export default class TonConnect {
     public tonConnectUI: any;
     // public tonweb: any;
     public walletConfig: WalletConfig;
-    private listeners: ((isConnected: boolean) => void)[] = [];
-
     // 钱包连接状态变化监听器
     public onStateChange: (isConnected: boolean) => void;
 

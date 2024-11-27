@@ -58,7 +58,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -580,
+      "y": -380,
       "z": 0
     },
     "_lrot": {
@@ -155,7 +155,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 981.6,
-      "height": 1100
+      "height": 1500
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -314,7 +314,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 440.8,
-      "y": 530,
+      "y": 730,
       "z": 0
     },
     "_lrot": {
@@ -715,7 +715,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 138.755,
+      "y": 347.115,
       "z": 0
     },
     "_lrot": {
@@ -755,7 +755,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
+      "width": 800,
       "height": 63
     },
     "_anchorPoint": {
@@ -791,14 +791,14 @@
       "b": 0,
       "a": 255
     },
-    "_string": "星兽名称",
+    "_string": "name",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
     "_fontSize": 50,
     "_fontFamily": "Arial",
     "_lineHeight": 50,
-    "_overflow": 0,
+    "_overflow": 3,
     "_enableWrapText": true,
     "_font": null,
     "_isSystemFontUsed": true,
@@ -874,7 +874,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 308.831,
+      "y": 519.827,
       "z": 0
     },
     "_lrot": {
@@ -1010,7 +1010,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 89.911,
+      "y": 293,
       "z": 0
     },
     "_lrot": {
@@ -1159,7 +1159,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -151.181,
+      "y": -150.851,
       "z": 0
     },
     "_lrot": {
@@ -1581,7 +1581,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 200,
+      "y": 400,
       "z": 0
     },
     "_lrot": {
@@ -1682,7 +1682,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 781.6,
-      "height": 400
+      "height": 800
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1836,7 +1836,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -131.5,
+      "y": -31.5,
       "z": 0
     },
     "_lrot": {
@@ -1877,7 +1877,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 800,
-      "height": 263
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1903,7 +1903,7 @@
       "__id__": 79
     },
     "_lineHeight": 50,
-    "_string": "星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述星兽描述",
+    "_string": "desc",
     "_horizontalAlign": 1,
     "_verticalAlign": 0,
     "_fontSize": 45,
@@ -1956,7 +1956,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 781.6,
-      "height": 263
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2084,7 +2084,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 781.6,
-      "height": 400
+      "height": 800
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2206,7 +2206,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 981.6,
-      "height": 1100
+      "height": 1500
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

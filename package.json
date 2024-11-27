@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@tonconnect/ui": "^2.0.9",
+    "buffer": "^6.0.3",
     "crypto-es": "^1.2.7",
     "crypto-js": "^4.2.0",
     "install": "^0.13.0",

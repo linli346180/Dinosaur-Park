@@ -1248,7 +1248,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 240,
+      "width": 250,
       "height": 93.6
     },
     "_anchorPoint": {
@@ -1383,7 +1383,7 @@
     "_alignFlags": 32,
     "_target": null,
     "_left": 0,
-    "_right": 50,
+    "_right": 45,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -1673,7 +1673,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 240,
+      "width": 250,
       "height": 93.6
     },
     "_anchorPoint": {
@@ -2501,7 +2501,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 240,
+      "width": 250,
       "height": 93.6
     },
     "_anchorPoint": {
@@ -2636,7 +2636,7 @@
     "_alignFlags": 32,
     "_target": null,
     "_left": 0,
-    "_right": 50,
+    "_right": 45,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -2926,7 +2926,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 240,
+      "width": 250,
       "height": 93.6
     },
     "_anchorPoint": {
@@ -3754,7 +3754,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 240,
+      "width": 250,
       "height": 93.6
     },
     "_anchorPoint": {
@@ -3889,7 +3889,7 @@
     "_alignFlags": 32,
     "_target": null,
     "_left": 0,
-    "_right": 50,
+    "_right": 45,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -4179,7 +4179,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 240,
+      "width": 250,
       "height": 93.6
     },
     "_anchorPoint": {
@@ -4838,7 +4838,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -421.544,
-      "y": -542.785,
+      "y": -533.002,
       "z": 0
     },
     "_lrot": {
@@ -5254,7 +5254,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -707.059,
+      "y": -696.634,
       "z": 0
     },
     "_lrot": {
@@ -5477,7 +5477,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 800,
-      "height": 188
+      "height": 160
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5645,7 +5645,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -893.086,
+      "y": -801.949,
       "z": 0
     },
     "_lrot": {
@@ -5685,13 +5685,13 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 550,
+      "width": 1000,
       "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
       "x": 0.5,
-      "y": 0.5
+      "y": 1
     },
     "_id": ""
   },
@@ -5721,14 +5721,14 @@
       "b": 216,
       "a": 255
     },
-    "_string": "完成任务后点击验证按钮",
+    "_string": "完成任务后点击验证按钮完",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 50,
-    "_fontSize": 50,
+    "_actualFontSize": 45,
+    "_fontSize": 45,
     "_fontFamily": "Arial",
     "_lineHeight": 50,
-    "_overflow": 0,
+    "_overflow": 3,
     "_enableWrapText": true,
     "_font": null,
     "_isSystemFontUsed": true,

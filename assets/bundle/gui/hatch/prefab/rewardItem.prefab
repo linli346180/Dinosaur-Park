@@ -139,7 +139,7 @@
         "__id__": 4
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 10
@@ -651,7 +651,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 150,
-      "height": 67.8
+      "height": 37.8
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -686,7 +686,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "星兽碎片星兽碎片A",
+    "_string": "碎片1",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
