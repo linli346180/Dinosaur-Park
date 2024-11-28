@@ -30,9 +30,4 @@ export class Main extends Root {
         smc.initialize = ecs.getEntity<Initialize>(Initialize);
         smc.account = ecs.getEntity<Account>(Account);
     }
-
-    protected OnClose() {
-        console.log("Main.OnClose");
-        super.onClose();
-    }
 }

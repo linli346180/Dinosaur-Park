@@ -29,7 +29,7 @@ export class NetConfig {
         return this.ServerConfigList[this.curEnvironment].BotToken;
     }
 
-    private curEnvironment: EnvironmentType = EnvironmentType.PreRelease;
+    private curEnvironment: EnvironmentType = EnvironmentType.Production;
     private ServerConfigList = {
         [EnvironmentType.Development]: {
             Server: "https://konglong.live/",
@@ -44,7 +44,7 @@ export class NetConfig {
         [EnvironmentType.Production]: {
             Server: "https://yu.sbpc-api.com/",
             WebSock: "yu.sbpc-api.com/wss",
-            BotToken: '7175903697:AAGqeX_Z5N1GC0HWyGS_WZE8nzzJiTZGwa0'
+            BotToken: '7973801647:AAFNZ83b8hf0s2kyAyzkRI1r09QvQYkmh5s'
         }
     };
 

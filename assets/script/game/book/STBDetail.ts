@@ -24,7 +24,7 @@ export class STBDetail extends Component {
 
     private STBConfig: TableSTBConfig = new TableSTBConfig();
 
-    public async InitUI(stbType: number) {
+    public async InitUI(stbType: number, stbName: string, stbDesc: string) {
         this.STBConfig.init(stbType);
         if (this.STBConfig.bigicon) {
             oops.res.loadAsync(this.STBConfig.bigicon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
@@ -32,15 +32,8 @@ export class STBDetail extends Component {
                     this.configIcon.spriteFrame = spriteFrame;
             });
         }
-        // this.configName.string = oops.language.getLangByID(this.STBConfig.name);
-        let stbConfig = smc.account.getSTBConfigByType(stbType);
-        if (stbConfig) {
-            const res = await ReportNetService.getStartBeastDesc(stbConfig.id);
-            if (res && res.stbDesc) {
-                this.configName.string = res.stbDesc.stbName
-                this.configDesc.string = res.stbDesc.stbDesc;
-            }
-        }
+        this.configName.string = stbName;
+        this.configDesc.string = stbDesc;
     }
 
     onLoad() {

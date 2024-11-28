@@ -4,14 +4,10 @@ import { smc } from '../common/SingletonModuleComp';
 import TonWeb from '../../../libs/tonweb.js';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 
-// const {JettonMinter, JettonWallet} = TonWeb.token.jetton;
-
 /** 钱包连接 */
 export default class TonConnect {
     public tonConnectUI: any;
-    // public tonweb: any;
     public walletConfig: WalletConfig;
-    // 钱包连接状态变化监听器
     public onStateChange: (isConnected: boolean) => void;
 
     constructor() {
@@ -33,6 +29,13 @@ export default class TonConnect {
                     value: { tonProof: this.walletConfig.proof }
                 });
 
+                this.tonConnectUI.uiOptions = {
+                    actionsConfiguration: {
+                        modals: ['before', 'success', 'error'],
+                        notifications: ['before', 'success', 'error']
+                    }
+                };
+
                 // 监听连接状态的变化
                 this.tonConnectUI.onStatusChange((status) => {
                     console.log("钱包连接状态改变:", status,);
@@ -48,22 +51,17 @@ export default class TonConnect {
                         this.walletConfig.value = status.connectItems.tonProof.proof.domain.value;
                         this.walletConfig.lengthBytes = status.connectItems.tonProof.proof.domain.lengthBytes;
                         this.getTonCheck(); // 验证签名
-                        return;
+                    } else {
+                        console.log("钱包断开通知");
+                        this.walletConfig = new WalletConfig();
+                        this.notifyStateChange(false);
+                        localStorage.removeItem("USDTTransactionID");
                     }
-                    console.log("发送钱包断开通知");
-                    this.walletConfig = new WalletConfig();
-                    this.notifyStateChange(false);
-                    localStorage.removeItem("USDTTransactionID");
+                    this.dump();
                 });
             }
-
-            if (this.IsConnected) {
-                console.log("钱包已连接", this.tonConnectUI);
-                this.walletConfig.address = this.tonConnectUI.account.address;
-            } else {
-                localStorage.removeItem("USDTTransactionID");
-            }
-
+            this.connectTonWallet(false);  // 每次进入钱包自动断开连接
+            this.dump();
         } catch (error) {
             console.error("初始化TonConnect失败", error);
         }
@@ -162,17 +160,16 @@ export default class TonConnect {
             ]
         };
         console.warn("Ton交易请求", transaction);
-        await this.tonConnectUI.sendTransaction(transaction)
-            .then(async (response) => {
-                const res = await WalletNetService.postWithdrawBoc(response.boc, request.payload, request.coinType);
-                if (res) {
-                    oops.gui.toast(oops.language.getLangByID("tips_transaction_sucess"));
-                    smc.account.updateCoinData();
-                }
-            })
-            .catch((error) => {
-                console.error("Ton交易失败", error);
-            });
+        try {
+            const result = await this.tonConnectUI.sendTransaction(transaction);
+            const res = await WalletNetService.postWithdrawBoc(result.boc, request.payload, request.coinType);
+            if (res) {
+                oops.gui.toast(oops.language.getLangByID("tips_transaction_sucess"));
+                smc.account.updateCoinData();
+            }
+        } catch (error) {
+            console.error("Ton交易异常", error);
+        }
     }
 
     public get IsConnected() {
@@ -187,6 +184,18 @@ export default class TonConnect {
         if (this.onStateChange) {
             this.onStateChange(isConnected);
         }
+    }
+
+    dump() {
+        const currentWallet = this.tonConnectUI.wallet;
+        const currentWalletInfo = this.tonConnectUI.walletInfo;
+        const currentAccount = this.tonConnectUI.account;
+        const currentIsConnectedStatus = this.tonConnectUI.connected;
+
+        console.log("当前钱包:", currentWallet);
+        console.log("当前钱包信息:", currentWalletInfo);
+        console.log("当前账户:", currentAccount);
+        console.log("当前连接状态:", currentIsConnectedStatus);
     }
 }
 

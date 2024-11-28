@@ -32,7 +32,6 @@ export namespace WalletNetService {
             'value': walletConfig.value
         };
         const paramString = new URLSearchParams(params).toString();
-
         console.warn("验证签名参数:", paramString);
         const response = await http.postUrl(`tgapp/api/ton/check?token=${netConfig.Token}`, paramString);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {

@@ -29,7 +29,6 @@ export class WalletConnect extends Component {
     }
 
     private onConnectStateChange(isConnect: boolean) {
-        console.log("收到消息:", isConnect);
         if (isConnect) {
             this.btn_disconnect.node.active = true;
             this.btn_connect.node.active = false;

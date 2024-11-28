@@ -3,11 +3,10 @@ import { _decorator, Component, Node } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
 import { GuideNetService } from './GuideNet';
-import { UserOfficial, PresellInfo } from './GuideDefine';
+import { UserOfficial, PresellInfo, GuideRewardInfo } from './GuideDefine';
 import { GameEvent } from '../common/config/GameEvent';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 import { GuideReward } from './GuideReward';
-import { smc } from '../common/SingletonModuleComp';
 const { ccclass, property } = _decorator;
 
 @ccclass('GuideView')
@@ -45,7 +44,7 @@ export class GuideView extends Component {
     }
 
     private updateUI(close: boolean = false) {
-        GuideNetService.getUserOfficial().then((data) => {
+        GuideNetService.getUserOfficial().then(async (data) => {
             if (data) {
                 this.userOfficial = data;
                 this.btn_joinChannel.node.active = !this.userOfficial.joinOfficialChannel;
@@ -56,18 +55,32 @@ export class GuideView extends Component {
                     this.userOfficial.joinOfficialGroup &&
                     this.userOfficial.joinX) {
                     if (close) {
-                        var uic: UICallbacks = {
-                            onAdded: (node: Node, params: any) => {
-                                node.getComponent(GuideReward)?.initUI(this.presellInfo.rewards);
+                        try {
+                            const res = await GuideNetService.getRewardNew();
+                            if(res && res.newUserRewardArr) { 
+
+                                console.log("新手奖励:", res.newUserRewardArr);
+
+                                var uic: UICallbacks = {
+                                    onAdded: (node: Node, params: any) => {
+                                        node.getComponent(GuideReward)?.initUI(res.newUserRewardArr);
+                                        oops.message.dispatchEvent(GameEvent.GuideFinish);
+                                    },
+                                    onRemoved: (node: Node | null, params: any) => {
+                                        oops.gui.remove(UIID.Guide);
+                                    }
+                                };
+                                let uiArgs: any;
+                                oops.gui.open(UIID.GuideReward, uiArgs, uic);
+                                console.log("打开新手奖励UI");
+
+                            } else {
                                 oops.message.dispatchEvent(GameEvent.GuideFinish);
-                            },
-                            onRemoved: (node: Node | null, params: any) => {
-                                // oops.message.dispatchEvent(GameEvent.GuideFinish);
                                 oops.gui.remove(UIID.Guide);
                             }
-                        };
-                        let uiArgs: any;
-                        oops.gui.open(UIID.GuideReward, uiArgs, uic);
+                        } catch (error) {
+                            console.error("领取新手奖励异常:",error);
+                        }
                     }
                 }
             }
@@ -87,5 +100,4 @@ export class GuideView extends Component {
         this.joinChannel(this.presellInfo.xUrl);
         GuideNetService.getPresellLeave(1);
     }
-
 }

@@ -126,11 +126,11 @@ export class Account extends ecs.Entity {
         }
     }
 
-    /** 新手引导是否已完成 */
+    /** 新手引导是否已完成(奖励未领取) */
     private async isGuideFinish(): Promise<boolean> {
         const res = await AccountNetService.getUserOfficial();
         if (res) {
-            const isFinish = res.joinOfficialChannel == 1 && res.joinOfficialGroup == 1 && res.joinX == 1;
+            const isFinish = res.scorpionReward == 0;   //是否领取过新手奖励,0-已领取，1-未领取
             console.warn("新手引导是否已完成:", isFinish);
             return isFinish;
         }

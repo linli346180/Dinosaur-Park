@@ -1,7 +1,7 @@
 import { Label } from 'cc';
 import { Sprite } from 'cc';
 import { _decorator, Component, Node } from 'cc';
-import { Reward } from './GuideDefine';
+import { GuideRewardInfo } from './GuideDefine';
 import { TableItemConfig } from '../common/table/TableItemConfig';
 import { StringUtil } from '../common/utils/StringUtil';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
@@ -15,12 +15,12 @@ export class GuideRewardItem extends Component {
     @property(Label)
     num: Label = null!;
 
-    public initItem(rewardConfig: Reward) {
-        this.num.string = `x${StringUtil.formatMoney(rewardConfig.awardQuantity)}`;
+    public initItem(rewardConfig: GuideRewardInfo) {
+        this.num.string = `x${StringUtil.formatMoney(rewardConfig.rewardNum)}`;
         let itemConfig = new TableItemConfig();
-        let itemId = StringUtil.combineNumbers(rewardConfig.awardType, rewardConfig.awardResourceId, 2);
+        let itemId = StringUtil.combineNumbers(rewardConfig.rewardType, rewardConfig.rewardGoodsID, 2);
         itemConfig.init(itemId);
-        if (itemConfig.icon != null && itemConfig.icon != undefined && itemConfig.icon != '') {
+        if (itemConfig.icon) {
             oops.res.loadAsync(itemConfig.icon + '/spriteFrame', SpriteFrame).then((spriteFrame) => {
                 if (spriteFrame)
                     this.icon.spriteFrame = spriteFrame;

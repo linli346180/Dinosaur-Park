@@ -2,7 +2,7 @@ import { Prefab } from 'cc';
 import { Button } from 'cc';
 import { _decorator, Component, Node } from 'cc';
 import { instantiate } from 'cc';
-import { Reward } from './GuideDefine';
+import { GuideRewardInfo } from './GuideDefine';
 import { GuideRewardItem } from './GuideRewardItem';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
@@ -21,7 +21,10 @@ export class GuideReward extends Component {
         this.btn_sure.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.GuideReward, true); });
     }
 
-    public initUI(rewards: Reward[]) {
+    public initUI(rewards: GuideRewardInfo[]) {
+
+        console.log("初始化奖励UI:", rewards);
+
         this.itemContain.removeAllChildren();
         if (rewards == null || rewards.length == 0) { return; }
         rewards.forEach((reward) => {

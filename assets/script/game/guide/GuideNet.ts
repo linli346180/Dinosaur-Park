@@ -47,6 +47,19 @@ export namespace GuideNetService {
         }
     }
 
+    /** 领取新手奖励 */
+    export async function getRewardNew() {
+        const http = createHttpManager();
+        const response = await http.postUrl(`tgapp/api/user/reward/new?token=${netConfig.Token}`);
+        if (response.isSucc && response.res.resultCode === NetErrorCode.Success) {
+            console.warn("领取新手奖励:", response.res);
+            return response.res;
+        } else {
+            console.error("领取新手奖励异常", response);
+            return null;
+        }
+    }
+
     /** 创建 HttpManager 实例并进行配置 */
     function createHttpManager(): HttpManager {
         const http = new HttpManager();
