@@ -1,0 +1,6 @@
+{
+    "entryPoints": [
+        "typedoc.ts"
+    ],
+    "out": "docs"
+}
