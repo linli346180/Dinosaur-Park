@@ -21,6 +21,10 @@ export class CursorBlink extends Component {
         }
     }
 
+    protected onDestroy(): void {
+        this.stopBlinking();
+    }
+
     start() {
         if (this.cursor && this.uiOpacity) {
             this.startBlinking();
@@ -29,12 +33,12 @@ export class CursorBlink extends Component {
 
     startBlinking() {
         this.blinkTween = tween(this.uiOpacity)
-        .repeatForever(
-            tween(this.uiOpacity)
-                .to(0.5, { opacity: 0 })
-                .to(0.5, { opacity: 255 })
-        )
-        .start();
+            .repeatForever(
+                tween(this.uiOpacity)
+                    .to(0.5, { opacity: 0 })
+                    .to(0.5, { opacity: 255 })
+            )
+            .start();
     }
 
     stopBlinking() {
