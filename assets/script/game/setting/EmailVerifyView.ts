@@ -8,6 +8,11 @@ import { WalletNetService } from '../wallet/WalletNet';
 import { smc } from '../common/SingletonModuleComp';
 import { GameEvent } from '../common/config/GameEvent';
 import { AccountEvent } from '../account/AccountEvent';
+import { Prefab } from 'cc';
+import { EventType, InputMode } from '../keyboard/KeyboardDefine';
+import { instantiate } from 'cc';
+import Keyboard from '../keyboard/Keyboard';
+import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
 const { ccclass, property } = _decorator;
 
 @ccclass('EmailVerifyView')
@@ -24,6 +29,8 @@ export class EmailVerifyView extends Component {
     private btn_commit: Button = null;
     @property(Button)
     private btn_close: Button = null;
+    public onClickType:number = 0;
+
 
     // 验证码发送间隔
     private sendInterval: number = 60;
@@ -33,6 +40,8 @@ export class EmailVerifyView extends Component {
         this.btn_send.node.on(Button.EventType.CLICK, this.getEmailCode, this);
         this.btn_commit.node.on(Button.EventType.CLICK, this.checkUserEmail, this);
         this.btn_close.node.on(Button.EventType.CLICK, this.closeUI, this);
+        this.emailEditbox.node.on(EditBox.EventType.EDITING_DID_BEGAN, this.onEmailEditboxInput, this);
+        this.codeEditbox.node.on(EditBox.EventType.EDITING_DID_BEGAN, this.onCodeEditboxInput, this);
     }
 
     onEnable() {
@@ -44,11 +53,48 @@ export class EmailVerifyView extends Component {
         if (this.timeoutId !== null) {
             clearTimeout(this.timeoutId);
             this.timeoutId = null;
-        }
+        }  
     }
 
     closeUI() {
         oops.gui.remove(UIID.EmailVerify, false);
+    }
+    onCodeEditboxInput()
+    {
+        console.log("Code EditBox 被点击了");
+        this.onClickType  = 1;
+        var uic: UICallbacks = {
+            onAdded: (node: Node, params: any) => {
+                const comp = node.getComponent(Keyboard);
+                if (comp) {
+                    comp.inputMode = InputMode.ANY;
+                    comp.onEditReturnEmail = () => {
+                        this.codeEditbox.string = comp.string;
+                    };
+                }
+            },
+        };
+        let uiArgs: any;
+        oops.gui.open(UIID.Keyboard, uiArgs, uic);
+    }
+    onEmailEditboxInput()
+    {
+        console.log("Email EditBox 被点击了");
+        this.onClickType  = 0;
+        var uic: UICallbacks = {
+            onAdded: (node: Node, params: any) => {
+                const comp = node.getComponent(Keyboard);
+                if (comp) {
+                    comp.string = this.emailEditbox.string;
+                    comp.inputMode = InputMode.EMAIL_ADDR;
+                    comp.onEditReturnEmail = () => {
+                        this.emailEditbox.string = comp.string;
+                    };
+                }
+            },
+        };
+        let uiArgs: any;
+        oops.gui.open(UIID.Keyboard, uiArgs, uic);
     }
 
     /** 获取邮箱验证码 */

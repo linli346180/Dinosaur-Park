@@ -45,6 +45,7 @@ export enum UIID {
 
     GemShop,        // 宝石商店
     WalletPaySelect, // 钱包支付选择
+    Keyboard,       // 虚拟键盘
 }
 
 /** 打开界面方式的配置数据 */
@@ -86,7 +87,8 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.HatchReward]: { layer: LayerType.Dialog, prefab: "gui/hatch/prefab/hatchReward", mask: true },
     [UIID.EmailDetail]: { layer: LayerType.Dialog, prefab: "gui/email/prefab/emailDetailUI", mask: true },
 
-    [UIID.EmailVerify]: { layer: LayerType.System, prefab: "gui/setting/emailVerify", mask: true },
+    [UIID.EmailVerify]: { layer: LayerType.Dialog, prefab: "gui/setting/emailVerify", mask: true },
     [UIID.GuideReward]: { layer: LayerType.System, prefab: "gui/guide/guideReward", mask: true },
-    [UIID.LanguageUI]: { layer: LayerType.System, prefab: "gui/setting/languageView", mask: true, vacancy: true },
+    [UIID.LanguageUI]: { layer: LayerType.Dialog, prefab: "gui/setting/languageView", mask: true, vacancy: true },
+    [UIID.Keyboard]: { layer: LayerType.System, prefab: "gui/keyboard/Keyboard", mask: true, vacancy: true},
 }
