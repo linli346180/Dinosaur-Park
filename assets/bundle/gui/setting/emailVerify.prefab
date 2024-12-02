@@ -825,7 +825,7 @@
     },
     "_inputFlag": 5,
     "_inputMode": 6,
-    "_maxLength": 50,
+    "_maxLength": 20,
     "_id": ""
   },
   {
@@ -1532,7 +1532,7 @@
     },
     "_inputFlag": 5,
     "_inputMode": 6,
-    "_maxLength": 50,
+    "_maxLength": 10,
     "_id": ""
   },
   {
@@ -2947,6 +2947,10 @@
     },
     "btn_close": {
       "__id__": 113
+    },
+    "pre_keyboard": {
+      "__uuid__": "de49e126-b2fb-4cdb-8773-c889f863f0e5",
+      "__expectedType__": "cc.Prefab"
     },
     "_id": ""
   },
