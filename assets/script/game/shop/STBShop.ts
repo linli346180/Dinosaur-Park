@@ -26,6 +26,11 @@ export class STBPurShop extends Component {
         this.btn_close?.node.on(Button.EventType.CLICK, () => { oops.gui.remove(UIID.STBShop, false) }, this);
         oops.message.on(AccountEvent.CoinDataChange, this.initCoinData, this);
         this.initUI();
+        oops.message.on(AccountEvent.GemExtraPrizeChange, this.GemExtraPrizeChange, this);
+    }
+
+    GemExtraPrizeChange() {
+        this.initUI();
     }
 
     protected onDestroy(): void {

@@ -6,6 +6,7 @@ import { SpriteFrame } from 'cc';
 import { StringUtil } from '../common/utils/StringUtil';
 import { smc } from '../common/SingletonModuleComp';
 import { UIID } from '../common/config/GameUIConfig';
+import { AccountEvent } from '../account/AccountEvent';
 const { ccclass, property } = _decorator;
 
 @ccclass('STBPurItem')
@@ -63,6 +64,7 @@ export class STBPurItem extends Component {
                 oops.gui.toast('adopt_tips_success', true);
             }
             this.btn_buy.interactable = true;
+            this.num.string = this.config.purConCoinNum.toString();
         });
     }
 }
