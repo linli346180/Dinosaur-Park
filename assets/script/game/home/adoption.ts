@@ -4,6 +4,7 @@ import { IsPur, PurConCoin, UserInstbConfigData } from '../account/model/STBConf
 import { resLoader } from '../../../../extensions/oops-plugin-framework/assets/core/common/loader/ResLoader';
 import { KnapsackControlle } from './KnapsackControlle';
 import { smc } from '../common/SingletonModuleComp';
+import { AccountEvent } from '../account/AccountEvent';
 const { ccclass, property } = _decorator;
 
 @ccclass('AdoptionView')
@@ -27,6 +28,13 @@ export class AdoptionView extends Component {
 
     start() {
         this.setupButtonHandlers();
+        this.loadConfigData();
+        this.loadSpriteFrames();
+
+        oops.message.on(AccountEvent.CoinExtraPrizeChange, this.CoinExtraPrizeChange, this);
+    }
+
+    CoinExtraPrizeChange() {
         this.loadConfigData();
         this.loadSpriteFrames();
     }
@@ -59,15 +67,14 @@ export class AdoptionView extends Component {
     }
 
     private adoptStartBeast() {
+        this.btn_adopt_one.interactable = false;
         const config = this._configDataList[this._index];
         if (config) {
             console.log(`领养${config.stbName}`);
             smc.account.adopStartBeastNet(config.id, false, (success: boolean, msg: string) => {
-                // if (!success) {
-                //     oops.gui.toast(msg);
-                // }
+                this.btn_adopt_one.interactable = true;
             });
-        }
+        } 
     }
 
     private onLeft() {
