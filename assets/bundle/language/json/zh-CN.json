@@ -197,12 +197,12 @@
     "guide_gift":"新手大礼包",
 
     "tips_email":"邮箱",
-    "tips_email_empty":"输入邮箱",
+    "tips_email_empty":"请输入邮箱…",
     "tips_email_inputerror":"邮箱格式不正确",
     "tips_email_verification_success":"邮箱验证成功",
 
     "tips_emailcode":"验证码",
-    "tips_emailcode_empty":"输入验证码",
+    "tips_emailcode_empty":"输入验证码…",
     "tips_emailcode_inputerror":"验证码格式错误",
     "tips_emailcode_sentsuccess":"邮箱验证码已发送,请注意查收",
     "tips_emailcode_get":"发送",

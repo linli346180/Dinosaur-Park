@@ -1,5 +1,5 @@
 import { Label } from 'cc';
-import { EditBox } from 'cc';
+// import { EditBox } from 'cc';
 import { Button } from 'cc';
 import { _decorator, Component, Node } from 'cc';
 import DropDown from '../common/DropDown/DropDown';
@@ -9,6 +9,7 @@ import { smc } from '../common/SingletonModuleComp';
 import { WalletNetService } from './WalletNet';
 import { UIID } from '../common/config/GameUIConfig';
 import { WithdrawRequest } from './WalletDefine';
+import { Editbox } from '../common/Editbox';
 const { ccclass, property } = _decorator;
 
 @ccclass('WithdrawWidget')
@@ -16,12 +17,10 @@ export class WithdrawWidget extends Component {
     @property({ type: DropDown })
     private DropDown: DropDown = null!;
 
-    // @property(EditBox)
-    // private edit_address: EditBox = null!;
-    @property(EditBox)
-    private edit_email: EditBox = null!;
-    @property(EditBox)
-    private edit_amount: EditBox = null!;
+    @property(Editbox)
+    private edit_email: Editbox = null!;
+    @property(Editbox)
+    private edit_amount: Editbox = null!;
 
     @property(Button)
     private btn_connect: Button = null!;
@@ -38,7 +37,6 @@ export class WithdrawWidget extends Component {
     @property(Label)
     private label_purse: Label = null!;
 
-
     // 设置提现手续费
     private handlingFee: string = '0';
     public set HandlingFee(value: string) {
@@ -52,7 +50,7 @@ export class WithdrawWidget extends Component {
     public set MiniWithdraw(value: string) {
         console.log(`设置最低提现金额: ${value}`);
         this.miniWithdraw = value;
-        this.edit_amount.placeholder = `${oops.language.getLangByID('tips_withdrawal_amount_min')}${value} USDT`;
+        this.edit_amount.placeholderLabel.string = `${oops.language.getLangByID('tips_withdrawal_amount_min')} ${value} USDT`;
     }
 
     // 验证码发送间隔
@@ -63,12 +61,7 @@ export class WithdrawWidget extends Component {
         this.btn_checkemail?.node.on(Button.EventType.CLICK, this.checkEmail, this);
         this.btn_withdrawal?.node.on(Button.EventType.CLICK, this.withdrawal, this);
         this.btn_connect?.node.on(Button.EventType.CLICK, this.connectTonWallet, this);
-        this.edit_amount.node.on(EditBox.EventType.TEXT_CHANGED, this.onAmountChanged, this);
-        // this.edit_address.string = oops.storage.get("walletaddress", '');
-        // this.DropDown.selectedIndex = oops.storage.getNumber("purseType", 1);
-
         this.showPurchase();
-        // this.edit_address.string = tonConnect.walletConfig.address;
     }
 
     onEnable() {
@@ -135,9 +128,6 @@ export class WithdrawWidget extends Component {
             return;
         }
         const parsedAmount = parseFloat(amount);
-        // oops.storage.set("walletaddress", address);
-        // oops.storage.set("purseType", purseType);
-
         let request: WithdrawRequest = {
             verificationCode: emailCode,
             purseUrl: address,
@@ -155,7 +145,7 @@ export class WithdrawWidget extends Component {
 
     private onConnectStateChange(isConnected: boolean) {
         // this.edit_address.string = tonConnect.walletConfig.address;
-        this.showPurchase();  
+        this.showPurchase();
     }
 
     private connectTonWallet() {
@@ -163,24 +153,24 @@ export class WithdrawWidget extends Component {
     }
 
     // 限制输入框只能输入小数
-    onAmountChanged(editBox: EditBox) {
-        editBox.blur();
-        const input = editBox.string;
-        const validAmount = /^\d*\.?\d{0,5}$/;
-        if (!validAmount.test(input)) {
-            editBox.string = input.slice(0, -1);
-        }
-        const sanitizedInput = input.replace(/[^0-9.]/g, '');
-        if (sanitizedInput !== input) {
-            editBox.string = sanitizedInput;
-        }
-        editBox.focus();
-    }
+    // onAmountChanged(editBox: EditBox) {
+    //     editBox.blur();
+    //     const input = editBox.string;
+    //     const validAmount = /^\d*\.?\d{0,5}$/;
+    //     if (!validAmount.test(input)) {
+    //         editBox.string = input.slice(0, -1);
+    //     }
+    //     const sanitizedInput = input.replace(/[^0-9.]/g, '');
+    //     if (sanitizedInput !== input) {
+    //         editBox.string = sanitizedInput;
+    //     }
+    //     editBox.focus();
+    // }
 
-    private showPurchase() { 
+    private showPurchase() {
         // 获取地址
         const address = tonConnect.walletConfig.address;
-        if(tonConnect.IsConnected && address.length > 0) {
+        if (tonConnect.IsConnected && address.length > 0) {
             // 格式化地址为前5个字符 + 中间省略号 + 后5个字符
             const formattedAddress = `${address.slice(0, 5)}...${address.slice(-5)}`;
             // 设置标签文本

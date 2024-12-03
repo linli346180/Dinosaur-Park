@@ -1,4 +1,4 @@
-import { EditBox } from 'cc';
+// import { EditBox } from 'cc';
 import { Button } from 'cc';
 import { _decorator, Component, Node } from 'cc';
 import { WalletNetService } from './WalletNet';
@@ -6,14 +6,15 @@ import { smc } from '../common/SingletonModuleComp';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { Label } from 'cc';
 import { AccountEvent } from '../account/AccountEvent';
+import { Editbox } from '../common/Editbox';
 const { ccclass, property } = _decorator;
 
 @ccclass('ExchangeWidget')
 export class ExchangeWidget extends Component {
     @property(Button)
     private btn_exchange:Button = null!;
-    @property(EditBox)
-    private edit_amount: EditBox = null!;
+    @property(Editbox)
+    private edit_amount: Editbox = null!;
     @property(Label)
     private label_rate: Label = null
     @property(Label)
@@ -28,7 +29,7 @@ export class ExchangeWidget extends Component {
 
     start() {
         this.btn_exchange.node.on(Button.EventType.CLICK, this.exchange, this);
-        this.edit_amount.node.on(EditBox.EventType.TEXT_CHANGED, this.onAmountChanged, this);
+        // this.edit_amount.node.on(EditBox.EventType.TEXT_CHANGED, this.onAmountChanged, this);
         oops.message.on(AccountEvent.CoinDataChange, this.updateUI, this);
     }
 
@@ -62,19 +63,19 @@ export class ExchangeWidget extends Component {
     }
 
     // 限制输入框只能输入数字
-    private onAmountChanged(editBox: EditBox) {
-        editBox.blur();
-        const input = editBox.string;    
-        const validAmount = /^\d*$/;
-        if (!validAmount.test(input)) {
-            editBox.string = input.slice(0, -1);
-        }
-        const sanitizedInput = input.replace(/[^0-9]/g, '');
-        if (sanitizedInput !== input) {
-            editBox.string = sanitizedInput;
-        }
-        editBox.focus();
-    }
+    // private onAmountChanged(editBox: EditBox) {
+    //     editBox.blur();
+    //     const input = editBox.string;    
+    //     const validAmount = /^\d*$/;
+    //     if (!validAmount.test(input)) {
+    //         editBox.string = input.slice(0, -1);
+    //     }
+    //     const sanitizedInput = input.replace(/[^0-9]/g, '');
+    //     if (sanitizedInput !== input) {
+    //         editBox.string = sanitizedInput;
+    //     }
+    //     editBox.focus();
+    // }
 }
 
 

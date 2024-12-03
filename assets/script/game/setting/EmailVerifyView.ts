@@ -1,6 +1,6 @@
 import { Label } from 'cc';
 import { Button } from 'cc';
-import { EditBox } from 'cc';
+// import { EditBox } from 'cc';
 import { _decorator, Component, Node } from 'cc';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
 import { UIID } from '../common/config/GameUIConfig';
@@ -13,6 +13,7 @@ import { EventType, InputMode } from '../keyboard/KeyboardDefine';
 import { instantiate } from 'cc';
 import Keyboard from '../keyboard/Keyboard';
 import { UICallbacks } from '../../../../extensions/oops-plugin-framework/assets/core/gui/layer/Defines';
+import { Editbox } from '../common/Editbox';
 const { ccclass, property } = _decorator;
 
 @ccclass('EmailVerifyView')
@@ -25,15 +26,16 @@ export class EmailVerifyView extends Component {
     private btn_commit: Button = null;
     @property(Button)
     private btn_close: Button = null;
-    @property(Label)
-    private editBoxEmailLabel: Label = null;
-    @property(Label)
-    private editBoxCodeLabel: Label = null;
+
+    @property(Editbox)
+    private editBoxEmail: Editbox = null;
+    @property(Editbox)
+    private editBoxCode: Editbox = null;
     public onClickType:number = 0;
 
 
     // 验证码发送间隔
-    private sendInterval: number = 60;
+    private sendInterval: number = 0;
     private timeoutId: number | null = null;
 
     onLoad() {
@@ -43,7 +45,7 @@ export class EmailVerifyView extends Component {
     }
 
     onEnable() {
-
+        this.editBoxEmail.string = smc.account.AccountModel.userData.email;
     }
 
     onDestroy() {
@@ -54,12 +56,17 @@ export class EmailVerifyView extends Component {
     }
 
     closeUI() {
-        oops.gui.remove(UIID.EmailVerify, false);
+        // 关闭邮箱验证界面, 存在倒计时
+        if(this.sendInterval > 0) { 
+            oops.gui.remove(UIID.EmailVerify, false);
+        } else {
+            oops.gui.remove(UIID.EmailVerify, true);
+        }
     }
 
     /** 获取邮箱验证码 */
     async getEmailCode() {
-        const userEmail = this.editBoxEmailLabel.string.trim();
+        const userEmail = this.editBoxEmail.string;
         if (userEmail === '') {
             oops.gui.toast(oops.language.getLangByID("tips_email_empty"));
             return;
@@ -104,12 +111,12 @@ export class EmailVerifyView extends Component {
 
     /** 邮箱认证 */
     async checkUserEmail() {
-        const userEmail = this.editBoxEmailLabel.string.trim();
+        const userEmail = this.editBoxEmail.string.trim();
         if (userEmail === '') {
             oops.gui.toast(oops.language.getLangByID("tips_email_empty"));
             return;
         }
-        const code = this.editBoxEmailLabel.string.trim();
+        const code = this.editBoxEmail.string.trim();
         if (code === '') {
             oops.gui.toast(oops.language.getLangByID("tips_emailcode_empty"));
             return;
@@ -122,7 +129,7 @@ export class EmailVerifyView extends Component {
         const res = await WalletNetService.checkUserEmail(code, userEmail);
         if (res) {
             oops.gui.toast(oops.language.getLangByID("tips_email_verification_success"));
-            oops.gui.remove(UIID.EmailVerify);
+            oops.gui.remove(UIID.EmailVerify, true);
             smc.account.AccountModel.userData.email = userEmail;
             oops.message.dispatchEvent(AccountEvent.ChangeEmail);
         } else {

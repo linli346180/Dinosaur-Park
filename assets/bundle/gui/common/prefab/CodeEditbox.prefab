@@ -139,7 +139,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 300,
+      "width": 500,
       "height": 80
     },
     "_anchorPoint": {
@@ -296,8 +296,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -223,
-      "y": 45,
+      "x": -250,
+      "y": 40,
       "z": 0
     },
     "_lrot": {
@@ -337,8 +337,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 448,
-      "height": 90
+      "width": 500,
+      "height": 80
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -373,7 +373,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "请输入验证码",
+    "_string": "Enter text here...",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
@@ -420,7 +420,7 @@
     "fileId": "2bwYrXLwdEjZDSFV5ZTBjb"
   },
   {
-    "__type__": "110c8vEd5NEPL/N9meGQnaX",
+    "__type__": "cc.Widget",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -431,13 +431,29 @@
     "__prefab": {
       "__id__": 16
     },
-    "_params": [],
-    "_dataID": "tips_emailcode_empty",
+    "_alignFlags": 45,
+    "_target": null,
+    "_left": 0,
+    "_right": 0,
+    "_top": 0,
+    "_bottom": 0,
+    "_horizontalCenter": 0,
+    "_verticalCenter": 0,
+    "_isAbsLeft": true,
+    "_isAbsRight": true,
+    "_isAbsTop": true,
+    "_isAbsBottom": true,
+    "_isAbsHorizontalCenter": true,
+    "_isAbsVerticalCenter": true,
+    "_originalWidth": 448,
+    "_originalHeight": 90,
+    "_alignMode": 2,
+    "_lockFlags": 0,
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "910GKN+mpFBaz1zfB0QlzQ"
+    "fileId": "e1KQQEXxpCmYukpS8kHscj"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -466,7 +482,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 300,
+      "width": 500,
       "height": 80
     },
     "_anchorPoint": {
@@ -584,7 +600,7 @@
     "fileId": "1bRi3ttK5NvLHZDlMUX1UH"
   },
   {
-    "__type__": "ea2feVeJ59A9oWhiyn/Wju5",
+    "__type__": "c892fr8MzlHpKsJVGuVjA4P",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -601,13 +617,13 @@
     "placeholderLabel": {
       "__id__": 13
     },
-    "maxLength": 0,
+    "maxLength": 20,
     "inputMode": 0,
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "b3pkfyfPJId5jF90zFf0YK"
+    "fileId": "2e0kjR3BJBOb8mDqT4VWeE"
   },
   {
     "__type__": "cc.PrefabInfo",
