@@ -14,17 +14,17 @@ export class STBConfigModeComp extends ecs.Comp {
 
     public createGuideData() {
         this.instbConfigData = [
-            { id: 101, stbKinds: 1, stbName: "黄金星兽1", stbGrade: 1, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 1, purConCoinNum: 100 },
-            { id: 102, stbKinds: 1, stbName: "黄金星兽2", stbGrade: 2, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 1, purConCoinNum: 200 },
-            { id: 103, stbKinds: 1, stbName: "黄金星兽3", stbGrade: 3, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 1, purConCoinNum: 300 },
-            { id: 104, stbKinds: 1, stbName: "黄金星兽4", stbGrade: 4, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 1, purConCoinNum: 400 },
-            { id: 105, stbKinds: 1, stbName: "黄金星兽5", stbGrade: 5, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 1, purConCoinNum: 500 },
-            { id: 106, stbKinds: 1, stbName: "黄金星兽6", stbGrade: 6, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 2, purConCoinNum: 100 },
-            { id: 107, stbKinds: 1, stbName: "黄金星兽7", stbGrade: 7, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 2, purConCoinNum: 200 },
-            { id: 108, stbKinds: 1, stbName: "黄金星兽8", stbGrade: 8, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 2, purConCoinNum: 300 },
-            { id: 109, stbKinds: 1, stbName: "黄金星兽9", stbGrade: 9, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 2, purConCoinNum: 400 },
-            { id: 110, stbKinds: 1, stbName: "黄金星兽10", stbGrade: 10, isIncome: 2, stbSurvival: 0, incomeCycle: 60, incomeNumMin: 100, isPur: 1, purConCoin: 2, purConCoinNum: 500 },
-            { id: 201, stbKinds: 2, stbName: "宝石龙", stbGrade: 1, isIncome: 2, stbSurvival: 0, incomeCycle: 60, incomeNumMin: 100, isPur: 1, purConCoin: 2, purConCoinNum: 500 },
+            // { id: 101, stbKinds: 1, stbName: "黄金星兽1", stbGrade: 1, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 1, purConCoinNum: 100 },
+            // { id: 102, stbKinds: 1, stbName: "黄金星兽2", stbGrade: 2, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 1, purConCoinNum: 200 },
+            // { id: 103, stbKinds: 1, stbName: "黄金星兽3", stbGrade: 3, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 1, purConCoinNum: 300 },
+            // { id: 104, stbKinds: 1, stbName: "黄金星兽4", stbGrade: 4, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 1, purConCoinNum: 400 },
+            // { id: 105, stbKinds: 1, stbName: "黄金星兽5", stbGrade: 5, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 1, purConCoinNum: 500 },
+            // { id: 106, stbKinds: 1, stbName: "黄金星兽6", stbGrade: 6, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 2, purConCoinNum: 100 },
+            // { id: 107, stbKinds: 1, stbName: "黄金星兽7", stbGrade: 7, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 2, purConCoinNum: 200 },
+            // { id: 108, stbKinds: 1, stbName: "黄金星兽8", stbGrade: 8, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 2, purConCoinNum: 300 },
+            // { id: 109, stbKinds: 1, stbName: "黄金星兽9", stbGrade: 9, isIncome: 2, stbSurvival: 0, incomeCycle: 0, incomeNumMin: 0, isPur: 1, purConCoin: 2, purConCoinNum: 400 },
+            // { id: 110, stbKinds: 1, stbName: "黄金星兽10", stbGrade: 10, isIncome: 2, stbSurvival: 0, incomeCycle: 60, incomeNumMin: 100, isPur: 1, purConCoin: 2, purConCoinNum: 500 },
+            // { id: 201, stbKinds: 2, stbName: "宝石龙", stbGrade: 1, isIncome: 2, stbSurvival: 0, incomeCycle: 60, incomeNumMin: 100, isPur: 1, purConCoin: 2, purConCoinNum: 500 },
         ];
     }
 
@@ -64,7 +64,7 @@ export interface UserInstbConfigData {
     // readonly incomeGetMethod: number;    // 收益获得方式(1.点击领取,2.邮件领取)
     readonly isPur: IsPur;               // 是否可以购买
     readonly purConCoin: PurConCoin;     // 购买消耗货币类型(1.金币,2.宝石,3.星兽币,4.USDT)
-    readonly purConCoinNum: number;      // 购买消耗货币数量
+    purConCoinNum: number;      // 购买消耗货币数量
     // createdAt: string | null;
     // updatedAt: string | null;
     // desc: string| null;
