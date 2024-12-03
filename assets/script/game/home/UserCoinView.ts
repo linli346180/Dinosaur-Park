@@ -61,8 +61,8 @@ export class UserCoinView extends Component {
     }
 
     private openWallet() {
-        oops.gui.toast(oops.language.getLangByID("common_tips_Not_Enabled"));
-        return;
+        // oops.gui.toast(oops.language.getLangByID("common_tips_Not_Enabled"));
+        // return;
         oops.gui.open(UIID.Wallet)
     }
 

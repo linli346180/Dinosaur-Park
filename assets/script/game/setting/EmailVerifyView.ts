@@ -17,10 +17,6 @@ const { ccclass, property } = _decorator;
 
 @ccclass('EmailVerifyView')
 export class EmailVerifyView extends Component {
-    @property(EditBox)
-    private emailEditbox: EditBox = null;
-    @property(EditBox)
-    private codeEditbox: EditBox = null;
     @property(Button)
     private btn_send: Button = null;
     @property(Label)
@@ -29,6 +25,10 @@ export class EmailVerifyView extends Component {
     private btn_commit: Button = null;
     @property(Button)
     private btn_close: Button = null;
+    @property(Label)
+    private editBoxEmailLabel: Label = null;
+    @property(Label)
+    private editBoxCodeLabel: Label = null;
     public onClickType:number = 0;
 
 
@@ -40,13 +40,10 @@ export class EmailVerifyView extends Component {
         this.btn_send.node.on(Button.EventType.CLICK, this.getEmailCode, this);
         this.btn_commit.node.on(Button.EventType.CLICK, this.checkUserEmail, this);
         this.btn_close.node.on(Button.EventType.CLICK, this.closeUI, this);
-        this.emailEditbox.node.on(EditBox.EventType.EDITING_DID_BEGAN, this.onEmailEditboxInput, this);
-        this.codeEditbox.node.on(EditBox.EventType.EDITING_DID_BEGAN, this.onCodeEditboxInput, this);
     }
 
     onEnable() {
-        this.emailEditbox.string = smc.account.AccountModel.userData.email;
-        this.codeEditbox.string = '';
+
     }
 
     onDestroy() {
@@ -59,47 +56,10 @@ export class EmailVerifyView extends Component {
     closeUI() {
         oops.gui.remove(UIID.EmailVerify, false);
     }
-    onCodeEditboxInput()
-    {
-        console.log("Code EditBox 被点击了");
-        this.onClickType  = 1;
-        var uic: UICallbacks = {
-            onAdded: (node: Node, params: any) => {
-                const comp = node.getComponent(Keyboard);
-                if (comp) {
-                    comp.inputMode = InputMode.ANY;
-                    comp.onEditReturnEmail = () => {
-                        this.codeEditbox.string = comp.string;
-                    };
-                }
-            },
-        };
-        let uiArgs: any;
-        oops.gui.open(UIID.Keyboard, uiArgs, uic);
-    }
-    onEmailEditboxInput()
-    {
-        console.log("Email EditBox 被点击了");
-        this.onClickType  = 0;
-        var uic: UICallbacks = {
-            onAdded: (node: Node, params: any) => {
-                const comp = node.getComponent(Keyboard);
-                if (comp) {
-                    comp.string = this.emailEditbox.string;
-                    comp.inputMode = InputMode.EMAIL_ADDR;
-                    comp.onEditReturnEmail = () => {
-                        this.emailEditbox.string = comp.string;
-                    };
-                }
-            },
-        };
-        let uiArgs: any;
-        oops.gui.open(UIID.Keyboard, uiArgs, uic);
-    }
 
     /** 获取邮箱验证码 */
     async getEmailCode() {
-        const userEmail = this.emailEditbox.string.trim();
+        const userEmail = this.editBoxEmailLabel.string.trim();
         if (userEmail === '') {
             oops.gui.toast(oops.language.getLangByID("tips_email_empty"));
             return;
@@ -144,12 +104,12 @@ export class EmailVerifyView extends Component {
 
     /** 邮箱认证 */
     async checkUserEmail() {
-        const userEmail = this.emailEditbox.string.trim();
+        const userEmail = this.editBoxEmailLabel.string.trim();
         if (userEmail === '') {
             oops.gui.toast(oops.language.getLangByID("tips_email_empty"));
             return;
         }
-        const code = this.codeEditbox.string.trim();
+        const code = this.editBoxEmailLabel.string.trim();
         if (code === '') {
             oops.gui.toast(oops.language.getLangByID("tips_emailcode_empty"));
             return;
