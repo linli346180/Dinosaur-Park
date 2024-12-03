@@ -35,6 +35,22 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
         if (configDataRes && configDataRes.userInstbData != null) {
             configDataRes.userInstbData.sort((a, b) => a.id - b.id);
             entity.STBConfigMode.instbConfigData = configDataRes.userInstbData;
+            // 获取用户星兽价格
+            const UserPrizeRes = await AccountNetService.getUserPrize();
+            if (UserPrizeRes && UserPrizeRes.userStbPrizeArr) {
+                let i = 0;
+                entity.STBConfigMode.instbConfigData.forEach(item => {
+                    let purConCoinNumArray = Number(item.purConCoinNum);
+                    let userStbPrizeArrExtraPrize = 0;
+                    if(i<UserPrizeRes.userStbPrizeArr.length)
+                    {
+                        userStbPrizeArrExtraPrize = Number(UserPrizeRes.userStbPrizeArr[i].extraPrize);
+                        i++;
+                    }
+                    let sum = purConCoinNumArray + userStbPrizeArrExtraPrize;
+                    item.purConCoinNum = sum;
+                });
+            }
         }
 
         // 获取用户星兽数据

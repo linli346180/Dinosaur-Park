@@ -364,6 +364,19 @@ export namespace AccountNetService {
         }
     }
 
+     /** 获取用户星兽价格 */
+    export async function getUserPrize() {
+        const http = createHttpManager();
+        const response = await http.getUrl(`tgapp/api/user/prize?token=${netConfig.Token}`);
+        if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {
+            console.warn(`获取用户星兽价格:`, response.res);
+            return response.res;
+        } else {
+            console.error("获取用户星兽价格异常", response);
+            return null;
+        }
+    }
+
     /** 计算了服务器时间和本地时间差 */
     function getServerTimeDiff(timestamp: number) {
         if (!timestamp) {
@@ -384,6 +397,9 @@ export namespace AccountNetService {
 
         console.log("服务器时间:", serverTime, "本地时间:", localTime, "时间差:", netConfig.timeDifference);
     }
+
+
+
 
     /** 创建 HttpManager 实例并进行配置 */
     function createHttpManager(): HttpManager {

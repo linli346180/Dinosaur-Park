@@ -161,6 +161,21 @@ export class Account extends ecs.Entity {
         }
     }
 
+    //更新购买星兽的金币数量
+    async updatePurConCoinNum(coinType:number,stbConfigID:number,extraPrize:number) {
+        for(let i = 0; i < this.STBConfigMode.instbConfigData.length; i++)
+        {
+            if(this.STBConfigMode.instbConfigData[i].id == stbConfigID){
+                this.STBConfigMode.instbConfigData[i].purConCoinNum += Number(extraPrize);
+                if (coinType == 1) {
+                    oops.message.dispatchEvent(AccountEvent.CoinExtraPrizeChange);
+                } else if (coinType == 2) {
+                    oops.message.dispatchEvent(AccountEvent.CoinExtraPrizeChange);
+                }
+            }
+        }
+    }
+
     // 更新收益星兽数据
     async updateInstbData() {
         const res = await AccountNetService.GetUserSTBData();
@@ -206,6 +221,8 @@ export class Account extends ecs.Entity {
             if (!autoAdop) {
                 this.updateCoinData();
             }
+
+            this.updatePurConCoinNum(res.userStbPrize.coinType, res.userStbPrize.stbConfigID,res.userStbPrize.extraPrize);
 
             const STBData: StartBeastData = res.userInstbSynthReData;
             let stbConfig = this.STBConfigMode.getSTBConfigData(STBData.stbConfigID);

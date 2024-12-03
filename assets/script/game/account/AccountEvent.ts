@@ -33,6 +33,9 @@ export enum AccountEvent {
 
     CoinDataChange = "CoinDataChange",  // 货币数据变化
 
+    CoinExtraPrizeChange = "CoinExtraPrizeChange",  // 金币浮动价格变化
+    GemExtraPrizeChange = "GemExtraPrizeChange",  // 宝石浮动价格变化
+
     UserNoOperation = "UserNoOperation",  // 长时间无操作
     UserOperation = "UserOperation",  // 用户操作
     HideUserOperation = "HideUserOperation",  // 用户操作
