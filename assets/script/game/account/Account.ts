@@ -17,6 +17,7 @@ import { AccountCoinType, AwardType } from "./AccountDefine";
 import { AccountLoginComp } from "./system/AccountLogin";
 import { netChannel } from "../../net/custom/NetChannelManager";
 import { tonConnect } from "../wallet/TonConnect";
+import { DEBUG } from "cc/env";
 
 /** 账号模块 */
 @ecs.register('Account')
@@ -84,7 +85,7 @@ export class Account extends ecs.Entity {
                 break;
 
             // 2.1 登陆失败
-            case GameEvent.LoginSuccess:
+            case GameEvent.LoginFail:
                 tips.alert(oops.language.getLangByID('net_tips_fetch_fail'), () => {
                     // (window as any).Telegram.WebApp.close();
                 });
@@ -100,7 +101,7 @@ export class Account extends ecs.Entity {
             case GameEvent.DataInitialized:
                 console.log("4.数据初始化完成");
                 oops.gui.openAsync(UIID.Map);
-                oops.gui.openAsync(UIID.Main);
+                await oops.gui.openAsync(UIID.Main);
                 AccountNetService.createWebSocket();
                 break;
 
@@ -128,6 +129,9 @@ export class Account extends ecs.Entity {
 
     /** 新手引导是否已完成(奖励未领取) */
     private async isGuideFinish(): Promise<boolean> {
+        if(DEBUG) {
+            return true; 
+        }
         const res = await AccountNetService.getUserOfficial();
         if (res) {
             const isFinish = res.scorpionReward == 0;   //是否领取过新手奖励,0-已领取，1-未领取
