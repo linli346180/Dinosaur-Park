@@ -402,6 +402,7 @@ export class LayerManager {
         this.popup.clear(isDestroy);
         this.dialog.clear(isDestroy);
         this.system.clear(isDestroy);
+        this.game.clear(isDestroy);
     }
 
     /**
