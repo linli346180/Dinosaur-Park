@@ -17,6 +17,9 @@ export enum GameEvent {
     /** 退出游戏 */
     ExitGame = "ExitGame",
 
+    /** 新手教程开始 */
+    GuideBegin = "GuideBegin",
+
     /** 新手教程完成 */
     GuideFinish = "GuideFinish",
 
@@ -32,6 +35,9 @@ export enum GameEvent {
     /** 网络请求失败 */
     WebRequestFail = "WebRequestFail",
 
-    /** 关闭加载UI */
+    /** 请求关闭加载UI */
     CloseLoadingUI = "CloseLoadingUI",
+
+    /** 关闭加载UI */
+    OnLoadingUIClosed = "OnLoadingUIClosed",
 }

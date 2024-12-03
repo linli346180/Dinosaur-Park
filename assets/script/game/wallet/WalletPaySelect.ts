@@ -63,8 +63,9 @@ export class WalletPaySelect extends Component {
             coinType = 101;
         }
 
-        const order = await WalletNetService.getUserOrder(this.configId, coinType);
+        const order = await WalletNetService.getUserOrder(this.configId, coinType, tonConnect.walletConfig.appname);
         if (order && order.payload) {
+            console.log("步骤2:获取预支付订单");
             let request: TransactionRequest = new TransactionRequest();
             request.address = order.payload.address;
             request.payload = order.payload.payLoad;

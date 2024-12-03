@@ -4,36 +4,36 @@ import { StartBeastData } from "./model/AccountModelComp";
 
 /** 用户货币数据 */
 export class UserCoinData {
-    id: number              = 0;
-    userID: number          = 0;      // 用户ID
-    goldCoin: number        = 1000;      // 金币(金币星兽产出)
-    gemsCoin: number        = 1000;      // 宝石(宝石星兽产出)
-    usdt: number            = 1000;      // USDT(钻石星兽产出)
-    starBeastCoin: number   = 1000;      // 星兽币(sbpc,至尊星兽产出)
+    readonly id: number             = 0;
+    readonly userID: number         = 0;      // 用户ID
+    goldCoin: number                = 100;      // 金币(金币星兽产出)
+    gemsCoin: number                = 0;      // 宝石(宝石星兽产出)
+    usdt: number                    = 0;      // USDT(钻石星兽产出)
+    starBeastCoin: number           = 0;      // 星兽币(sbpc,至尊星兽产出)
 }
 
 /** 货币池数量 */
 export class UserCoinIncome {
-    goldCoin: number        = 1000; // 金币
-    gemsCoin: number        = 1000; // 宝石数量
+    goldCoin: number                = 0; // 金币
+    gemsCoin: number                = 0; // 宝石数量
 }
 
 export class UserData {
-    id: number =            0; // 用户ID
-    createdAt: string       = ''; // 创建时间
-    updatedAt: string       = ''; // 更新时间
-    deletedAt: string       = ''; // 删除时间
-    name: string            = ''; // 名称
+    readonly id: number =            0; // 用户ID
+    readonly createdAt: string       = ''; // 创建时间
+    readonly updatedAt: string       = ''; // 更新时间
+    readonly deletedAt: string       = ''; // 删除时间
+    readonly name: string            = ''; // 名称
     email: string           = ''; // 邮箱
-    mobile: string          = ''; // 手机号
-    account: string         = ''; // 账号
-    registerType: RegisterType = RegisterType.Unknow; // 注册类型
-    externalAccountType: AccountType = AccountType.Unknow; // 外部账号类型
-    externalAccountUid: string = ''; // 用户外部ID
-    avatarPath: string      = ''; // 头像路径
-    state: number           = 0; // 用户状态
-    prohibitionState: number = 0; // 用户封禁状态
-    releaseAt: string | null = null; // 解禁时间
+    readonly mobile: string          = ''; // 手机号
+    readonly account: string         = ''; // 账号
+    readonly registerType: RegisterType = RegisterType.Unknow; // 注册类型
+    readonly externalAccountType: AccountType = AccountType.Unknow; // 外部账号类型
+    readonly externalAccountUid: string = ''; // 用户外部ID
+    readonly avatarPath: string      = ''; // 头像路径
+    readonly state: number           = 0; // 用户状态
+    readonly prohibitionState: number = 0; // 用户封禁状态
+    readonly releaseAt: string | null = null; // 解禁时间
 }
 
 

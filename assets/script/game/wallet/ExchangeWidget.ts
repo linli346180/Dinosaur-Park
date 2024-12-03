@@ -32,6 +32,10 @@ export class ExchangeWidget extends Component {
         oops.message.on(AccountEvent.CoinDataChange, this.updateUI, this);
     }
 
+    protected onDestroy(): void {
+        oops.message.off(AccountEvent.CoinDataChange, this.updateUI, this);
+    }   
+
     onEnable() {
         this.ExchangeRate = this.exchangeRate;
         this.updateUI();

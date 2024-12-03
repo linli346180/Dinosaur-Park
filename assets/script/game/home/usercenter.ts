@@ -8,6 +8,8 @@ import { tonConnect } from '../wallet/TonConnect';
 import { sys } from 'cc';
 import { UserConfigData } from './UserConfigDefine';
 import { ReddotComp } from '../reddot/ReddotComp';
+import { ecs } from '../../../../extensions/oops-plugin-framework/assets/libs/ecs/ECS';
+import { GuideEntity } from '../../guide/entity/GuideEntity';
 const { ccclass, property } = _decorator;
 
 @ccclass('usercenter')
@@ -74,6 +76,11 @@ export class usercenter extends Component {
 
     onEnable() {
         this.initUI();
+    }
+
+    protected onDestroy(): void {
+        oops.message.off(AccountEvent.ChangeEmail, this.onHandler, this);
+        oops.message.off(AccountEvent.ChangeLanguage, this.onHandler, this);
     }
 
     private initUI() {
@@ -149,6 +156,7 @@ export class usercenter extends Component {
     }
 
     private onGuide() {
+       // 初始化引导模块
 
     }
 

@@ -29,22 +29,29 @@ export class NetConfig {
         return this.ServerConfigList[this.curEnvironment].BotToken;
     }
 
-    private curEnvironment: EnvironmentType = EnvironmentType.Production;
+    public get ReturnUrl() {
+        return this.ServerConfigList[this.curEnvironment].returnUrl;
+    }
+
+    private curEnvironment: EnvironmentType = EnvironmentType.PreRelease;
     private ServerConfigList = {
         [EnvironmentType.Development]: {
             Server: "https://konglong.live/",
             WebSock: "konglong.live/wss",
-            BotToken: '7512648791:AAGsR1Qbuh-A-B_l1SrizMdSBIm1MmZLuZQ'
+            BotToken: '7512648791:AAGsR1Qbuh-A-B_l1SrizMdSBIm1MmZLuZQ',
+            returnUrl:'https://app.unsgc.com'
         },
         [EnvironmentType.PreRelease]: {
             Server: "https://kong-long.cyou/",
             WebSock: "kong-long.cyou/wss",
-            BotToken: '7175903697:AAGqeX_Z5N1GC0HWyGS_WZE8nzzJiTZGwa0'
+            BotToken: '7175903697:AAGqeX_Z5N1GC0HWyGS_WZE8nzzJiTZGwa0',
+            returnUrl:'https://app.unsgc.com'
         },
         [EnvironmentType.Production]: {
             Server: "https://yu.sbpc-api.com/",
             WebSock: "yu.sbpc-api.com/wss",
-            BotToken: '7973801647:AAFNZ83b8hf0s2kyAyzkRI1r09QvQYkmh5s'
+            BotToken: '7973801647:AAFNZ83b8hf0s2kyAyzkRI1r09QvQYkmh5s',
+            returnUrl:'https://app.starbeastpark.com'
         }
     };
 

@@ -9,17 +9,17 @@ const { ccclass, property } = _decorator;
 @ccclass('AdoptionView')
 export class AdoptionView extends Component {
     @property(Button)
-    btn_adopt_one: Button = null!;
+    private btn_adopt_one: Button = null!;
     @property(Button)
-    btn_left: Button = null!;
+    private btn_left: Button = null!;
     @property(Button)
-    btn_right: Button = null!;
+    private btn_right: Button = null!;
     @property(Label)
-    price: Label = null!;
+    private price: Label = null!;
     @property(Sprite)
-    beast: Sprite = null!;
+    private beast: Sprite = null!;
     @property(Label)
-    level: Label = null!;
+    private level: Label = null!;
 
     private _index: number = 0;
     private _configDataList: UserInstbConfigData[] = [];

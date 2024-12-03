@@ -71,7 +71,7 @@ export class HomeView extends Component {
     }
 
     onDestroy() {
-        this.removeEventListeners();
+        // this.removeEventListeners();
         oops.message.off(AccountEvent.EvolveUnIncomeSTB, this.onHandler, this);
         oops.message.off(AccountEvent.UserCollectGold, this.onHandler, this);
         oops.message.off(AccountEvent.UserBounsUSTD, this.onHandler, this);

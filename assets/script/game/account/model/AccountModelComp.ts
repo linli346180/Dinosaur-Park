@@ -6,9 +6,9 @@ import { AccountType, RegisterType, UserCoinData, UserCoinIncome, UserData } fro
  */
 @ecs.register('AccountModel')
 export class AccountModelComp extends ecs.Comp {
-    userData: UserData              = new UserData(); // 用户数据
-    coinPoolData: UserCoinIncome    = new UserCoinIncome(); // 户货币数据(待领取)
-    CoinData: UserCoinData          = new UserCoinData(); // 户货币数据
+    userData: UserData = new UserData(); // 用户数据
+    coinPoolData: UserCoinIncome = new UserCoinIncome(); // 户货币数据(待领取)
+    CoinData: UserCoinData = new UserCoinData(); // 户货币数据
 
     private UserInstb: StartBeastData[] = [];    //用户收益星兽列表
     private UserNinstb: StartBeastData[] = [];  //用户无收益星兽列表
@@ -29,8 +29,23 @@ export class AccountModelComp extends ecs.Comp {
         this.UserNinstb = value;
     }
 
+    public createGuideData() {
+        this.coinPoolData = new UserCoinIncome();
+        this.CoinData = new UserCoinData();
+        const curTimestamp = Date.now();
+        this.UserInstb = [];
+        this.UserNinstb = [
+            { id: 1, createdAt: curTimestamp, userID: 0, stbConfigID: 101, stbPosition: 1, lastIncomeTime: curTimestamp },
+            { id: 2, createdAt: curTimestamp, userID: 0, stbConfigID: 102, stbPosition: 2, lastIncomeTime: curTimestamp },
+        ];
+    }
+
     reset() {
         this.userData = new UserData();
+        this.coinPoolData = new UserCoinIncome();
+        this.CoinData = new UserCoinData();
+        this.UserInstb = [];
+        this.UserNinstb = [];
     }
 
     /** 添加星兽数据 */
@@ -95,12 +110,13 @@ export class AccountModelComp extends ecs.Comp {
 
 /** 星兽数据 */
 export class StartBeastData {
-    readonly id: number = 0;                //星兽ID
-    readonly createdAt: string = '';        //创建时间
-    readonly userID: number = 0;            //用户ID
-    stbConfigID: number = 0;                //星兽配置ID
-    readonly stbPosition: number = 0;       //星兽位置
-    readonly lastIncomeTime: string = '';   //最后收益时间
+    readonly id: number = 0;                        //星兽ID
+   
+    stbConfigID: number = 0;                        //星兽配置ID
+    readonly stbPosition: number = 0;               //星兽位置
+    readonly userID: number| null = 0;                    //用户ID
+    readonly createdAt: number | null = 0;          //创建时间
+    readonly lastIncomeTime: number | null = 0;     //最后收益时间
 }
 
 export enum UserSTBType {

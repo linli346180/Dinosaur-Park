@@ -40,6 +40,8 @@ export class UserIncomeView extends Component {
     }
 
     protected onDestroy(): void {
+        this.unschedule(this.updateGoldPool);
+        this.unschedule(this.updateGenPool);
         oops.message.off(GameEvent.NetConnectFail, this.onHandler, this);
     }
 

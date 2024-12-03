@@ -39,18 +39,13 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
 
         // 获取用户星兽数据
         const res = await AccountNetService.GetUserSTBData();
-        if (res && res.userInstbData != null) {
+        if (res && res.userInstbData) {
             // 收益星兽
-            if (res.userInstbData.UserInstb != null) {
+            if (res.userInstbData.UserInstb) {
                 entity.AccountModel.setUserInstb(res.userInstbData.UserInstb);
-            } else {
-                console.log("收益星兽为空");
-            }
+            } 
 
-            // TODO  无收益星守过滤配置为空的星兽
-            if (res.userInstbData.UserNinstb != null) {
-                console.log("无收益星兽", res.userInstbData.UserNinstb);
-                // entity.AccountModel.setUserNinstb(res.userInstbData.UserNinstb);
+            if (res.userInstbData.UserNinstb) {
                 for (const stbItem of res.userInstbData.UserNinstb) {
                     if (stbItem.position > 12 || stbItem.position < 1) {
                         console.error("星兽位置错误", stbItem);
@@ -59,11 +54,19 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
                     entity.AccountModel.addUserUnInComeSTB(stbItem);
                 }
             }
-            else {
-                console.log("无收益星兽为空");
-            }
         }
         oops.message.dispatchEvent(GameEvent.DataInitialized);
         entity.remove(AccountNetDataComp);
     }
 }
+
+// @ecs.register('Account')
+// export class AccountGuideComp extends ecs.ComblockSystem implements ecs.IEntityEnterSystem {
+//     filter(): ecs.IMatcher {
+//         return ecs.allOf(AccountNetDataComp, AccountModelComp);
+//     }
+
+//     async entityEnter(entity: Account): Promise<void> {
+//         entity.AccountModel.createGuideData();
+//     }
+// }

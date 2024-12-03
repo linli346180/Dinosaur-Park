@@ -9,18 +9,10 @@ import { oops } from "../../../../../extensions/oops-plugin-framework/assets/cor
 import { ecs } from "../../../../../extensions/oops-plugin-framework/assets/libs/ecs/ECS";
 import { CCVMParentComp } from "../../../../../extensions/oops-plugin-framework/assets/module/common/CCVMParentComp";
 import { ModuleUtil } from "../../../../../extensions/oops-plugin-framework/assets/module/common/ModuleUtil";
-import { DemoViewComp } from "../../account/view/DemoViewComp";
 import { smc } from "../../common/SingletonModuleComp";
-import { UIConfigData, UIID } from "../../common/config/GameUIConfig";
-import { JsonUtil } from "../../../../../extensions/oops-plugin-framework/assets/core/utils/JsonUtil";
-import { TableItemConfig } from "../../common/table/TableItemConfig";
-import { TablePrimaryDebrisConfig } from "../../common/table/TablePrimaryDebrisConfig";
-import { TableMiddleDebrisConfig } from "../../common/table/TableMiddleDebrisConfig";
-import { TableSTBConfig } from "../../common/table/TableSTBConfig";
-import { macro } from "cc";
+import { UIID } from "../../common/config/GameUIConfig";
 import { GameEvent } from "../../common/config/GameEvent";
-import { Prefab } from "cc";
-import { UIConfig } from "../../../../../extensions/oops-plugin-framework/assets/core/gui/layer/LayerManager";
+import { GuideEntity } from "../../../guide/entity/GuideEntity";
 
 const { ccclass, property } = _decorator;
 
@@ -88,7 +80,7 @@ export class LoadingViewComp extends CCVMParentComp {
 
         // 优先加载配置的指定资源包中资源
         oops.gui.PreLoadUIAsset();
-        
+
         // 优先加载配置的指定资源包中资源，如果没配置则加载默认资源包资源
         // oops.res.loadDir("animation", this.onProgressCallback.bind(this), this.onCompleteCallback.bind(this));
     }
@@ -110,14 +102,17 @@ export class LoadingViewComp extends CCVMParentComp {
         // 获取用户信息的多语言提示文本
         // this.data.prompt = oops.language.getLangByID("loading_load_player");
         console.log("进度条加载完成");
+        oops.message.dispatchEvent(GameEvent.OnLoadingUIClosed);
     }
 
     private CloseUI() {
         if (this.progress >= 1) {
             ModuleUtil.removeViewUi(this.ent, LoadingViewComp, UIID.Loading);
+            this.onCompleteCallback();
         } else {
             setTimeout(() => {
                 ModuleUtil.removeViewUi(this.ent, LoadingViewComp, UIID.Loading);
+                this.onCompleteCallback();
             }, Math.abs(1 - this.progress) * 1000);
         }
     }

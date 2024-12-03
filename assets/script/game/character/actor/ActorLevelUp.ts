@@ -21,6 +21,7 @@ export class ActorAnimComp extends Component {
 
     onDestroy() {
         this.idleAnim.off(Animation.EventType.FINISHED, this.onAnimationFinished, this);
+        this.unscheduleAllCallbacks();
     }
 
     public InitUI(stbConfigID: number) {
@@ -38,9 +39,9 @@ export class ActorAnimComp extends Component {
     }
 
     private onAnimationFinished() {
-        const randomDelay = Math.random() * 2000 + 1000; // 随机延迟2到5秒
-        setTimeout(() => {
+        const randomDelay = Math.random() * 2 + 10; // 随机延迟2到5秒
+        this.scheduleOnce(() => {  
             this.idleAnim.play(this.stbTableConfig.animation);
-        }, randomDelay);
+         }, randomDelay);
     }
 }

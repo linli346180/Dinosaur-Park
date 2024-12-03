@@ -3,6 +3,7 @@ import { TransactionRequest, WalletConfig } from './WalletDefine';
 import { smc } from '../common/SingletonModuleComp';
 import TonWeb from '../../../libs/tonweb.js';
 import { oops } from '../../../../extensions/oops-plugin-framework/assets/core/Oops';
+import { netConfig } from '../../net/custom/NetConfig';
 
 /** 钱包连接 */
 export default class TonConnect {
@@ -40,6 +41,11 @@ export default class TonConnect {
                 this.tonConnectUI.onStatusChange((status) => {
                     console.log("钱包连接状态改变:", status,);
                     if (status && status.connectItems?.tonProof && 'proof' in status.connectItems.tonProof) {
+
+                        console.log("步骤1:连接钱包成功");
+
+                        this.walletConfig.appname = status.appName;
+
                         this.walletConfig.address = status.account.address;
                         this.walletConfig.netWork = status.account.chain;
                         this.walletConfig.state_init = status.account.walletStateInit;
@@ -159,16 +165,28 @@ export default class TonConnect {
                 }
             ]
         };
+
+        const intervalId = setInterval(() => { 
+            console.log("更新定时器:", Date.now());
+        }, 1000);
+
         console.warn("Ton交易请求", transaction);
         try {
             const result = await this.tonConnectUI.sendTransaction(transaction);
+            console.log("步骤3:发起支付",result);
+
             const res = await WalletNetService.postWithdrawBoc(result.boc, request.payload, request.coinType);
             if (res) {
+                console.log("步骤4:服务端推送")
                 oops.gui.toast(oops.language.getLangByID("tips_transaction_sucess"));
                 smc.account.updateCoinData();
             }
+
+            clearInterval(intervalId);
         } catch (error) {
             console.error("Ton交易异常", error);
+            // 在需要停止定时器时调用 clearInterval
+            clearInterval(intervalId);
         }
     }
 
@@ -187,10 +205,10 @@ export default class TonConnect {
     }
 
     dump() {
-        const currentWallet = this.tonConnectUI.wallet;
-        const currentWalletInfo = this.tonConnectUI.walletInfo;
-        const currentAccount = this.tonConnectUI.account;
-        const currentIsConnectedStatus = this.tonConnectUI.connected;
+        const currentWallet = this.tonConnectUI?.wallet;
+        const currentWalletInfo = this.tonConnectUI?.walletInfo;
+        const currentAccount = this.tonConnectUI?.account;
+        const currentIsConnectedStatus = this.tonConnectUI?.connected;
 
         console.log("当前钱包:", currentWallet);
         console.log("当前钱包信息:", currentWalletInfo);

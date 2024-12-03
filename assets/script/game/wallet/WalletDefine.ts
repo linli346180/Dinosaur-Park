@@ -10,6 +10,7 @@ export class WalletConfig {
     payaddress: string = '';        // 发起交易的目标地址
 
     // 钱包参数
+    appname: string = '';           // 应用名称
     address: string = '';           // 自己钱包地址
     name: string = '';              // 钱包名称
     publicKey: string = '';         // 公钥

@@ -28,6 +28,10 @@ export class STBPurShop extends Component {
         this.initUI();
     }
 
+    protected onDestroy(): void {
+        oops.message.off(AccountEvent.CoinDataChange, this.initCoinData, this);
+    }
+
     onEnable() {
         this.initCoinData();
     }

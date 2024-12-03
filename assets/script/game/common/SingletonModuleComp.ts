@@ -6,6 +6,7 @@
  */
 
 import { ecs } from "../../../../extensions/oops-plugin-framework/assets/libs/ecs/ECS";
+import { GuideEntity } from "../../guide/entity/GuideEntity";
 import { Account } from "../account/Account";
 import { Initialize } from "../initialize/Initialize";
 
@@ -16,6 +17,8 @@ export class SingletonModuleComp extends ecs.Comp {
     initialize: Initialize = null!;
     /** 游戏账号模块 */
     account: Account = null!;
+    /** 游戏初始化模块 */
+    guide: GuideEntity = null!;
 
     reset() { }
 }

@@ -44,16 +44,19 @@ export namespace WalletNetService {
     }
 
     /** 获取预支付订单 */
-    export async function getUserOrder(goodID: number,  coinType: number) {
+    export async function getUserOrder(goodID: number,  coinType: number, walletStr:string) {
         const http = createHttpManager();
         const params = {
             'goodID': goodID.toString(),
             'source': '1',
             'channel': '1',
             'coinType': coinType.toString(),
-            'timeStamp': Date.now().toString()
+            'timeStamp': Date.now().toString(),
+            'walletStr': walletStr  
         }
         const paramString = new URLSearchParams(params).toString();
+
+        console.log("获取预支付订单参数:", paramString);
 
         const response = await http.postUrl(`tgapp/api/user/order?token=${netConfig.Token}`, paramString);
         if (response.isSucc && response.res.resultCode == NetErrorCode.Success) {

@@ -45,6 +45,10 @@ export class WalletView extends Component {
         this.getWithdrawInfo();
     }
 
+    protected onDestroy(): void {
+        oops.message.off(AccountEvent.CoinDataChange, this.initCoinData, this);
+    }
+
     onEnable() {
         this.initCoinData();
     }

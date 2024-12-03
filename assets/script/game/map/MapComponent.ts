@@ -41,6 +41,11 @@ export class MapComponent extends Component {
         this.initUI();
     }
 
+    protected onDestroy(): void {
+        oops.message.off(AccountEvent.AddInComeSTB, this.onHandler, this);
+        oops.message.off(AccountEvent.DelIncomeSTB, this.onHandler, this);
+    }
+
     update(dt: number) {
         RvoMgr.update(dt);
     }
@@ -110,9 +115,11 @@ export class MapComponent extends Component {
                     const stbData = userInstbData[j];
                     if (mapNode.getChildByName(stbData.id.toString()) == null) {
                         userInstbData.splice(j, 1);
-                        setTimeout(() => {
-                            this.createSTBItem(stbData.id);
-                        }, 0.5 * i * 1000);
+                        // setTimeout(() => {
+                        //     this.createSTBItem(stbData.id);
+                        // }, 0.5 * i * 1000);
+
+                        this.createSTBItem(stbData.id);
                         break;
                     }
                 }
