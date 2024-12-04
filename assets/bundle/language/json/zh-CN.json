@@ -196,6 +196,9 @@
     "guide_update":"完成任务后点击验证按钮",
     "guide_gift":"新手大礼包",
 
+    "collectcoin_title":"收集金币",
+    "collectcoin_btn_free":"免费",
+
     "tips_email":"邮箱",
     "tips_email_empty":"请输入邮箱…",
     "tips_email_inputerror":"邮箱格式不正确",

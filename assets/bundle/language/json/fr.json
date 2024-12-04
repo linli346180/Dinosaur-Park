@@ -196,6 +196,9 @@
     "guide_update": "Cliquez sur le bouton de vérification après avoir terminé les tâches",
     "guide_gift":"Pack Débutant",
 
+    "collectcoin_title":"Collecter des pièces d'or",
+    "collectcoin_btn_free":"Gratuit",
+
     "tips_email": "Email",
     "tips_email_empty": "Entrez un email",
     "tips_email_inputerror": "Format de l'email incorrect",

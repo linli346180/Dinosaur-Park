@@ -196,6 +196,9 @@
     "guide_update": "Haz clic en el botón de verificación después de completar las tareas",
     "guide_gift":"Paquete Inicial",
  
+    "collectcoin_title":"Recoger monedas de oro",
+    "collectcoin_btn_free":"Gratis",
+
     "tips_email": "Correo electrónico",
     "tips_email_empty": "Introduce el correo electrónico",
     "tips_email_inputerror": "El formato del correo electrónico es incorrecto",

@@ -196,6 +196,9 @@
     "guide_update": "Pindutin ang verify button pagkatapos magawa ang task",
     "guide_gift":"Regalo ng Baguhan",
 
+    "collectcoin_title":"Kumukuha ng mga barya",
+    "collectcoin_btn_free":"Libre",
+
     "tips_email": "Email",
     "tips_email_empty": "Ilagay ang email",
     "tips_email_inputerror": "Hindi tama ang format ng email",

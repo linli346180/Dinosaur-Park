@@ -196,6 +196,9 @@
     "guide_update": "작업 완료 후 확인 버튼을 클릭하세요",
     "guide_gift":"초보자 패키지",
 
+    "collectcoin_title":"금화를 모으다",
+    "collectcoin_btn_free":"무료",
+
     "tips_email": "이메일",
     "tips_email_empty": "이메일 입력",
     "tips_email_inputerror": "이메일 형식이 올바르지 않습니다",

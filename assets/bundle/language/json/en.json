@@ -196,6 +196,9 @@
     "guide_update": "Click the verify button after completing tasks",
     "guide_gift":"Newbie Gift",
 
+    "collectcoin_title":"Collect Coins",
+    "collectcoin_btn_free":"Free",
+
     "tips_email": "Email",
     "tips_email_empty": "Enter email",
     "tips_email_inputerror": "Invalid email format",

@@ -196,6 +196,9 @@
     "guide_update": "タスクを完了した後、検証ボタンをクリック",
     "guide_gift":"初心者パック",
 
+    "collectcoin_title":"金貨を集める",
+    "collectcoin_btn_free":"無料",
+
     "tips_email": "メール",
     "tips_email_empty": "メールを入力してください",
     "tips_email_inputerror": "メール形式が正しくありません",

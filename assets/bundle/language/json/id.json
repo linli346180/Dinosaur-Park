@@ -196,6 +196,9 @@
     "guide_update": "Klik tombol verifikasi setelah menyelesaikan tugas",
     "guide_gift":"Hadiah Pemula",
 
+    "collectcoin_title":"Kumpulkan koin",
+    "collectcoin_btn_free":"Bebas",
+
     "tips_email": "Email",
     "tips_email_empty": "Masukkan Email",
     "tips_email_inputerror": "Format Email Salah",

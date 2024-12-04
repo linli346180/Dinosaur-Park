@@ -196,6 +196,9 @@
     "guide_update": "กดปุ่มยืนยันหลังจากทำภารกิจเสร็จ",
     "guide_gift":"ชุดมือใหม่",
 
+    "collectcoin_title":"สะสมเหรียญทอง",
+    "collectcoin_btn_free":"ฟรี",
+
     "tips_email": "อีเมล",
     "tips_email_empty": "กรอกอีเมล",
     "tips_email_inputerror": "รูปแบบอีเมลไม่ถูกต้อง",

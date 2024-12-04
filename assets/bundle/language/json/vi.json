@@ -196,6 +196,9 @@
     "guide_update": "Hoàn thành nhiệm vụ và nhấn nút xác nhận",
     "guide_gift":"Gói tân thủ",
 
+    "collectcoin_title":"Thu thập vàng",
+    "collectcoin_btn_free":"Miễn phí",
+
     "tips_email": "Email",
     "tips_email_empty": "Nhập email",
     "tips_email_inputerror": "Định dạng email không đúng",

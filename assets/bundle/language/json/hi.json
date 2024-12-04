@@ -196,6 +196,9 @@
     "guide_update": "कार्य पूरा करने के बाद सत्यापन बटन दबाएं",
     "guide_gift":"शुरुआती पैक",
 
+    "collectcoin_title":"कोन्ट को भेजें",
+    "collectcoin_btn_free":"मुक्त",
+
     "tips_email": "ईमेल",
     "tips_email_empty": "ईमेल दर्ज करें",
     "tips_email_inputerror": "ईमेल प्रारूप गलत है",

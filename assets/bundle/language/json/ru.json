@@ -196,6 +196,9 @@
     "guide_update": "Нажмите кнопку проверки после завершения задания",
     "guide_gift":"Набор новичка",
 
+    "collectcoin_title":"Сбор золотых монет",
+    "collectcoin_btn_free":"Бесплатно",
+
     "tips_email": "Почта",
     "tips_email_empty": "Введите адрес электронной почты",
     "tips_email_inputerror": "Неверный формат почты",

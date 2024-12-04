@@ -196,6 +196,9 @@
     "guide_update": "Clique no botão de verificação após completar a tarefa",
     "guide_gift":"Pacote Iniciante",
 
+    "collectcoin_title":"Recolher moedas",
+    "collectcoin_btn_free":"Livre",
+
     "tips_email": "Email",
     "tips_email_empty": "Digite o email",
     "tips_email_inputerror": "Formato de email inválido",
