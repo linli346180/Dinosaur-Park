@@ -166,7 +166,7 @@ export class Account extends ecs.Entity {
         for(let i = 0; i < this.STBConfigMode.instbConfigData.length; i++)
         {
             if(this.STBConfigMode.instbConfigData[i].id == stbConfigID){
-                this.STBConfigMode.instbConfigData[i].purConCoinNum += Number(extraPrize);
+                this.STBConfigMode.instbConfigData[i].purConCoinNum = Number(extraPrize);
                 if (coinType == 1) {
                     oops.message.dispatchEvent(AccountEvent.CoinExtraPrizeChange);
                 } else if (coinType == 2) {
