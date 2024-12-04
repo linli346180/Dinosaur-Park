@@ -46,6 +46,10 @@ export enum UIID {
     GemShop,        // 宝石商店
     WalletPaySelect, // 钱包支付选择
     Keyboard,       // 虚拟键盘
+
+    Evolve,         // 星兽进化
+    EvolveTips,     // 星兽进化提示
+    EvolveResult,     // 星兽进化提示
 }
 
 /** 打开界面方式的配置数据 */
@@ -64,6 +68,9 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.Revive]: { layer: LayerType.UI, prefab: "gui/debris/prefab/debrisUI", mask: true },
     [UIID.Hatch]: { layer: LayerType.UI, prefab: "gui/hatch/prefab/hatch", mask: true },
     [UIID.Activity]: { layer: LayerType.UI, prefab: "gui/activity/activityUI", mask: true },
+    [UIID.Evolve]: { layer: LayerType.UI, prefab: "gui/evolve/evolveUI", mask: true},
+    [UIID.EvolveTips]: { layer: LayerType.UI, prefab: "gui/evolve/evolveTipsUI", mask: true},
+    [UIID.EvolveResult]: { layer: LayerType.PopUp, prefab: "gui/evolve/evolveResult", mask: true},
 
     [UIID.Wallet]: { layer: LayerType.UI, prefab: "gui/wallet/walletUI", mask: true },
     [UIID.WalletDetail]: { layer: LayerType.UI, prefab: "gui/wallet/walletDetailUI", mask: true },
@@ -91,4 +98,6 @@ export var UIConfigData: { [key: number]: UIConfig } = {
     [UIID.GuideReward]: { layer: LayerType.System, prefab: "gui/guide/guideReward", mask: true },
     [UIID.LanguageUI]: { layer: LayerType.Dialog, prefab: "gui/setting/languageView", mask: true, vacancy: true },
     [UIID.Keyboard]: { layer: LayerType.System, prefab: "gui/keyboard/Keyboard", mask: true, vacancy: true},
+
+    
 }

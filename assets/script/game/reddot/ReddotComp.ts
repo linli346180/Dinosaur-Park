@@ -21,21 +21,23 @@ const RedDotCmdEnum = Enum({
     星兽图鉴: RedDotCmd.StbBookType, // 星兽图鉴
     星兽活动: RedDotCmd.USDTActivity, // 星兽活动
 
-    黄金1级: RedDotCmd.STB_101, // 星兽活动 
-    黄金2级: RedDotCmd.STB_102, // 星兽活动
-    黄金3级: RedDotCmd.STB_103, // 星兽活动
-    黄金4级: RedDotCmd.STB_104, // 星兽活动
-    黄金5级: RedDotCmd.STB_105, // 星兽活动
-    黄金6级: RedDotCmd.STB_106, // 星兽活动
-    黄金7级: RedDotCmd.STB_107, // 星兽活动
-    黄金8级: RedDotCmd.STB_108, // 星兽活动
-    黄金9级: RedDotCmd.STB_109, // 星兽活动
-    黄金10级: RedDotCmd.STB_110, // 星兽活动
-    初级至尊星兽: RedDotCmd.STB_111, // 星兽活动
-    中级至尊星兽: RedDotCmd.STB_112, // 星兽活动
-    高级至尊星兽: RedDotCmd.STB_113, // 星兽活动
-    宝石星兽: RedDotCmd.STB_114, // 星兽活动
-    砖石星兽: RedDotCmd.STB_115, // 星兽活动
+    黄金1级: 1001, 
+    黄金2级: 1002, 
+    黄金3级: 1003, 
+    黄金4级: 1004,
+    黄金5级: 1005,
+    黄金6级: 1006,
+    黄金7级: 1007, 
+    黄金8级: 1008,
+    黄金9级: 1009,
+    黄金10级: 1010,
+    初级至尊星兽: 1011,
+    中级至尊星兽: 1012, 
+    高级至尊星兽: 1013,
+    宝石星兽: 1014,
+    砖石星兽: 1015,
+
+    进化说明: 1016,
 });
 
 @ccclass('ReddotComp')
@@ -52,6 +54,7 @@ export class ReddotComp extends Component {
 
     public setRead() {
         oops.storage.set(this.cmd.toString(), true);
+        this.node.active = false;
     }
 
     onDestroy() {

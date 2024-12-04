@@ -124,7 +124,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 20,
-      "y": 890,
+      "y": 889.9999999999999,
       "z": 0
     },
     "_lrot": {
@@ -4652,7 +4652,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -430,
-      "y": 780,
+      "y": 779.9999999999999,
       "z": 0
     },
     "_lrot": {
@@ -5005,7 +5005,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "e9H8EKE9NB34HwFo02gCiz"
+    "fileId": "cf0nMWZytPDpt3CQoAKYgq"
   },
   {
     "__type__": "cc.Sprite",
@@ -5050,7 +5050,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "f6wbEsfBVHX73rEk3GTldW"
+    "fileId": "a4T+oDzzJIZbNX0vcGEO6P"
   },
   {
     "__type__": "cc.Widget",
@@ -5086,7 +5086,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "02gclbXwVEbL98pVelC+lb"
+    "fileId": "a8Fpi6iq5KILpmhMKhW4iS"
   },
   {
     "__type__": "cc4d2gG1z5AabP6ZpMkfDX3",
@@ -5105,7 +5105,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "dcw4pary5ESqtyxsIs8WGX"
+    "fileId": "aaI/VIL0xAd4WhuUurI0t3"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -5115,7 +5115,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "bcZDw+IZZL6oZYyRYKxbnG",
+    "fileId": "48Jr8bNpRM0K5Ub/avty5a",
     "instance": null,
     "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
@@ -8376,7 +8376,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -980,
+      "y": -979.9999999999999,
       "z": 0
     },
     "_lrot": {
@@ -11450,7 +11450,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 394.829,
-      "y": 704.821,
+      "y": 704.8209999999999,
       "z": 0
     },
     "_lrot": {
@@ -14669,7 +14669,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -889.9999999999999,
+      "y": -889.9999999999998,
       "z": 0
     },
     "_lrot": {
@@ -20794,7 +20794,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1080,
-      "height": 1960
+      "height": 1959.9999999999998
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

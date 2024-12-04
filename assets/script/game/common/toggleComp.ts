@@ -9,24 +9,34 @@ export class toggleComp extends Component {
     @property(Number)
     public index: number = 0;
     public onToggleSelcted: (index: number) => void = () => { };
-    public toggle: Toggle = null!;
-    private UnCheckLabel: Label = null!;
+    @property(Toggle)
+    private toggle: Toggle = null!;
 
-    start() {
-        this.toggle = this.node.getComponent(Toggle)!;
-        this.UnCheckLabel = this.node.getChildByName("Label_UnCheck")?.getComponent(Label)!;
+    private UnCheckLabel: Label| null;
+
+    onLoad() {
         this.toggle?.node.on(Toggle.EventType.TOGGLE, this.onToggle, this);
-
-        if (this.toggle.isChecked)
+        this.UnCheckLabel = this.node.getChildByName("Label_UnCheck")?.getComponent(Label)!;
+        if (this.UnCheckLabel && this.toggle.isChecked)
             this.UnCheckLabel.node.active = false;
+    }
+
+    public setChecked(isChecked: boolean) { 
+        this.toggle.isChecked = isChecked;
+        if(this.UnCheckLabel)
+            this.UnCheckLabel.node.active = !isChecked;
     }
 
     private onToggle(toggle: Toggle) {
         if (toggle.isChecked) {
-            this.onToggleSelcted(this.index);
-            this.UnCheckLabel.node.active = false;
+            if(this.onToggleSelcted)
+                this.onToggleSelcted(this.index);
+
+            if(this.UnCheckLabel)
+                this.UnCheckLabel.node.active = false;
         } else {
-            this.UnCheckLabel.node.active = true;
+            if(this.UnCheckLabel)
+                this.UnCheckLabel.node.active = true;
         }
     }
 }

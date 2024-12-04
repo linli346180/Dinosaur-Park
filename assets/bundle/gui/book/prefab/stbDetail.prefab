@@ -1876,7 +1876,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 800,
+      "width": 783.5,
       "height": 63
     },
     "_anchorPoint": {
@@ -1904,7 +1904,7 @@
     },
     "_lineHeight": 50,
     "_string": "desc",
-    "_horizontalAlign": 1,
+    "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 45,
     "_fontColor": {
@@ -1914,7 +1914,7 @@
       "b": 0,
       "a": 255
     },
-    "_maxWidth": 800,
+    "_maxWidth": 783.5,
     "_fontFamily": "Arial",
     "_font": null,
     "_isSystemFontUsed": true,

@@ -111,7 +111,6 @@ export class AccountModelComp extends ecs.Comp {
 /** 星兽数据 */
 export class StartBeastData {
     readonly id: number = 0;                        //星兽ID
-   
     stbConfigID: number = 0;                        //星兽配置ID
     readonly stbPosition: number = 0;               //星兽位置
     readonly userID: number| null = 0;                    //用户ID

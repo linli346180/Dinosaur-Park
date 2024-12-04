@@ -108,12 +108,7 @@ export class HomeView extends Component {
 
     private OpenUI(uid: UIID) {
         const targetNode = this.buttonMap[uid]?.node;
-        if (!targetNode) return;
-        const redDot = targetNode.getChildByName("reddot");
-        if (redDot) {
-            redDot.getComponent(ReddotComp)?.setRead();
-            redDot.active = false;
-        }
+        targetNode.getComponentInChildren(ReddotComp)?.setRead();
         
         if(uid == UIID.Invite) { 
             oops.gui.toast(oops.language.getLangByID("common_tips_Not_Enabled"));

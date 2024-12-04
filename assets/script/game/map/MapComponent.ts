@@ -13,6 +13,7 @@ import { v3 } from 'cc';
 import { math } from 'cc';
 import { StringUtil } from '../common/utils/StringUtil';
 import { Collider2D } from 'cc';
+import { UIID } from '../common/config/GameUIConfig';
 const { ccclass, property } = _decorator;
 
 const tmpP0 = v3();

@@ -129,8 +129,8 @@ export class Account extends ecs.Entity {
 
     /** 新手引导是否已完成(奖励未领取) */
     private async isGuideFinish(): Promise<boolean> {
-        if(DEBUG) {
-            return true; 
+        if (DEBUG) {
+            return true;
         }
         const res = await AccountNetService.getUserOfficial();
         if (res) {
@@ -153,19 +153,19 @@ export class Account extends ecs.Entity {
         }
     }
 
-    async updateCoinData() {
+    async updateCoinData(callback: Function = null): Promise<void> {
         const coinDataRes = await AccountNetService.getUserCoinData();
         if (coinDataRes && coinDataRes.userCoin != null) {
             this.AccountModel.CoinData = coinDataRes.userCoin;
             oops.message.dispatchEvent(AccountEvent.CoinDataChange);
+            if (callback) callback();
         }
     }
 
     //更新购买星兽的金币数量
-    async updatePurConCoinNum(coinType:number,stbConfigID:number,extraPrize:number) {
-        for(let i = 0; i < this.STBConfigMode.instbConfigData.length; i++)
-        {
-            if(this.STBConfigMode.instbConfigData[i].id == stbConfigID){
+    async updatePurConCoinNum(coinType: number, stbConfigID: number, extraPrize: number) {
+        for (let i = 0; i < this.STBConfigMode.instbConfigData.length; i++) {
+            if (this.STBConfigMode.instbConfigData[i].id == stbConfigID) {
                 this.STBConfigMode.instbConfigData[i].purConCoinNum = Number(extraPrize);
                 if (coinType == 1) {
                     oops.message.dispatchEvent(AccountEvent.CoinExtraPrizeChange);
@@ -177,7 +177,7 @@ export class Account extends ecs.Entity {
     }
 
     // 更新收益星兽数据
-    async updateInstbData() {
+    async updateInstbData(callback: Function = null): Promise<void> {
         const res = await AccountNetService.GetUserSTBData();
         let idList: number[] = [];
         if (res && res.userInstbData.UserInstb != null) {
@@ -206,6 +206,7 @@ export class Account extends ecs.Entity {
             for (const delId of delList) {
                 this.delUserSTBData(delId);
             }
+            if (callback) callback();
         }
     }
 
@@ -222,7 +223,7 @@ export class Account extends ecs.Entity {
                 this.updateCoinData();
             }
 
-            this.updatePurConCoinNum(res.userStbPrize.coinType, res.userStbPrize.stbConfigID,res.userStbPrize.extraPrize);
+            this.updatePurConCoinNum(res.userStbPrize.coinType, res.userStbPrize.stbConfigID, res.userStbPrize.extraPrize);
 
             const STBData: StartBeastData = res.userInstbSynthReData;
             let stbConfig = this.STBConfigMode.getSTBConfigData(STBData.stbConfigID);
@@ -500,5 +501,18 @@ export class Account extends ecs.Entity {
             this.AccountModel.CoinData = res.userCoin;
             oops.message.dispatchEvent(AccountEvent.CoinDataChange);
         }
+    }
+
+    /** 获取星兽数量(类型101)  */
+    public getUserInstbCount(stbConfigId: number): number {
+        const stbConfig = this.getSTBConfigById(stbConfigId);
+        let count = 0;
+        this.AccountModel.getUserInstb().forEach((element) => {
+            if (element.stbConfigID == stbConfig?.id) {
+                count++;
+            }
+        });
+        console.log("获取星兽数量:", stbConfigId, count);
+        return count;
     }
 }
