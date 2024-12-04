@@ -46,9 +46,10 @@ export class AccountNetData extends ecs.ComblockSystem implements ecs.IEntityEnt
                     {
                         userStbPrizeArrExtraPrize = Number(UserPrizeRes.userStbPrizeArr[i].extraPrize);
                         i++;
+                        item.purConCoinNum = userStbPrizeArrExtraPrize;
+                    }else{
+                        item.purConCoinNum = purConCoinNumArray;
                     }
-                    let sum = purConCoinNumArray + userStbPrizeArrExtraPrize;
-                    item.purConCoinNum = sum;
                 });
             }
         }
